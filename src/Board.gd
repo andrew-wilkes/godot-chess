@@ -10,7 +10,7 @@ export(Color) var grey # Square color
 export(Color) var mod_color # For highlighting squares
 
 const num_squares = 64
-enum { SIDE, CODE, PIECE_REF } # Black/white side, piece code , ref to object
+enum { SIDE, KEY, PIECE_REF } # Black/white side, piece key , ref to object
 
 var grid : Array # Map of what pieces are placed on the board
 
@@ -68,9 +68,9 @@ func square_event(event: InputEvent, x: int, y: int):
 		print(p)
 		if event.pressed:
 			if p != null:
-				emit_signal("clicked", x, y, p[SIDE], p[CODE], p[PIECE_REF])
+				emit_signal("clicked", x, y, p[SIDE], p[KEY], p[PIECE_REF])
 		else:
-			emit_signal("unclicked", x, y, p[SIDE], p[CODE], p[PIECE_REF])
+			emit_signal("unclicked", x, y, p[SIDE], p[KEY], p[PIECE_REF])
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
 		emit_signal("moved", event.position)
