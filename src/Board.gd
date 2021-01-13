@@ -10,7 +10,6 @@ export(Color) var grey # Square color
 export(Color) var mod_color # For highlighting squares
 
 const num_squares = 64
-enum { SIDE, KEY, PIECE_REF } # Black/white side, piece key , ref to object
 
 var grid : Array # Map of what pieces are placed on the board
 
@@ -27,13 +26,19 @@ func setup_pieces():
 	var seq = "PPPPPPPPRNBQKBNRPPPPPPPP" # Arrangement order for chess pieces
 	for i in 16:
 		# Place black pieces
-		var p = Pieces.get_piece(seq[i + 8], "B")
-		$Grid.get_child(i).add_child(p)
-		grid[i] = ["B", seq[i + 8], p]
+		var bp = Piece.new()
+		bp.side = "B"
+		bp.key = seq[i + 8]
+		bp.obj = Pieces.get_piece(seq[i + 8], "B")
+		grid[i] = bp
+		$Grid.get_child(i).add_child(bp.obj)
 		# Place white pieces
-		p = Pieces.get_piece(seq[i])
-		$Grid.get_child(i + 48).add_child(p)
-		grid[i + 48] = ["W", seq[i], p]
+		var wp = Piece.new()
+		wp.side = "W"
+		wp.key = seq[i]
+		wp.obj = Pieces.get_piece(seq[i])
+		grid[i + 48] = wp
+		$Grid.get_child(i + 48).add_child(wp.obj)
 
 
 func draw_tiles():
@@ -68,9 +73,9 @@ func square_event(event: InputEvent, x: int, y: int):
 		print(p)
 		if event.pressed:
 			if p != null:
-				emit_signal("clicked", x, y, p[SIDE], p[KEY], p[PIECE_REF])
+				emit_signal("clicked", x, y, p)
 		else:
-			emit_signal("unclicked", x, y, p[SIDE], p[KEY], p[PIECE_REF])
+			emit_signal("unclicked", x, y, p)
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
 		emit_signal("moved", event.position)
