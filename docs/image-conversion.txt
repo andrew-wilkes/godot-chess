@@ -1,0 +1,4 @@
+Convert .svg files to .png with scaling to new size.
+inkscape --export-type=png -w 64 -h 64 blackBishop.svg  blackKing.svg  blackKnight.svg  blackPawn.svg  blackQueen.svg  blackRook.svg  whiteBishop.svg  whiteKing.svg  whiteKnight.svg  whitePawn.svg  whiteQueen.svg  whiteRook.svg
+
+

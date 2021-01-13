@@ -1,0 +1,102 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Pieces.gd" type="Script" id=1]
+[ext_resource path="res://pieces/blackKnight.png" type="Texture" id=2]
+[ext_resource path="res://pieces/blackQueen.png" type="Texture" id=3]
+[ext_resource path="res://pieces/whiteKnight.png" type="Texture" id=4]
+[ext_resource path="res://pieces/whitePawn.png" type="Texture" id=5]
+[ext_resource path="res://pieces/blackBishop.png" type="Texture" id=6]
+[ext_resource path="res://pieces/whiteQueen.png" type="Texture" id=7]
+[ext_resource path="res://pieces/blackPawn.png" type="Texture" id=8]
+[ext_resource path="res://pieces/blackRook.png" type="Texture" id=9]
+[ext_resource path="res://pieces/blackKing.png" type="Texture" id=10]
+[ext_resource path="res://pieces/whiteBishop.png" type="Texture" id=11]
+[ext_resource path="res://pieces/whiteRook.png" type="Texture" id=12]
+[ext_resource path="res://pieces/whiteKing.png" type="Texture" id=13]
+
+[node name="Pieces" type="GridContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 6
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="blackBishop" type="TextureButton" parent="."]
+margin_right = 64.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 6 )
+
+[node name="blackKing" type="TextureButton" parent="."]
+margin_left = 68.0
+margin_right = 132.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 10 )
+
+[node name="blackKnight" type="TextureButton" parent="."]
+margin_left = 136.0
+margin_right = 200.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 2 )
+
+[node name="blackPawn" type="TextureButton" parent="."]
+margin_left = 204.0
+margin_right = 268.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 8 )
+
+[node name="blackQueen" type="TextureButton" parent="."]
+margin_left = 272.0
+margin_right = 336.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 3 )
+
+[node name="blackRook" type="TextureButton" parent="."]
+margin_left = 340.0
+margin_right = 404.0
+margin_bottom = 64.0
+texture_normal = ExtResource( 9 )
+
+[node name="whiteBishop" type="TextureButton" parent="."]
+margin_top = 68.0
+margin_right = 64.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 11 )
+
+[node name="whiteKing" type="TextureButton" parent="."]
+margin_left = 68.0
+margin_top = 68.0
+margin_right = 132.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 13 )
+
+[node name="whiteKnight" type="TextureButton" parent="."]
+margin_left = 136.0
+margin_top = 68.0
+margin_right = 200.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 4 )
+
+[node name="whitePawn" type="TextureButton" parent="."]
+margin_left = 204.0
+margin_top = 68.0
+margin_right = 268.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 5 )
+
+[node name="whiteQueen" type="TextureButton" parent="."]
+margin_left = 272.0
+margin_top = 68.0
+margin_right = 336.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 7 )
+
+[node name="whiteRook" type="TextureButton" parent="."]
+margin_left = 340.0
+margin_top = 68.0
+margin_right = 404.0
+margin_bottom = 132.0
+texture_normal = ExtResource( 12 )

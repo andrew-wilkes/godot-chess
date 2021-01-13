@@ -1,0 +1,6 @@
+[gd_scene format=2]
+
+[node name="Main" type="Control"]
+__meta__ = {
+"_edit_use_anchors_": false
+}
