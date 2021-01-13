@@ -13,6 +13,10 @@ func get_piece(key = "P", color = "W"):
 	return p
 
 
+#func _ready():
+#	setup()
+
+
 func setup():
 	var dir = Directory.new()
 	if dir.open("res://pieces") == OK:
@@ -30,5 +34,5 @@ func setup():
 			var tb = get_child(i)
 			tb.name = file.get_basename()
 			var img = load("res://pieces/" + file)
-			tb.texture_normal = img
+			tb.texture = img
 			i += 1

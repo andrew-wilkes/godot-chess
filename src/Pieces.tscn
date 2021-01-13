@@ -25,78 +25,78 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="blackBishop" type="TextureButton" parent="."]
+[node name="blackBishop" type="TextureRect" parent="."]
 margin_right = 64.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 6 )
+texture = ExtResource( 6 )
 
-[node name="blackKing" type="TextureButton" parent="."]
+[node name="blackKing" type="TextureRect" parent="."]
 margin_left = 68.0
 margin_right = 132.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 10 )
+texture = ExtResource( 10 )
 
-[node name="blackKnight" type="TextureButton" parent="."]
+[node name="blackKnight" type="TextureRect" parent="."]
 margin_left = 136.0
 margin_right = 200.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 2 )
+texture = ExtResource( 2 )
 
-[node name="blackPawn" type="TextureButton" parent="."]
+[node name="blackPawn" type="TextureRect" parent="."]
 margin_left = 204.0
 margin_right = 268.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 8 )
+texture = ExtResource( 8 )
 
-[node name="blackQueen" type="TextureButton" parent="."]
+[node name="blackQueen" type="TextureRect" parent="."]
 margin_left = 272.0
 margin_right = 336.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 3 )
+texture = ExtResource( 3 )
 
-[node name="blackRook" type="TextureButton" parent="."]
+[node name="blackRook" type="TextureRect" parent="."]
 margin_left = 340.0
 margin_right = 404.0
 margin_bottom = 64.0
-texture_normal = ExtResource( 9 )
+texture = ExtResource( 9 )
 
-[node name="whiteBishop" type="TextureButton" parent="."]
+[node name="whiteBishop" type="TextureRect" parent="."]
 margin_top = 68.0
 margin_right = 64.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 11 )
+texture = ExtResource( 11 )
 
-[node name="whiteKing" type="TextureButton" parent="."]
+[node name="whiteKing" type="TextureRect" parent="."]
 margin_left = 68.0
 margin_top = 68.0
 margin_right = 132.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 13 )
+texture = ExtResource( 13 )
 
-[node name="whiteKnight" type="TextureButton" parent="."]
+[node name="whiteKnight" type="TextureRect" parent="."]
 margin_left = 136.0
 margin_top = 68.0
 margin_right = 200.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 4 )
+texture = ExtResource( 4 )
 
-[node name="whitePawn" type="TextureButton" parent="."]
+[node name="whitePawn" type="TextureRect" parent="."]
 margin_left = 204.0
 margin_top = 68.0
 margin_right = 268.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 5 )
+texture = ExtResource( 5 )
 
-[node name="whiteQueen" type="TextureButton" parent="."]
+[node name="whiteQueen" type="TextureRect" parent="."]
 margin_left = 272.0
 margin_top = 68.0
 margin_right = 336.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 7 )
+texture = ExtResource( 7 )
 
-[node name="whiteRook" type="TextureButton" parent="."]
+[node name="whiteRook" type="TextureRect" parent="."]
 margin_left = 340.0
 margin_top = 68.0
 margin_right = 404.0
 margin_bottom = 132.0
-texture_normal = ExtResource( 12 )
+texture = ExtResource( 12 )

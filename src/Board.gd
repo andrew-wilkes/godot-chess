@@ -36,14 +36,30 @@ func draw_tiles():
 	grey_square.color = grey
 	# Add squares to grid
 	var odd = true
-	for n in 8:
+	for y in 8:
 		odd = !odd
-		for m in 8:
+		for x in 8:
 			odd = !odd
 			if odd:
-				$Grid.add_child(white_square.duplicate())
+				add_square(white_square.duplicate(), [x, y])
 			else:
-				$Grid.add_child(grey_square.duplicate())
+				add_square(grey_square.duplicate(), [x, y])
+
+
+func add_square(s: ColorRect, xy: Array):
+	s.connect("gui_input", self, "square_clicked", xy)
+	$Grid.add_child(s)
+
+
+func square_clicked(event: InputEvent, x: int, y: int):
+	if event.is_pressed():
+		print("Clicked at: ", [x, y])
+		print(get_piece_in_grid(x, y))
+
+
+func get_piece_in_grid(x: int, y: int):
+	var p = grid[x + 8 * y]
+	return p
 
 
 func test_highlight_square():
