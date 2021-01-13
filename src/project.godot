@@ -16,11 +16,16 @@ _global_script_class_icons={
 [application]
 
 config/name="Chess"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Pieces="*res://Pieces.tscn"
+
+[debug]
+
+gdscript/warnings/return_value_discarded=false
 
 [rendering]
 

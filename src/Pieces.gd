@@ -9,12 +9,13 @@ func get_piece(key = "P", color = "W"):
 	if color == "W":
 		i += 6
 	var p = get_child(i).duplicate()
-	p.rect_position = Vector2(0, 0)
+	p.position = Vector2(0, 0)
 	return p
 
 
-#func _ready():
+func _ready():
 #	setup()
+	visible = false
 
 
 func setup():
@@ -31,8 +32,9 @@ func setup():
 		print(files)
 		var i = 0
 		for file in files:
-			var tb = get_child(i)
-			tb.name = file.get_basename()
+			var sprite = get_child(i)
+			sprite.name = file.get_basename()
 			var img = load("res://pieces/" + file)
-			tb.texture = img
+			sprite.texture = img
+			sprite.position.x = i *64
 			i += 1

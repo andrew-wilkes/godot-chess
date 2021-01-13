@@ -1,5 +1,9 @@
 extends Control
 
+signal clicked
+signal unclicked
+signal moved
+
 export var square_width = 64
 export(Color) var white
 export(Color) var grey
@@ -7,7 +11,7 @@ export(Color) var mod_color
 
 const num_squares = 64
 
-var grid : PoolStringArray
+var grid : Array
 
 func _ready():
 	# grid will map the pieces in the game
@@ -22,15 +26,18 @@ func _ready():
 func setup_pieces():
 	var seq = "PPPPPPPPRNBQKBNRPPPPPPPP"
 	for i in 16:
-		$Grid.get_child(i).add_child(Pieces.get_piece(seq[i + 8], "B"))
-		grid[i] = "B" + seq[i + 8]
-		$Grid.get_child(i + 48).add_child(Pieces.get_piece(seq[i]))
-		grid[i + 48] = "W" + seq[i]
+		var p = Pieces.get_piece(seq[i + 8], "B")
+		$Grid.get_child(i).add_child(p)
+		grid[i] = ["B", seq[i + 8], p]
+		p = Pieces.get_piece(seq[i])
+		$Grid.get_child(i + 48).add_child(p)
+		grid[i + 48] = ["W", seq[i], p]
 
 
 func draw_tiles():
 	var white_square = ColorRect.new()
 	white_square.color = white
+	white_square.mouse_filter = Control.MOUSE_FILTER_PASS
 	white_square.rect_min_size = Vector2(square_width, square_width)
 	var grey_square = white_square.duplicate()
 	grey_square.color = grey
@@ -41,20 +48,30 @@ func draw_tiles():
 		for x in 8:
 			odd = !odd
 			if odd:
-				add_square(white_square.duplicate(), [x, y])
+				add_square(white_square.duplicate(), x, y)
 			else:
-				add_square(grey_square.duplicate(), [x, y])
+				add_square(grey_square.duplicate(), x, y)
 
 
-func add_square(s: ColorRect, xy: Array):
-	s.connect("gui_input", self, "square_clicked", xy)
+func add_square(s: ColorRect, x: int, y: int):
+	s.connect("gui_input", self, "square_event", [x, y])
 	$Grid.add_child(s)
 
 
-func square_clicked(event: InputEvent, x: int, y: int):
-	if event.is_pressed():
+func square_event(event: InputEvent, x: int, y: int):
+	if event is InputEventMouseButton:
+		get_tree().set_input_as_handled()
 		print("Clicked at: ", [x, y])
-		print(get_piece_in_grid(x, y))
+		var p = get_piece_in_grid(x, y)
+		print(p)
+		if event.pressed:
+			if p != null:
+				emit_signal("clicked", x, y, p[0], p[1], p[2])
+		else:
+			emit_signal("unclicked", x, y, p[0], p[1], p[2])
+	# Mouse position is relative to the square
+	if event is InputEventMouseMotion:
+		emit_signal("moved", event.position)
 
 
 func get_piece_in_grid(x: int, y: int):

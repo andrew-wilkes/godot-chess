@@ -25,78 +25,61 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="blackBishop" type="TextureRect" parent="."]
-margin_right = 64.0
-margin_bottom = 64.0
+[node name="blackBishop" type="Sprite" parent="."]
 texture = ExtResource( 6 )
+centered = false
 
-[node name="blackKing" type="TextureRect" parent="."]
-margin_left = 68.0
-margin_right = 132.0
-margin_bottom = 64.0
+[node name="blackKing" type="Sprite" parent="."]
+position = Vector2( 64, 0 )
 texture = ExtResource( 10 )
+centered = false
 
-[node name="blackKnight" type="TextureRect" parent="."]
-margin_left = 136.0
-margin_right = 200.0
-margin_bottom = 64.0
+[node name="blackKnight" type="Sprite" parent="."]
+position = Vector2( 128, 0 )
 texture = ExtResource( 2 )
+centered = false
 
-[node name="blackPawn" type="TextureRect" parent="."]
-margin_left = 204.0
-margin_right = 268.0
-margin_bottom = 64.0
+[node name="blackPawn" type="Sprite" parent="."]
+position = Vector2( 192, 0 )
 texture = ExtResource( 8 )
+centered = false
 
-[node name="blackQueen" type="TextureRect" parent="."]
-margin_left = 272.0
-margin_right = 336.0
-margin_bottom = 64.0
+[node name="blackQueen" type="Sprite" parent="."]
+position = Vector2( 256, 0 )
 texture = ExtResource( 3 )
+centered = false
 
-[node name="blackRook" type="TextureRect" parent="."]
-margin_left = 340.0
-margin_right = 404.0
-margin_bottom = 64.0
+[node name="blackRook" type="Sprite" parent="."]
+position = Vector2( 320, 0 )
 texture = ExtResource( 9 )
+centered = false
 
-[node name="whiteBishop" type="TextureRect" parent="."]
-margin_top = 68.0
-margin_right = 64.0
-margin_bottom = 132.0
+[node name="whiteBishop" type="Sprite" parent="."]
+position = Vector2( 384, 0 )
 texture = ExtResource( 11 )
+centered = false
 
-[node name="whiteKing" type="TextureRect" parent="."]
-margin_left = 68.0
-margin_top = 68.0
-margin_right = 132.0
-margin_bottom = 132.0
+[node name="whiteKing" type="Sprite" parent="."]
+position = Vector2( 448, 0 )
 texture = ExtResource( 13 )
+centered = false
 
-[node name="whiteKnight" type="TextureRect" parent="."]
-margin_left = 136.0
-margin_top = 68.0
-margin_right = 200.0
-margin_bottom = 132.0
+[node name="whiteKnight" type="Sprite" parent="."]
+position = Vector2( 512, 0 )
 texture = ExtResource( 4 )
+centered = false
 
-[node name="whitePawn" type="TextureRect" parent="."]
-margin_left = 204.0
-margin_top = 68.0
-margin_right = 268.0
-margin_bottom = 132.0
+[node name="whitePawn" type="Sprite" parent="."]
+position = Vector2( 576, 0 )
 texture = ExtResource( 5 )
+centered = false
 
-[node name="whiteQueen" type="TextureRect" parent="."]
-margin_left = 272.0
-margin_top = 68.0
-margin_right = 336.0
-margin_bottom = 132.0
+[node name="whiteQueen" type="Sprite" parent="."]
+position = Vector2( 640, 0 )
 texture = ExtResource( 7 )
+centered = false
 
-[node name="whiteRook" type="TextureRect" parent="."]
-margin_left = 340.0
-margin_top = 68.0
-margin_right = 404.0
-margin_bottom = 132.0
+[node name="whiteRook" type="Sprite" parent="."]
+position = Vector2( 704, 0 )
 texture = ExtResource( 12 )
+centered = false
