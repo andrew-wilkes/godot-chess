@@ -10,6 +10,7 @@ export(Color) var grey
 export(Color) var mod_color
 
 const num_squares = 64
+enum { SIDE, CODE, PIECE_REF }
 
 var grid : Array
 
@@ -66,9 +67,9 @@ func square_event(event: InputEvent, x: int, y: int):
 		print(p)
 		if event.pressed:
 			if p != null:
-				emit_signal("clicked", x, y, p[0], p[1], p[2])
+				emit_signal("clicked", x, y, p[SIDE], p[CODE], p[PIECE_REF])
 		else:
-			emit_signal("unclicked", x, y, p[0], p[1], p[2])
+			emit_signal("unclicked", x, y, p[SIDE], p[CODE], p[PIECE_REF])
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
 		emit_signal("moved", event.position)
