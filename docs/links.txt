@@ -1,0 +1,9 @@
+https://invent.kde.org/games/knights
+https://apps.kde.org/en/knights
+https://github.com/pychess/pychess
+https://www.chess.com/blog/SamCopeland/the-best-linux-apps-for-chess
+https://gitlab.gnome.org/GNOME/gnome-chess
+https://wiki.gnome.org/Apps/Chess
+http://scidvspc.sourceforge.net/
+
+
