@@ -5,9 +5,9 @@ extends GridContainer
 var keys = "BKNPQR" # Bishop King kNight Pawn Queen Rook
 
 # Return a chess piece object defaulting to a White Pawn
-func get_piece(key = "P", color = "W"):
+func get_piece(key = "P", side = "W"):
 	var i = keys.find(key)
-	if color == "W":
+	if side == "W":
 		i += 6
 	var p = get_child(i).duplicate()
 	p.position = Vector2(0, 0)
