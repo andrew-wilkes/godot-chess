@@ -15,11 +15,11 @@ func mouse_entered():
 	return_piece()
 
 
-func piece_clicked(x, y, color, side, piece):
+func piece_clicked(x, y, side, code, piece):
 	selected_piece = {
 		"position": Vector2(x, y),
-		"color": color,
 		"side": side,
+		"code": code,
 		"piece": piece
 	}
 	# Need to ensure that piece displays above all others when moved
@@ -27,7 +27,7 @@ func piece_clicked(x, y, color, side, piece):
 	print("Board clicked ", selected_piece)
 
 
-func piece_unclicked(_x, _y, _color, _side, _piece):
+func piece_unclicked(_x, _y, _side, _code, _piece):
 	if selected_piece != null:
 		# Try to drop the piece
 		return_piece()
