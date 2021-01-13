@@ -42,5 +42,5 @@ func return_piece():
 	if selected_piece != null:
 		# Return the piece to it's start position
 		selected_piece.piece.position = Vector2(0, 0)
-		selected_piece.z_index = 0
+		selected_piece.piece.z_index = 0
 		selected_piece = null
