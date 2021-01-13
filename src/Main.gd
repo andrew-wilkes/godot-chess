@@ -16,10 +16,7 @@ func mouse_entered():
 
 
 func piece_clicked(_x, _y, piece):
-	selected_piece = Piece.new()
-	selected_piece.side = piece.side
-	selected_piece.key = piece.key
-	selected_piece.obj = piece.obj
+	selected_piece = piece
 	# Need to ensure that piece displays above all others when moved
 	piece.obj.z_index = 1
 	print("Board clicked ", selected_piece)
