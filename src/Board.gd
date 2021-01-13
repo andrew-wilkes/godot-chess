@@ -29,14 +29,14 @@ func setup_pieces():
 		var bp = Piece.new()
 		bp.side = "B"
 		bp.key = seq[i + 8]
-		bp.obj = Pieces.get_piece(seq[i + 8], "B")
+		bp.obj = Pieces.get_piece(bp.key, "B")
 		grid[i] = bp
 		$Grid.get_child(i).add_child(bp.obj)
 		# Place white pieces
 		var wp = Piece.new()
 		wp.side = "W"
 		wp.key = seq[i]
-		wp.obj = Pieces.get_piece(seq[i])
+		wp.obj = Pieces.get_piece(wp.key)
 		grid[i + 48] = wp
 		$Grid.get_child(i + 48).add_child(wp.obj)
 
