@@ -25,6 +25,7 @@ func piece_clicked(piece):
 
 func piece_unclicked(_piece):
 	if selected_piece != null:
+		print($Board.get_position_info(selected_piece).ok)
 		# Try to drop the piece
 		return_piece()
 

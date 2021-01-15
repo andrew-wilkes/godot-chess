@@ -38,7 +38,7 @@ func setup_pieces():
 		wp.side = "W"
 		wp.key = seq[i]
 		wp.obj = Pieces.get_piece(wp.key)
-		bp.pos = Vector2(i % 8, 6 + i / 8)
+		wp.pos = Vector2(i % 8, 6 + i / 8)
 		grid[i + 48] = wp
 		$Grid.get_child(i + 48).add_child(wp.obj)
 
@@ -119,3 +119,53 @@ func test_square_is_white():
 func square_is_white(n: int):
 # warning-ignore:integer_division
 	return 0 == ((n / 8) + n) % 2
+
+
+# Check if it is valid to move to this position
+# Return true/false and null/piece that occupies the position
+func get_position_info(p: Piece, offset_divider = square_width):
+	var offset = p.obj.position / offset_divider
+	var x = int(round(offset.x))
+	var y = int(round(offset.y))
+	var ax = int(abs(x))
+	var ay = int(abs(y))
+	var p2 = get_piece_in_grid(p.pos.x + x, p.pos.y + y)
+	# Check for valid move
+	# Don't care about bounds of the board since the piece will be released if outside
+	var ok = false
+	var check_path = true
+	match p.key:
+		"P": # Check for valid move of pawn
+			if p.side == "B":
+				ok = y > 0 and (p.moved and y == 1 or y < 3)
+			else:
+				ok = y < 0 and (p.moved and y == -1 or -3 < y)
+			# Check for valid horizontal move
+			if ok:
+				ok = ax == 0 or ay == 1 and ax == 1
+		"R": # Check for valid horizontal or vertical move of rook
+			ok = ax > 0 and ay < 1 or ax < 1 and ay > 0
+		"B": # Check for valid diagonal move of bishop
+			ok = offset.x == offset.y
+		"K": # Check for valid move of king
+			ok = ax < 2 and ay < 2
+		"N": # Check for valid move of knight
+			check_path = false # knight may jump over pieces
+			ok = (ax == 2 and ay == 1) or (ax == 1 and ay == 2)
+	# Check for landing on own piece
+	if ok and p2 != null:
+		ok = (p.side == "B" and p2.side == "W") or (p.side == "W" and p2.side == "B")
+	# Check for passing over a piece
+	if check_path and ok and (ax > 1 or ay > 1):
+		var checking = true
+		while checking:
+			if ax > 0:
+				x -= sign(x) # Move back horizontally
+			if ay > 0:
+				y -= sign(y) # Move back vertically
+			var p3 = get_piece_in_grid(p.pos.x + x, p.pos.y + y)
+			ok = p3 == null
+			ax -= 1
+			ay -= 1
+			checking = (ax > 1 or ay > 1) and ok
+	return { "ok": ok, "piece": p2 }
