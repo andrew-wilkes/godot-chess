@@ -88,6 +88,15 @@ func get_piece_in_grid(x: int, y: int):
 	return p
 
 
+func move_piece(p: Piece):
+	grid[p.pos.x + 8 * p.pos.y] = null
+	grid[p.new_pos.x + 8 * p.new_pos.y] = p
+	p.pos = p.new_pos
+	# Re-parent piece on board
+	p.obj.get_parent().remove_child(p.obj)
+	$Grid.get_child(p.pos.x + 8 * p.pos.y).add_child(p.obj)
+
+
 func test_highlight_square():
 	for n in num_squares:
 		highlight_square(n)
@@ -123,13 +132,14 @@ func square_is_white(n: int):
 
 # Check if it is valid to move to this position
 # Return true/false and null/piece that occupies the position
-func get_position_info(p: Piece, offset_divider = square_width):
-	var offset = p.obj.position / offset_divider
+func get_position_info(p: Piece, offset_divisor = square_width):
+	var offset = p.obj.position / offset_divisor
 	var x = int(round(offset.x))
 	var y = int(round(offset.y))
+	p.new_pos = Vector2(p.pos.x + x, p.pos.y + y)
 	var ax = int(abs(x))
 	var ay = int(abs(y))
-	var p2 = get_piece_in_grid(p.pos.x + x, p.pos.y + y)
+	var p2 = get_piece_in_grid(p.new_pos.x, p.new_pos.y)
 	# Check for valid move
 	# Don't care about bounds of the board since the piece will be released if outside
 	var ok = false

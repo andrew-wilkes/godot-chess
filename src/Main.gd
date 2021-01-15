@@ -1,6 +1,7 @@
 extends Control
 
 var selected_piece
+var pawn_first_move2 # needed for en passant detection
 
 
 func _ready():
@@ -25,8 +26,12 @@ func piece_clicked(piece):
 
 func piece_unclicked(_piece):
 	if selected_piece != null:
-		print($Board.get_position_info(selected_piece).ok)
+		var info = $Board.get_position_info(selected_piece)
+		print(info.ok)
 		# Try to drop the piece
+		if info.ok:
+			if info.piece == null:
+				$Board.move_piece(selected_piece)
 		return_piece()
 
 
