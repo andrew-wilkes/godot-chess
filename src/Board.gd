@@ -30,6 +30,7 @@ func setup_pieces():
 		bp.side = "B"
 		bp.key = seq[i + 8]
 		bp.obj = Pieces.get_piece(bp.key, "B")
+		bp.pos = Vector2(i % 8, i / 8)
 		grid[i] = bp
 		$Grid.get_child(i).add_child(bp.obj)
 		# Place white pieces
@@ -37,6 +38,7 @@ func setup_pieces():
 		wp.side = "W"
 		wp.key = seq[i]
 		wp.obj = Pieces.get_piece(wp.key)
+		bp.pos = Vector2(i % 8, 6 + i / 8)
 		grid[i + 48] = wp
 		$Grid.get_child(i + 48).add_child(wp.obj)
 
@@ -73,9 +75,9 @@ func square_event(event: InputEvent, x: int, y: int):
 		print(p)
 		if event.pressed:
 			if p != null:
-				emit_signal("clicked", x, y, p)
+				emit_signal("clicked", p)
 		else:
-			emit_signal("unclicked", x, y, p)
+			emit_signal("unclicked", p)
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
 		emit_signal("moved", event.position)

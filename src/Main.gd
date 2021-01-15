@@ -2,6 +2,7 @@ extends Control
 
 var selected_piece
 
+
 func _ready():
 	$Board.connect("clicked", self, "piece_clicked")
 	$Board.connect("unclicked", self, "piece_unclicked")
@@ -15,14 +16,14 @@ func mouse_entered():
 	return_piece()
 
 
-func piece_clicked(_x, _y, piece):
+func piece_clicked(piece):
 	selected_piece = piece
 	# Need to ensure that piece displays above all others when moved
 	piece.obj.z_index = 1
 	print("Board clicked ", selected_piece)
 
 
-func piece_unclicked(_x, _y, _piece):
+func piece_unclicked(_piece):
 	if selected_piece != null:
 		# Try to drop the piece
 		return_piece()
