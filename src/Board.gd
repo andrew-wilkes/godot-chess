@@ -133,6 +133,7 @@ func square_is_white(n: int):
 # Check if it is valid to move to this position
 # Return true/false and null/piece that occupies the position
 func get_position_info(p: Piece, offset_divisor = square_width):
+	var castling = false
 	var offset = p.obj.position / offset_divisor
 	var x = int(round(offset.x))
 	var y = int(round(offset.y))
@@ -156,9 +157,12 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 		"R": # Check for valid horizontal or vertical move of rook
 			ok = ax > 0 and ay < 1 or ax < 1 and ay > 0
 		"B": # Check for valid diagonal move of bishop
-			ok = offset.x == offset.y
+			ok = ax == ay
 		"K": # Check for valid move of king
 			ok = ax < 2 and ay < 2
+			if ax == 2 and not p.moved:
+				castling = true # Potential castling situation
+				ok = true
 		"N": # Check for valid move of knight
 			check_path = false # knight may jump over pieces
 			ok = (ax == 2 and ay == 1) or (ax == 1 and ay == 2)
@@ -178,4 +182,4 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 			ax -= 1
 			ay -= 1
 			checking = (ax > 1 or ay > 1) and ok
-	return { "ok": ok, "piece": p2 }
+	return { "ok": ok, "piece": p2, "castling": castling }

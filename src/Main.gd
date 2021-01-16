@@ -29,6 +29,7 @@ func piece_unclicked(_piece):
 		var info = $Board.get_position_info(selected_piece)
 		print(info.ok)
 		# Try to drop the piece
+		# Also check for castling
 		if info.ok:
 			if info.piece == null:
 				$Board.move_piece(selected_piece)
