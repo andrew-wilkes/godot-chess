@@ -155,7 +155,7 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 			if ok:
 				ok = ax == 0 or ay == 1 and ax == 1
 		"R": # Check for valid horizontal or vertical move of rook
-			ok = ax > 0 and ay < 1 or ax < 1 and ay > 0
+			ok = ax > 0 and ay == 0 or ax == 0 and ay > 0
 		"B": # Check for valid diagonal move of bishop
 			ok = ax == ay
 		"K": # Check for valid move of king
