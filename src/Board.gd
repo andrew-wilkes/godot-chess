@@ -148,9 +148,9 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 	match p.key:
 		"P": # Check for valid move of pawn
 			if p.side == "B":
-				ok = y > 0 and (p.moved and y == 1 or y < 3)
+				ok = y > 0 and (y == 1 or !p.moved and y == 2)
 			else:
-				ok = y < 0 and (p.moved and y == -1 or -3 < y)
+				ok = y < 0 and (y == -1 or !p.moved and -2 == y)
 			# Check for valid horizontal move
 			if ok:
 				ok = ax == 0 or ay == 1 and ax == 1
