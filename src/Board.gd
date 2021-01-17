@@ -55,8 +55,10 @@ func setup_pieces(fen: String):
 					tag_piece(i + 32)
 				"6":
 					tag_piece(i + 24)
+	# Set halfmoves value
 	if parts.size() >= 5 and parts[4].is_valid_integer():
 		halfmoves = parts[4].to_int()
+	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_integer():
 		fullmoves = parts[5].to_int()
 
