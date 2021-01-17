@@ -17,6 +17,7 @@ var R_count = 0 # Rook counter
 var active_color = ""
 var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or capture
 var fullmoves = 0 # Incremented after Black's move
+var passant_pawn
 
 func _ready():
 	# grid will map the pieces in the game
@@ -149,6 +150,8 @@ func move_piece(p: Piece):
 	# Re-parent piece on board
 	p.obj.get_parent().remove_child(p.obj)
 	$Grid.get_child(p.pos.x + 8 * p.pos.y).add_child(p.obj)
+	if p != passant_pawn:
+		passant_pawn = null
 
 
 func test_highlight_square():
@@ -185,9 +188,11 @@ func square_is_white(n: int):
 
 
 # Check if it is valid to move to the new position of a piece
-# Return true/false and null/piece that occupies the position and castling flag
+# Return true/false and null/piece that occupies the position plus
+# castling and passant flags to indicate to check for these situations
 func get_position_info(p: Piece, offset_divisor = square_width):
 	var castling = false
+	var passant = false
 	var offset = p.obj.position / offset_divisor
 	var x = int(round(offset.x))
 	var y = int(round(offset.y))
@@ -202,9 +207,23 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 	match p.key:
 		"P": # Check for valid move of pawn
 			if p.side == "B":
-				ok = y > 0 and (y == 1 or p.pos.y == 1 and y == 2)
+				ok = y == 1
+				if p.pos.y == 1 and y == 2:
+					ok = true
+					passant_pawn = p
+				if y == 1 and ax == 1 and p.pos.y == 3:
+					passant = true
+					if p2 == null:
+						p2 = passant_pawn
 			else:
-				ok = y < 0 and (y == -1 or p.pos.y == 6 and -2 == y)
+				ok = y == -1
+				if p.pos.y == 6 and -2 == y:
+					ok = true
+					passant_pawn = p
+				if y == -1 and ax == 1 and p.pos.y == 4:
+					passant = true
+					if p2 == null:
+						p2 = passant_pawn
 			# Check for valid horizontal move
 			if ok:
 				ok = ax == 0 or ay == 1 and ax == 1
@@ -214,7 +233,7 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 			ok = ax == ay
 		"K": # Check for valid move of king
 			ok = ax < 2 and ay < 2
-			if ax == 2 and not p.moved:
+			if ax == 2 and p.tagged: # Moved 2 steps in x and tagged
 				castling = true # Potential castling situation
 				ok = true
 		"N": # Check for valid move of knight
@@ -238,4 +257,6 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 			ax -= 1
 			ay -= 1
 			checking = (ax > 1 or ay > 1) and ok
-	return { "ok": ok, "piece": p2, "castling": castling }
+	if !ok and p == passant_pawn:
+		passant_pawn = null
+	return { "ok": ok, "piece": p2, "castling": castling, "passant": passant }

@@ -29,7 +29,9 @@ func piece_unclicked(_piece):
 		var info = $Board.get_position_info(selected_piece)
 		print(info.ok)
 		# Try to drop the piece
-		# Also check for castling
+		# Also check for castling and passant
+		# Take piece
+		# If info.piece == passant_pawn and info.passant
 		if info.ok:
 			if info.piece == null:
 				$Board.move_piece(selected_piece)
