@@ -52,9 +52,9 @@ func setup_pieces(fen: String):
 			# Only valid rank is 3 or 6
 			match parts[3][1]:
 				"3":
-					tag_piece(i + 40)
+					tag_piece(i + 32)
 				"6":
-					tag_piece(i + 16)
+					tag_piece(i + 24)
 	if parts.size() >= 5 and parts[4].is_valid_integer():
 		halfmoves = parts[4].to_int()
 	if parts.size() >= 6 and parts[5].is_valid_integer():
@@ -62,7 +62,8 @@ func setup_pieces(fen: String):
 
 
 func tag_piece(i: int):
-	$Grid.get_child(i).get_child(0).tagged = true
+	if grid[i] != null:
+		grid[i].tagged = true
 
 
 func set_piece(key: String, i: int, castling: String):
