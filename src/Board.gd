@@ -12,35 +12,86 @@ export(Color) var mod_color # For highlighting squares
 const num_squares = 64
 
 var grid : Array # Map of what pieces are placed on the board
+var r_count = 0 # Rook counter
+var R_count = 0 # Rook counter
+var active_color = ""
+var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or capture
+var fullmoves = 0 # Incremented after Black's move
 
 func _ready():
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
-	setup_pieces() # Starting positions
+	# Input board layout
+	# https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+	setup_pieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	#test_square_is_white()
 	#test_highlight_square()
 
 
-func setup_pieces():
-	var seq = "PPPPPPPPRNBQKBNRPPPPPPPP" # Arrangement order for chess pieces
-	for i in 16:
-		# Place black pieces
-		var bp = Piece.new()
-		bp.side = "B"
-		bp.key = seq[i + 8]
-		bp.obj = Pieces.get_piece(bp.key, "B")
-		bp.pos = Vector2(i % 8, i / 8)
-		grid[i] = bp
-		$Grid.get_child(i).add_child(bp.obj)
-		# Place white pieces
-		var wp = Piece.new()
-		wp.side = "W"
-		wp.key = seq[i]
-		wp.obj = Pieces.get_piece(wp.key)
-		wp.pos = Vector2(i % 8, 6 + i / 8)
-		grid[i + 48] = wp
-		$Grid.get_child(i + 48).add_child(wp.obj)
+func setup_pieces(fen: String):
+	var parts = fen.split(" ")
+	active_color = "W" if parts.size() < 2 else parts[1].to_upper()
+	var castling = "" if parts.size() < 3 else parts[2]
+	r_count = 0
+	R_count = 0
+	var i = 0
+	for ch in parts[0]:
+		match ch:
+			"/": # Next rank
+				pass
+			"1", "2", "3", "4", "5", "6", "7", "8":
+				i += int(ch)
+			_:
+				set_piece(ch, i, castling)
+				i += 1 
+	# Tag pawn for en passent
+	if parts.size() >= 4 and parts[3].length() == 2:
+		i = parts[3][0].to_ascii()[0] - 96 # ASCII 'a' = 97
+		if i >= 0 and i < 8:
+			# Only valid rank is 3 or 6
+			match parts[3][1]:
+				"3":
+					tag_piece(i + 40)
+				"6":
+					tag_piece(i + 16)
+	if parts.size() >= 5 and parts[4].is_valid_integer():
+		halfmoves = parts[4].to_int()
+	if parts.size() >= 6 and parts[5].is_valid_integer():
+		fullmoves = parts[5].to_int()
+
+
+func tag_piece(i: int):
+	$Grid.get_child(i).get_child(0).tagged = true
+
+
+func set_piece(key: String, i: int, castling: String):
+	var p = Piece.new()
+	p.key = key.to_upper()
+	p.side = "W" if "a" > key else "B"
+# warning-ignore:integer_division
+	p.pos = Vector2(i % 8, i / 8)
+	p.obj = Pieces.get_piece(p.key, p.side)
+	grid[i] = p
+	$Grid.get_child(i).add_child(p.obj)
+	# Check castling rights
+	match key:
+		"r":
+			r_count += 1
+			if r_count == 1:
+				p.tagged = "q" in castling
+			else:
+				p.tagged = "k" in castling
+		"k":
+			p.tagged = "k" in castling or "q" in castling
+		"R":
+			R_count += 1
+			if R_count == 1:
+				p.tagged = "Q" in castling
+			else:
+				p.tagged = "K" in castling
+		"K":
+			p.tagged = "K" in castling or "Q" in castling
 
 
 func draw_tiles():
@@ -148,9 +199,9 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 	match p.key:
 		"P": # Check for valid move of pawn
 			if p.side == "B":
-				ok = y > 0 and (y == 1 or !p.moved and y == 2)
+				ok = y > 0 and (y == 1 or p.pos.y == 1 and y == 2)
 			else:
-				ok = y < 0 and (y == -1 or !p.moved and -2 == y)
+				ok = y < 0 and (y == -1 or p.pos.y == 6 and -2 == y)
 			# Check for valid horizontal move
 			if ok:
 				ok = ax == 0 or ay == 1 and ax == 1

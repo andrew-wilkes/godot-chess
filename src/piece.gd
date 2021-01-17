@@ -9,4 +9,6 @@ var key : String
 var obj : Sprite # The sprite object in the running game
 var pos = Vector2(0, 0) # position in grid
 var new_pos = Vector2(0, 0) # position to move to
-var moved = false # Used to check if piece has been moved already
+var tagged = false
+# Used to indicate if castling is enabled for Rook or King
+# or en passent is applicable to a Pawn that has started with a 2-step move

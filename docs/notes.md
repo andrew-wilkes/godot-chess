@@ -25,3 +25,20 @@ Noted: While the UCI design makes it simple for engine programmers to integrate 
 * Boo's Chess Engine
 
 https://www.rankred.com/chess-engines/
+
+
+Forsyth–Edwards Notation (FEN) is a standard notation for describing a particular board position of a chess game. The purpose of FEN is to provide all the necessary information to restart a game from a particular position. A FEN record contains six fields. The separator between fields is a space.
+
+The fields are:
+
+1. Piece placement on squares (A8 B8 .. G1 H1) Each piece is identified by a letter taken from the standard English names (white upper-case, black lower-case). Blank squares are noted using digits 1 through 8 (the number of blank squares), and "/" separate ranks.
+
+2. Active color. "w" means white moves next, "b" means black.
+
+3. Castling availability. Either - if no side can castle or a letter (K,Q,k,q) for each side and castle possibility.
+
+4. En passant target square in algebraic notation or "-".
+
+5. Halfmove clock: This is the number of halfmoves since the last pawn advance or capture.
+
+6. Fullmove number: The number of the current full move.
