@@ -17,7 +17,7 @@ var R_count = 0 # Rook counter
 var active_color = ""
 var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or capture
 var fullmoves = 0 # Incremented after Black's move
-var passant_pawn
+var passant_pawn : Piece
 
 func _ready():
 	# grid will map the pieces in the game
@@ -98,6 +98,14 @@ func set_piece(key: String, i: int, castling: String):
 			p.tagged = "K" in castling or "Q" in castling
 
 
+func take_piece(p: Piece):
+	print("Taken ", p.key)
+	p.obj.get_parent().remove_child(p.obj)
+	p.obj.queue_free()
+	grid[p.pos.x + 8 * p.pos.y] = null
+	p.queue_free()
+
+
 func draw_tiles():
 	var white_square = ColorRect.new()
 	white_square.color = white
@@ -149,9 +157,11 @@ func move_piece(p: Piece):
 	p.pos = p.new_pos
 	# Re-parent piece on board
 	p.obj.get_parent().remove_child(p.obj)
+	p.obj.position = Vector2(0, 0)
 	$Grid.get_child(p.pos.x + 8 * p.pos.y).add_child(p.obj)
 	if p != passant_pawn:
 		passant_pawn = null
+	p.tagged = false # Prevent castling after move
 
 
 func test_highlight_square():
@@ -211,31 +221,26 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 				if p.pos.y == 1 and y == 2:
 					ok = true
 					passant_pawn = p
-				if y == 1 and ax == 1 and p.pos.y == 3:
-					passant = true
-					if p2 == null:
-						p2 = passant_pawn
+				passant = y == 1 and ax == 1 and p.pos.y == 4
 			else:
 				ok = y == -1
 				if p.pos.y == 6 and -2 == y:
 					ok = true
 					passant_pawn = p
-				if y == -1 and ax == 1 and p.pos.y == 4:
-					passant = true
-					if p2 == null:
-						p2 = passant_pawn
+				passant = y == -1 and ax == 1 and p.pos.y == 3
 			# Check for valid horizontal move
 			if ok:
-				ok = ax == 0 or ay == 1 and ax == 1
+				ok = ax == 0 and p2 == null or ay == 1 and ax == 1
 		"R": # Check for valid horizontal or vertical move of rook
 			ok = ax > 0 and ay == 0 or ax == 0 and ay > 0
 		"B": # Check for valid diagonal move of bishop
 			ok = ax == ay
 		"K": # Check for valid move of king
 			ok = ax < 2 and ay < 2
-			if ax == 2 and p.tagged: # Moved 2 steps in x and tagged
-				castling = true # Potential castling situation
-				ok = true
+			if ax == 2 and ay == 0 and p2 == null and p.tagged: # Moved 2 steps in x and tagged
+				if p.side == "B" and p.pos.x == 4 and p.pos.y == 0 or p.side == "W" and p.pos.x == 4 and p.pos.y == 7:
+					castling = true # Potential castling situation
+					ok = true
 		"N": # Check for valid move of knight
 			check_path = false # knight may jump over pieces
 			ok = ax == 2 and ay == 1 or ax == 1 and ay == 2

@@ -30,13 +30,46 @@ func piece_unclicked(_piece):
 		print(info.ok)
 		# Try to drop the piece
 		# Also check for castling and passant
-		# Take piece
-		# If info.piece == passant_pawn and info.passant
+		var ok_to_move = false
 		if info.ok:
-			if info.piece == null:
-				$Board.move_piece(selected_piece)
+			if info.piece != null:
+				$Board.take_piece(info.piece)
+				ok_to_move = true
+			else:
+				if info.passant and $Board.passant_pawn.pos.x == selected_piece.new_pos.x:
+					print("passant")
+					$Board.take_piece($Board.passant_pawn)
+					ok_to_move = true
+				else:
+					ok_to_move = selected_piece.key != "P" or selected_piece.pos.x == selected_piece.new_pos.x
+				if info.castling:
+					# Get rook
+					var rook
+					var rx
+					if selected_piece.new_pos.x == 2:
+						rx = 3
+						rook = $Board.get_piece_in_grid(0, selected_piece.new_pos.y)
+						# Test positions
+					else:
+						rook = $Board.get_piece_in_grid(7, selected_piece.new_pos.y)
+						rx = 5
+					if rook != null and rook.key == "R" and rook.tagged:
+						# Move rook
+						rook.new_pos = Vector2(rx, rook.pos.y)
+						$Board.move_piece(rook)
+					else:
+						ok_to_move = false
+		if ok_to_move:
+			$Board.move_piece(selected_piece)
 		return_piece()
 
+"""
+Castling rules
+The king and the rook may not have moved from their starting squares if you want to castle.
+All spaces between the king and the rook must be empty.
+The king cannot be in check.
+The squares that the king passes over must not be under attack, nor the square where it lands on
+"""
 
 func mouse_moved(pos):
 	if selected_piece != null:
