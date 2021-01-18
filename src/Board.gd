@@ -182,123 +182,66 @@ func is_king_checked(p: Piece):
 # Check if position is under attack
 func is_checked(x, y, side):
 	var can = false
-	var p: Piece
 	
 	# pawns
-	var key = "P"
+	var key1 = "P"
+	var key2 = ""
 	if side == "B":
-		can = can_attack(x - 1, y + 1, side, key) or can_attack(x + 1, y + 1, side, key)
+		can = can_attack(x - 1, y + 1, side, key1) or can_attack(x + 1, y + 1, side, key1)
 	else:
-		can = can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
+		can = can_attack(x - 1, y - 1, side, key1) or can_attack(x + 1, y - 1, side, key1)
 	if can:
 		return can
 	
 	# king
-	key = "K"
-	can = can_attack(x - 1, y + 1, side, key) or can_attack(x + 1, y + 1, side, key) or can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
+	key1 = "K"
+	can = can_attack(x - 1, y + 1, side, key1) or can_attack(x + 1, y + 1, side, key1) or can_attack(x - 1, y - 1, side, key1) or can_attack(x + 1, y - 1, side, key1)
 	if can:
 		return can
 	
 	# rooks and queen
-	key = "R"
-	var key2 = "Q"
-	var j = x
-	p = null
-	while(p == null):
-		j -= 1
-		if j < 0:
-			break
-		p = get_piece_in_grid(j, y)
-		if p == null:
-			continue
-		can = p.side != side and (p.key == key or p.key == key2)
+	key1 = "R"
+	key2 = "Q"
+	can = scan_for_attacking_piece(x, y, 1, 0, side, key1, key2)
 	if can:
 		return can
-	j = x
-	p = null
-	while(p == null):
-		j += 1
-		if j > 7:
-			break
-		p = get_piece_in_grid(j, y)
-		if p == null:
-			continue
-		can = p.side != side and (p.key == key or p.key == key2)
+	can = scan_for_attacking_piece(x, y, -1, 0, side, key1, key2)
 	if can:
 		return can
-	var k = y
-	p = null
-	while(p == null):
-		k -= 1
-		if k < 0:
-			break
-		p = get_piece_in_grid(x, k)
-		if p == null:
-			continue
-		can = p.side != side and (p.key == key or p.key == key2)
+	can = scan_for_attacking_piece(x, y, 0, -1, side, key1, key2)
 	if can:
 		return can
-	k = y
-	p = null
-	while(p == null):
-		k += 1
-		if k > 7:
-			break
-		p = get_piece_in_grid(x, k)
-		if p == null:
-			continue
-		can = p.side != side and (p.key == key or p.key == key2)
+	can = scan_for_attacking_piece(x, y, 0, 1, side, key1, key2)
 	if can:
 		return can
 	
 	# bishops and queen
-	key = "B"
-	j = x
-	k = y
-	p = null
-	while(p == null):
-		j -= 1
-		k -= 1
-		if j < 0 or k < 0:
-			break
-		p = get_piece_in_grid(j, k)
-		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	key1 = "B"
+	can = scan_for_attacking_piece(x, y, -1, -1, side, key1, key2)
 	if can:
 		return can
-	j = x
-	k = y
-	p = null
-	while(p == null):
-		j += 1
-		k -= 1
-		if j > 7 or k < 0:
-			break
-		p = get_piece_in_grid(j, k)
-		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	can = scan_for_attacking_piece(x, y, 1, -1, side, key1, key2)
 	if can:
 		return can
-	j = x
-	k = y
-	p = null
-	while(p == null):
-		j -= 1
-		k += 1
-		if j < 0 or k > 7:
-			break
-		p = get_piece_in_grid(j, k)
-		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	can = scan_for_attacking_piece(x, y, -1, 1, side, key1, key2)
 	if can:
 		return can
-	j = x
-	k = y
-	p = null
+	can = scan_for_attacking_piece(x, y, 1, 1, side, key1, key2)
+	return can
+
+
+func scan_for_attacking_piece(ox, oy, incx, incy, side, key1, key2 = ""):
+	var can = false
+	var j = ox
+	var k = oy
+	var p = null
 	while(p == null):
-		j += 1
-		k += 1
-		if j > 6 or k > 7:
+		j += incx
+		k += incy
+		if j < 0 or j > 7 or k < 0 or k > 7:
 			break
 		p = get_piece_in_grid(j, k)
-		can = p != null and p.side != side and (p.key == key or p.key == key2)
+		can = p != null and p.side != side and (p.key == key1 or p.key == key2)
 	return can
 
 
