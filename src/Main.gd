@@ -73,6 +73,8 @@ func piece_unclicked(piece):
 				if $Board.is_king_checked(piece):
 					print("Checked")
 		return_piece(piece)
+	else:
+		breakpoint # Check for null situation
 
 """
 Castling rules
@@ -89,7 +91,7 @@ func mouse_moved(pos):
 
 func return_piece(piece: Piece):
 	if piece != null:
-		# Return the piece to it's start position
+		# Return the piece to it's base position after being moved via mouse
 		piece.obj.position = Vector2(0, 0)
 		piece.obj.z_index = 0
 		selected_piece = null
