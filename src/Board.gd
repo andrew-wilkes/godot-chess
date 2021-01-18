@@ -181,11 +181,10 @@ func is_king_checked(p: Piece):
 
 # Check if position is under attack
 func is_checked(x, y, side):
-	var can = false
-	
 	# pawns
 	var key1 = "P"
 	var key2 = ""
+	var can = false
 	if side == "B":
 		can = can_attack(x - 1, y + 1, side, key1) or can_attack(x + 1, y + 1, side, key1)
 	else:
@@ -195,39 +194,35 @@ func is_checked(x, y, side):
 	
 	# king
 	key1 = "K"
-	can = can_attack(x - 1, y + 1, side, key1) or can_attack(x + 1, y + 1, side, key1) or can_attack(x - 1, y - 1, side, key1) or can_attack(x + 1, y - 1, side, key1)
-	if can:
-		return can
+	if can_attack(x - 1, y + 1, side, key1) or can_attack(x + 1, y + 1, side, key1) or can_attack(x - 1, y - 1, side, key1) or can_attack(x + 1, y - 1, side, key1):
+		return true
 	
 	# rooks and queen
 	key1 = "R"
 	key2 = "Q"
-	can = scan_for_attacking_piece(x, y, 1, 0, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, -1, 0, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, 0, -1, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, 0, 1, side, key1, key2)
-	if can:
-		return can
+	if scan_for_attacking_piece(x, y, 1, 0, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, -1, 0, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, 0, -1, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, 0, 1, side, key1, key2):
+		return true
 	
 	# bishops and queen
 	key1 = "B"
-	can = scan_for_attacking_piece(x, y, -1, -1, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, 1, -1, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, -1, 1, side, key1, key2)
-	if can:
-		return can
-	can = scan_for_attacking_piece(x, y, 1, 1, side, key1, key2)
-	return can
+	if scan_for_attacking_piece(x, y, -1, -1, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, 1, -1, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, -1, 1, side, key1, key2):
+		return true
+	if scan_for_attacking_piece(x, y, 1, 1, side, key1, key2):
+		return true
+	
+	# Knight
+	# ????
+	return false
 
 
 func scan_for_attacking_piece(ox, oy, incx, incy, side, key1, key2 = ""):
