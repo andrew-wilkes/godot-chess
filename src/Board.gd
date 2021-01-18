@@ -169,18 +169,21 @@ func move_piece(p: Piece):
 
 func is_king_checked(p: Piece):
 	var side = p.side
-	if p.key != "K":
+	if p.key == "K":
+		return is_checked(p.new_pos.x, p.new_pos.y, side)
+	else:
 		if p.side == "B":
 			side = "W"
 		else:
 			side = "B"
-	return is_checked(kings[side].pos.x, kings[side].pos.y, side)
+		return is_checked(kings[side].pos.x, kings[side].pos.y, side)
 
 
 # Check if position is under attack
 func is_checked(x, y, side):
 	var can = false
 	var p: Piece
+	
 	# pawns
 	var key = "P"
 	if side == "B":
@@ -189,50 +192,69 @@ func is_checked(x, y, side):
 		can = can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
 	if can:
 		return can
+	
 	# king
 	key = "K"
 	can = can_attack(x - 1, y + 1, side, key) or can_attack(x + 1, y + 1, side, key) or can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
 	if can:
 		return can
+	
 	# rooks and queen
 	key = "R"
 	var key2 = "Q"
-	if x > 0:
-		for j in range(x - 1, -1, -1): # three arguments (initial, final-1, increment)
-			p = get_piece_in_grid(j, y)
-			if p == null:
-				continue
-			can = p.side != side and (p.key == key or p.key == key2)
+	var j = x
+	p = null
+	while(p == null):
+		j -= 1
+		if j < 0:
+			break
+		p = get_piece_in_grid(j, y)
+		if p == null:
+			continue
+		can = p.side != side and (p.key == key or p.key == key2)
 	if can:
 		return can
-	if x < 7:
-		for j in range(x + 1, 8): # three arguments (initial, final-1, increment)
-			p = get_piece_in_grid(j, y)
-			if p == null:
-				continue
-			can = p.side != side and (p.key == key or p.key == key2)
+	j = x
+	p = null
+	while(p == null):
+		j += 1
+		if j > 7:
+			break
+		p = get_piece_in_grid(j, y)
+		if p == null:
+			continue
+		can = p.side != side and (p.key == key or p.key == key2)
 	if can:
 		return can
-	if y > 0:
-		for k in range(y - 1, -1, -1): # three arguments (initial, final-1, increment)
-			p = get_piece_in_grid(x, k)
-			if p == null:
-				continue
-			can = p.side != side and (p.key == key or p.key == key2)
+	var k = y
+	p = null
+	while(p == null):
+		k -= 1
+		if k < 0:
+			break
+		p = get_piece_in_grid(x, k)
+		if p == null:
+			continue
+		can = p.side != side and (p.key == key or p.key == key2)
 	if can:
 		return can
-	if y < 7:
-		for k in range(y + 1, 8): # three arguments (initial, final-1, increment)
-			p = get_piece_in_grid(x, k)
-			if p == null:
-				continue
-			can = p.side != side and (p.key == key or p.key == key2)
+	k = y
+	p = null
+	while(p == null):
+		k += 1
+		if k > 7:
+			break
+		p = get_piece_in_grid(x, k)
+		if p == null:
+			continue
+		can = p.side != side and (p.key == key or p.key == key2)
 	if can:
 		return can
+	
 	# bishops and queen
 	key = "B"
-	var j = x
-	var k = y
+	j = x
+	k = y
 	p = null
 	while(p == null):
 		j -= 1
@@ -249,7 +271,7 @@ func is_checked(x, y, side):
 	while(p == null):
 		j += 1
 		k -= 1
-		if j > 6 or k < 0:
+		if j > 7 or k < 0:
 			break
 		p = get_piece_in_grid(j, k)
 		can = p != null and p.side != side and (p.key == key or p.key == key2)
@@ -261,7 +283,7 @@ func is_checked(x, y, side):
 	while(p == null):
 		j -= 1
 		k += 1
-		if j < 0 or k > 6:
+		if j < 0 or k > 7:
 			break
 		p = get_piece_in_grid(j, k)
 		can = p != null and p.side != side and (p.key == key or p.key == key2)
@@ -273,7 +295,7 @@ func is_checked(x, y, side):
 	while(p == null):
 		j += 1
 		k += 1
-		if j > 6 or k > 6:
+		if j > 6 or k > 7:
 			break
 		p = get_piece_in_grid(j, k)
 		can = p != null and p.side != side and (p.key == key or p.key == key2)

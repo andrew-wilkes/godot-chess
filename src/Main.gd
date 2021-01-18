@@ -63,13 +63,15 @@ func piece_unclicked(piece):
 					else:
 						ok_to_move = false
 		if ok_to_move:
-			var checked = $Board.is_king_checked(piece)
-			if piece.key == "K" and checked:
-				ok_to_move = false
-			if checked:
-				print("Checked")
-			if ok_to_move:
+			if piece.key == "K":
+				if $Board.is_king_checked(piece):
+					print("Cannot move into check position!")
+				else:
+					$Board.move_piece(piece)
+			else:
 				$Board.move_piece(piece)
+				if $Board.is_king_checked(piece):
+					print("Checked")
 		return_piece(piece)
 
 """
