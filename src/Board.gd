@@ -18,6 +18,7 @@ var active_color = ""
 var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or capture
 var fullmoves = 0 # Incremented after Black's move
 var passant_pawn : Piece
+var kings = {}
 
 func _ready():
 	# grid will map the pieces in the game
@@ -88,6 +89,7 @@ func set_piece(key: String, i: int, castling: String):
 				p.tagged = "k" in castling
 		"k":
 			p.tagged = "k" in castling or "q" in castling
+			kings[p.side] = p
 		"R":
 			R_count += 1
 			if R_count == 1:
@@ -96,6 +98,7 @@ func set_piece(key: String, i: int, castling: String):
 				p.tagged = "K" in castling
 		"K":
 			p.tagged = "K" in castling or "Q" in castling
+			kings[p.side] = p
 
 
 func take_piece(p: Piece):
@@ -162,6 +165,126 @@ func move_piece(p: Piece):
 	if p != passant_pawn:
 		passant_pawn = null
 	p.tagged = false # Prevent castling after move
+
+
+func is_king_checked(p: Piece):
+	var side = p.side
+	if p.key != "K":
+		if p.side == "B":
+			side = "W"
+		else:
+			side = "B"
+	return is_checked(kings[side].pos.x, kings[side].pos.y, side)
+
+
+# Check if position is under attack
+func is_checked(x, y, side):
+	var can = false
+	var p: Piece
+	# pawns
+	var key = "P"
+	if side == "B":
+		can = can_attack(x - 1, y + 1, side, key) or can_attack(x + 1, y + 1, side, key)
+	else:
+		can = can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
+	if can:
+		return can
+	# king
+	key = "K"
+	can = can_attack(x - 1, y + 1, side, key) or can_attack(x + 1, y + 1, side, key) or can_attack(x - 1, y - 1, side, key) or can_attack(x + 1, y - 1, side, key)
+	if can:
+		return can
+	# rooks and queen
+	key = "R"
+	var key2 = "Q"
+	if x > 0:
+		for j in range(x - 1, -1, -1): # three arguments (initial, final-1, increment)
+			p = get_piece_in_grid(j, y)
+			if p == null:
+				continue
+			can = p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	if x < 7:
+		for j in range(x + 1, 8): # three arguments (initial, final-1, increment)
+			p = get_piece_in_grid(j, y)
+			if p == null:
+				continue
+			can = p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	if y > 0:
+		for k in range(y - 1, -1, -1): # three arguments (initial, final-1, increment)
+			p = get_piece_in_grid(x, k)
+			if p == null:
+				continue
+			can = p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	if y < 7:
+		for k in range(y + 1, 8): # three arguments (initial, final-1, increment)
+			p = get_piece_in_grid(x, k)
+			if p == null:
+				continue
+			can = p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	# bishops and queen
+	key = "B"
+	var j = x
+	var k = y
+	p = null
+	while(p == null):
+		j -= 1
+		k -= 1
+		if j < 0 or k < 0:
+			break
+		p = get_piece_in_grid(j, k)
+		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	j = x
+	k = y
+	p = null
+	while(p == null):
+		j += 1
+		k -= 1
+		if j > 6 or k < 0:
+			break
+		p = get_piece_in_grid(j, k)
+		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	j = x
+	k = y
+	p = null
+	while(p == null):
+		j -= 1
+		k += 1
+		if j < 0 or k > 6:
+			break
+		p = get_piece_in_grid(j, k)
+		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	if can:
+		return can
+	j = x
+	k = y
+	p = null
+	while(p == null):
+		j += 1
+		k += 1
+		if j > 6 or k > 6:
+			break
+		p = get_piece_in_grid(j, k)
+		can = p != null and p.side != side and (p.key == key or p.key == key2)
+	return can
+
+
+func can_attack(x, y, side, key):
+	if x < 0 or x > 7 or y < 0 or y > 7:
+		return false
+	var p = get_piece_in_grid(x, y)
+	return p != null and p.side != side and p.key == key
 
 
 func test_highlight_square():
