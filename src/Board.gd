@@ -15,7 +15,7 @@ var grid : Array # Map of what pieces are placed on the board
 var r_count = 0 # Rook counter
 var R_count = 0 # Rook counter
 var active_color = ""
-var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or capture
+var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or piece capture
 var fullmoves = 0 # Incremented after Black's move
 var passant_pawn : Piece
 var kings = {}
@@ -24,7 +24,7 @@ func _ready():
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
-	# Input board layout
+	# Set standard board layout using Forsyth Edwards encoded string
 	# https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 	setup_pieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	#test_square_is_white()
@@ -47,7 +47,7 @@ func setup_pieces(fen: String):
 			_:
 				set_piece(ch, i, castling)
 				i += 1 
-	# Tag pawn for en passent
+	# Tag pawn for en passant
 	if parts.size() >= 4 and parts[3].length() == 2:
 		i = parts[3][0].to_ascii()[0] - 96 # ASCII 'a' = 97
 		if i >= 0 and i < 8:
@@ -168,6 +168,7 @@ func move_piece(p: Piece):
 
 
 func is_king_checked(p: Piece):
+	# We flip the side to be checked here depending on if the piece is a king or not
 	var side = p.side
 	if p.key == "K":
 		return is_checked(p.new_pos.x, p.new_pos.y, side)
@@ -221,7 +222,9 @@ func is_checked(x, y, side):
 		return true
 	
 	# Knight
-	# ????
+	key1 = "N"
+	if can_attack(x - 1, y + 2, side, key1) or can_attack(x + 1, y + 2, side, key1) or can_attack(x - 1, y - 2, side, key1) or can_attack(x + 1, y - 2, side, key1) or can_attack(x - 2, y - 1, side, key1) or can_attack(x - 2, y + 1, side, key1) or can_attack(x + 2, y - 1, side, key1) or can_attack(x + 2, y + 1, side, key1):
+		return true
 	return false
 
 
