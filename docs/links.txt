@@ -6,4 +6,11 @@ https://gitlab.gnome.org/GNOME/gnome-chess
 https://wiki.gnome.org/Apps/Chess
 http://scidvspc.sourceforge.net/
 
+https://github.com/johncheetham/jcchess
+https://ops.tips/blog/udp-client-and-server-in-go/
+https://docs.godotengine.org/en/stable/classes/class_udpserver.html
+https://medium.com/advanced-golang/sockets-the-genesis-of-golang-connections-golang-net-pkg-1-586d8a02da13
+https://github.com/official-stockfish/Stockfish
+https://stockfishchess.org/download/
+
 
