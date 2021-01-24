@@ -1,5 +1,10 @@
 package main
 
+// This program is spawned as a sub process from the Godot UDP interface script
+// It serves as pipe line between Godot and a running CLI process
+// It pipes UDP packets to Stdio back and forth Godot - here - CLI App
+// Also it executes and kills the sub processes (harsh)
+
 import (
 	"bufio"
 	"io"

@@ -9,3 +9,6 @@ export_presets.cfg
 data_*/
 
 engines/
+engine/iopiper
+engine/ping-server
+engine/sampler
