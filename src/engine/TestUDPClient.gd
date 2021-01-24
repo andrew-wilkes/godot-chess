@@ -21,7 +21,7 @@ func _ready():
 	# Give it time to start
 	yield(get_tree(), "idle_frame")
 	# Set up the UDP client and send a packet
-	$UDPClient.connect_to_server()
+	$UDPClient.set_server()
 	$UDPClient.send_packet("Test packet")
 	$Timer.start()
 
