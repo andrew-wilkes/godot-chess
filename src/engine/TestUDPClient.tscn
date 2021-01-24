@@ -10,7 +10,8 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-server_exe = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/engine/ping-server"
+server_exe = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/engine/iopiper"
+engine = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/engine/sampler"
 
 [node name="UDPClient" parent="." instance=ExtResource( 2 )]
 
