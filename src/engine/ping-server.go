@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -15,14 +16,14 @@ func main() {
 	}
 	defer pc.Close()
 
-	buffer := make([]byte, 2048)
+	buffer := make([]byte, 128)
 	fmt.Println("Waiting for client...")
 	for {
 		_, addr, err := pc.ReadFrom(buffer)
 		if err == nil {
 			rcvMsq := string(buffer)
 			fmt.Println("Received: " + rcvMsq)
-			if _, err := pc.WriteTo([]byte("Ack: "+rcvMsq), addr); err != nil {
+			if _, err := pc.WriteTo([]byte(strings.Split(rcvMsq, "\n")[0]+"\n"), addr); err != nil {
 				fmt.Println("error on write: " + err.Error())
 			}
 		} else {

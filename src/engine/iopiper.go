@@ -11,6 +11,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func main() {
@@ -58,22 +59,16 @@ func main() {
 	// Start the process
 	proc.Start()
 
-	buffer := make([]byte, 2048)
+	buffer := make([]byte, 256)
 	for {
 		_, addr, err := pc.ReadFrom(buffer)
 		clientAddr = addr
 		if err == nil {
 			rcvMsq := string(buffer)
-			io.WriteString(stdin, rcvMsq+"\n")
-
-			//io.WriteString(stdin, "TEST\n") // Works ok
-			//io.WriteString(stdin, "TEST\na\nx\nv\n") // This simulates a (race condition) problem with the buffer above.
-			// Clear the bytes or add a delay
-			//for i := range buffer { // Doesn't cure the race condition
-			//	buffer[i] = 0
-			//}
-			//time.Sleep(100 * time.Millisecond) // No improvement
-			// https://stackoverflow.com/questions/59939773/how-to-clear-a-bytes-buffer-that-is-set-as-stdout-in-exec-command-in-golang-b-r
+			// Only write the first line of the buffer (not the whole buffer)
+			io.WriteString(stdin, strings.Split(rcvMsq, "\n")[0]+" \n") // Needs a padding chr for when the string is length 1
+			//io.WriteString(stdin, "1 \n") // Works ok
+			//io.WriteString(stdin, "1\n") // Does not Work!
 		} else {
 			os.Exit(4)
 		}
