@@ -48,10 +48,8 @@ func main() {
 		s := bufio.NewScanner(stdout)
 		for s.Scan() {
 			txt := s.Text()
-			if len(txt) > 1 {
-				if _, err := pc.WriteTo([]byte(txt), clientAddr); err != nil {
-					os.Exit(3)
-				}
+			if _, err := pc.WriteTo([]byte(txt), clientAddr); err != nil {
+				os.Exit(3)
 			}
 		}
 	}()
@@ -66,9 +64,7 @@ func main() {
 		if err == nil {
 			rcvMsq := string(buffer)
 			// Only write the first line of the buffer (not the whole buffer)
-			io.WriteString(stdin, strings.Split(rcvMsq, "\n")[0]+" \n") // Needs a padding chr for when the string is length 1
-			//io.WriteString(stdin, "1 \n") // Works ok
-			//io.WriteString(stdin, "1\n") // Does not Work!
+			io.WriteString(stdin, strings.Split(rcvMsq, "\n")[0]+"\n")
 		} else {
 			os.Exit(4)
 		}
