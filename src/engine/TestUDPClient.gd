@@ -30,12 +30,13 @@ func _on_UDPClient_got_packet(pkt):
 	$Timer.stop()
 	print("Received: %s" % pkt)
 	counter += 1
-	yield(get_tree().create_timer(1.5), "timeout")
+	yield(get_tree().create_timer(1.0), "timeout")
 	$UDPClient.send_packet("%d\n" % counter)
 
 
 func _on_Timer_timeout():
 	print("Timed out! Check that UDP server is running")
+	queue_free()
 
 
 func _on_TestUDPClient_tree_exited():
