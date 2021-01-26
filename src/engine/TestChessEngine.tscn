@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://engine/TestChessEngine.gd" type="Script" id=1]
+[ext_resource path="res://engine/UDPClient.tscn" type="PackedScene" id=2]
+
+[node name="TestChessEngine" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+server_exe = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/engine/iopiper.go"
+engine = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/engines/stockfish_20090216_x64_bmi2"
+
+[node name="UDPClient" parent="." instance=ExtResource( 2 )]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+[connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
+[connection signal="got_packet" from="UDPClient" to="." method="_on_UDPClient_got_packet"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
