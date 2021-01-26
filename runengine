@@ -1,0 +1,2 @@
+#!/bin/bash
+./engines/stockfish_20090216_x64_bmi2
