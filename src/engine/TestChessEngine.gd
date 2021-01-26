@@ -20,10 +20,9 @@ func _ready():
 	print("PID of server: %d" % server_pid)
 	# Give it time to start
 	#yield(get_tree(), "idle_frame")
-	yield(get_tree().create_timer(2.0), "timeout")
+	#yield(get_tree().create_timer(1.0), "timeout")
 	# Set up the UDP client and send a packet
 	$UDPClient.set_server()
-	$UDPClient.send_packet("uci")
 	$Timer.start()
 
 
@@ -31,8 +30,13 @@ func _on_UDPClient_got_packet(pkt):
 	$Timer.stop()
 	print(pkt)
 	counter += 1
-	yield(get_tree().create_timer(1.0), "timeout")
-	$UDPClient.send_packet("quit")
+	match counter:
+		1:
+			$UDPClient.send_packet("uci")
+		2:
+			$UDPClient.send_packet("quit")
+		_:
+			pass
 
 
 func _on_Timer_timeout():
