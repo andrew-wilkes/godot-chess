@@ -59,7 +59,7 @@ On the command line type: **make** to build the go applications into the `bin` d
 
 In the Godot Editor: export for the PC/Linux/Mac.
 
-Download a Chess Engine such as: [Stock Fish](https://stockfishchess.org/download/) to the `engines` directory.
+Download a Chess Engine such as: [Stock Fish](https://stockfishchess.org/download/) to the `engine` directory.
 
 To try out the Chess Engine there is a Bash Script `./runengine`
 Enter `uci` to see information. Then `quit` to exit.
