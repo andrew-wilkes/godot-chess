@@ -10,11 +10,17 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "Engine",
+"language": "GDScript",
+"path": "res://engine/Engine.gd"
+}, {
+"base": "Node",
 "class": "Piece",
 "language": "GDScript",
 "path": "res://piece.gd"
 } ]
 _global_script_class_icons={
+"Engine": "",
 "Piece": ""
 }
 
