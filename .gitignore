@@ -8,5 +8,5 @@ export_presets.cfg
 .mono/
 data_*/
 
-engines/
+engine/
 bin/
