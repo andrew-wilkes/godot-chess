@@ -29,7 +29,7 @@ There are various Chess Engines available that use a standard interface protocol
 
 See notes on CLI here:  [Engine Interface](docs/engine-interface.txt)
 
-A UDP (User Datagram Protocol) server program is used to communicate with CLI programs (chess engines). This is written in Golang (so as to be able to capture stdout data from continuously running process) whereas the GUI is developed in Godot Engine using GDcript.
+A UDP (User Datagram Protocol) server program is used to communicate with CLI programs (chess engines). This is written in Golang (so as to be able to capture stdout data from a non-blocking process) whereas the GUI is developed in Godot Engine using GDScript.
 
 The Chess Engines (CEs) have a command line interface (CLI) so we may pipe data in through stdin and out from stdout. The CE will be executed as a sub process from our UDP server which communicates with the CE. When the server shuts down, it will kill the sub-process.
 
@@ -49,8 +49,8 @@ Requirements are:
 * Go
 
 Directories to be created (not under source control):
-* engines - to store chess engine programs
-* bin - to store the compiled executables
+* engine - to store the chess engine program to be used
+* bin - to store the compiled executables (the game only uses iopiper)
 
 The golang source code is in: `src/engine/`
 The godot source code is in: `src`
@@ -74,6 +74,8 @@ Enter `uci` to see information. Then `quit` to exit.
 `src/engine/TestUDPClient.tscn` is a Godot scene used to test the UDPClient scene in conjunction with `iopiper` (UDP server) and `sampler` (Chess Engine substitute). It has export vars for the paths to these programs. It starts the server and passes it the path to the engine. The server then starts the engine. Then it sends a text string and times out if no return datagram is received. Otherwise, it continually sends a count value until the scene is closed.
 
 The test scene should also, terminate the sub-process of the UDP Server which in turn should terminate it's sub-process of the engine.
+
+Now there is a `src/engine/TestChessEngine.tscn` to test the actual engine and extends an `Engine` class that finds the files rather than using the export vars to get the file paths.
 
 A utility such as **Htop** is useful to monitor running processes. They may be displayed in a Tree, killed, and searched for.
 
