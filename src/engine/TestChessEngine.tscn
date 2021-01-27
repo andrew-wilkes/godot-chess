@@ -10,13 +10,13 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-server_exe = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/engine/iopiper.go"
+server_exe = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/bin/iopiper"
 engine = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/engines/stockfish_20090216_x64_bmi2"
 
 [node name="UDPClient" parent="." instance=ExtResource( 2 )]
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 2.0
 one_shot = true
 [connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="got_packet" from="UDPClient" to="." method="_on_UDPClient_got_packet"]

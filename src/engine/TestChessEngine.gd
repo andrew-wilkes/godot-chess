@@ -3,7 +3,7 @@ extends Control
 export var server_exe = ""
 export var engine = ""
 
-var server_pid
+var server_pid = 0
 var counter = 0
 
 func _ready():
@@ -19,24 +19,18 @@ func _ready():
 	server_pid = OS.execute(server_exe, [engine], false)
 	print("PID of server: %d" % server_pid)
 	# Give it time to start
-	#yield(get_tree(), "idle_frame")
-	#yield(get_tree().create_timer(1.0), "timeout")
+	yield(get_tree(), "idle_frame")
 	# Set up the UDP client and send a packet
 	$UDPClient.set_server()
+	$UDPClient.send_packet("uci\n")
 	$Timer.start()
 
 
 func _on_UDPClient_got_packet(pkt):
 	$Timer.stop()
 	print(pkt)
-	counter += 1
-	match counter:
-		1:
-			$UDPClient.send_packet("uci")
-		2:
-			$UDPClient.send_packet("quit")
-		_:
-			pass
+	if pkt == "uciok":
+		$UDPClient.send_packet("quit\n")
 
 
 func _on_Timer_timeout():

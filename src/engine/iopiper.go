@@ -1,9 +1,10 @@
 package main
 
 // This program is spawned as a sub process from the Godot UDP interface script
-// It serves as pipe line between Godot and a running CLI process
-// It pipes UDP packets to Stdio back and forth Godot - here - CLI App
-// Also it executes and kills the sub processes (harsh)
+// It serves as pipe between Godot and a running CLI process
+// The CLI process is spawned from the path that is passed as a command line arg
+// But we should spawn it after receiving the first UDP packet so that we know the address
+// of the client to send any initial stdout text to.
 
 import (
 	"bufio"
@@ -54,14 +55,15 @@ func main() {
 		}
 	}()
 
-	// Start the process
-	proc.Start()
-
 	buffer := make([]byte, 256)
 	for {
 		_, addr, err := pc.ReadFrom(buffer)
-		clientAddr = addr
 		if err == nil {
+			if clientAddr == nil {
+				// Start the subprocess
+				proc.Start()
+			}
+			clientAddr = addr
 			rcvMsq := string(buffer)
 			// Only write the first line of the buffer (not the whole buffer)
 			io.WriteString(stdin, strings.Split(rcvMsq, "\n")[0]+"\n")
