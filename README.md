@@ -25,11 +25,11 @@ When loading or inputing move data, the board may be initialized to a state othe
 
 ## Chess Engine Interface
 
-There are various Chess Engines available that use a standard interface protocol called CLI. We will use them as stand-alone applications (integration would entail using the source code and adhering to it's potentially restrictive licence).
+There are various Chess Engines available that use a standard interface protocol called UCI (Universal Chess Interface). We will use them as stand-alone applications (integration would entail using the source code and adhering to it's potentially restrictive licence).
 
-See notes on CLI here:  [Engine Interface](docs/engine-interface.txt)
+See notes on UCI here:  [Engine Interface](docs/engine-interface.txt)
 
-A UDP (User Datagram Protocol) server program is used to communicate with CLI programs (chess engines). This is written in Golang (so as to be able to capture stdout data from a non-blocking process) whereas the GUI is developed in Godot Engine using GDScript.
+A UDP (User Datagram Protocol) server program is used to communicate with UCI programs (chess engines). This is written in Golang (so as to be able to capture stdout data from a non-blocking process) whereas the GUI is developed in Godot Engine using GDScript.
 
 The Chess Engines (CEs) have a command line interface (CLI) so we may pipe data in through stdin and out from stdout. The CE will be executed as a sub process from our UDP server which communicates with the CE. When the server shuts down, it will kill the sub-process.
 
