@@ -10,8 +10,13 @@ var engine # Path of installed Chess Engine in the engine directory
 
 func _ready():
 	# Get the base path of the application files
+	var cmd = "pwd"
+	var ext = ""
+	if OS.get_name() == "Windows":
+		cmd = "cd"
+		ext = ".exe"
 	var output = []
-	var _exit_code = OS.execute("pwd", [], true, output)
+	var _exit_code = OS.execute(cmd, [], true, output)
 	var path = output[0].strip_edges() # Seem to get a null termination char
 	# Allow for running in dev mode, so back peddle from src folder
 	var src_pos = path.find("src")
@@ -20,7 +25,7 @@ func _ready():
 	
 	# Form paths to the executables
 	# Use forward slash for all platforms
-	iopiper = path + "/bin/iopiper"
+	iopiper = path + "/bin/iopiper" + ext
 	engine = path + "/engine/"
 
 	# Get the first file found in the engine folder for the Chess Engine to use

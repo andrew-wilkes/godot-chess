@@ -8,11 +8,11 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"net"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func main() {
@@ -55,18 +55,18 @@ func main() {
 		}
 	}()
 
-	buffer := make([]byte, 256)
+	buffer := make([]byte, 1024)
 	for {
-		_, addr, err := pc.ReadFrom(buffer)
+		n, addr, err := pc.ReadFrom(buffer)
 		if err == nil {
 			if clientAddr == nil {
 				// Start the subprocess
 				proc.Start()
 			}
 			clientAddr = addr
-			rcvMsq := string(buffer)
 			// Only write the first line of the buffer (not the whole buffer)
-			io.WriteString(stdin, strings.Split(rcvMsq, "\n")[0]+"\n")
+			io.WriteString(stdin, fmt.Sprintf("%s\n", buffer[:n]))
+
 		} else {
 			os.Exit(4)
 		}

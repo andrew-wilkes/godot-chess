@@ -18,7 +18,7 @@ func _ready():
 	yield(get_tree(), "idle_frame")
 	# Set up the UDP client and send a packet
 	$UDPClient.set_server()
-	$UDPClient.send_packet("uci\n")
+	$UDPClient.send_packet("uci")
 	$Timer.start()
 
 
@@ -26,7 +26,7 @@ func _on_UDPClient_got_packet(pkt):
 	$Timer.stop()
 	print(pkt)
 	if pkt == "uciok":
-		$UDPClient.send_packet("quit\n")
+		$UDPClient.send_packet("quit")
 
 
 func _on_Timer_timeout():

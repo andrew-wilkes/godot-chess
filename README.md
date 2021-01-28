@@ -69,7 +69,7 @@ Enter `uci` to see information. Then `quit` to exit.
 
 `src/engine/ping-server.go` is a program to act as a UDP server that pings back what it receives from a UDP client
 
-`src/engine/iopiper.go` is a program to act as a UDP server that pipes data between a UDP client and CLI program. This is UDP Server component of the solution.
+`src/engine/iopiper.go` is a program to act as a UDP server that pipes data between a UDP client and CLI program. This is the UDP Server component of the solution.
 
 `src/engine/TestUDPClient.tscn` is a Godot scene used to test the UDPClient scene in conjunction with `iopiper` (UDP server) and `sampler` (Chess Engine substitute). It has export vars for the paths to these programs. It starts the server and passes it the path to the engine. The server then starts the engine. Then it sends a text string and times out if no return datagram is received. Otherwise, it continually sends a count value until the scene is closed.
 
