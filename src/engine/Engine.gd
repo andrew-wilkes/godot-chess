@@ -18,7 +18,7 @@ func _ready():
 		ext = ".exe"
 	var output = []
 	var _exit_code = OS.execute(cmd, [], true, output)
-	var path = output[0].strip_edges() # Seem to get a null termination char
+	var path = output[0].strip_edges() # Remove cstring null termination char
 	# Allow for running in dev mode, so back peddle from src folder
 	var src_pos = path.find("src")
 	if src_pos > -1:
@@ -46,8 +46,9 @@ func start_udp_server():
 		err = "Missing engine at: " + engine
 	else:
 		server_pid = OS.execute(iopiper, [engine], false)
-		if server_pid < 400:
+		if server_pid < 400: # PIDs are likely above this value and error codes below it
 			err = "Unable to start UDP server with error code: " + server_pid
+			server_pid = 0
 		else:
 			$UDPClient.set_server()
 	return { "started": err == "", "error": err }
@@ -55,9 +56,7 @@ func start_udp_server():
 
 func stop_udp_server():
 	# Return 0 or an error code
-	if server_pid < 400:
-		return 0
-	return OS.kill(server_pid)
+	return OK if server_pid == 0 else OS.kill(server_pid)
 
 
 func send_packet(pkt: String):

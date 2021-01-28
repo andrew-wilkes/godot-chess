@@ -10,7 +10,7 @@ Pieces may be taken and removed from the board.
 
 Checks are made for:
 * castling where a King is moved 2 steps horizontally
-* check of a Queen
+* check of a King
 * check mate
 * pawn promotion
 * valid moves
@@ -75,7 +75,7 @@ Enter `uci` to see information. Then `quit` to exit.
 
 The test scene should also, terminate the sub-process of the UDP Server which in turn should terminate it's sub-process of the engine.
 
-Now there is a `src/engine/TestChessEngine.tscn` to test the actual engine and extends an `Engine` class that finds the files rather than using the export vars to get the file paths.
+Now there is a `src/engine/TestChessEngine.tscn` to test the actual engine that instantiates an `Engine` scene that finds the files rather than using the export vars to get the file paths.
 
 A utility such as **Htop** is useful to monitor running processes. They may be displayed in a Tree, killed, and searched for.
 
