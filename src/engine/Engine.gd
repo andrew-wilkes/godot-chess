@@ -56,7 +56,11 @@ func start_udp_server():
 
 func stop_udp_server():
 	# Return 0 or an error code
-	return OK if server_pid == 0 else OS.kill(server_pid)
+	var ret_code = 0
+	if server_pid > 0:
+		ret_code = OS.kill(server_pid)
+		server_pid = 0
+	return ret_code 
 
 
 func send_packet(pkt: String):
