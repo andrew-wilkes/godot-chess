@@ -1,39 +1,14 @@
-extends Engine
-
-var server_pid = 0
+extends Control
 
 func _ready():
-	# Check if server file exists
-	var file = File.new()
-	if !file.file_exists(iopiper):
-		breakpoint
-	# Check if engine file exists
-	if !file.file_exists(engine):
-		breakpoint
-	file.close()
-	# Start UDP server
-	server_pid = OS.execute(iopiper, [engine], false)
-	print("PID of server: %d" % server_pid)
-	# Give it time to start
-	yield(get_tree(), "idle_frame")
-	# Set up the UDP client and send a packet
-	$UDPClient.set_server()
-	$UDPClient.send_packet("uci")
-	$Timer.start()
+	var status = $Engine.start_udp_server()
+	if status.started:
+		print("PID of server: %d" % $Engine.server_pid)
+		yield(get_tree(), "idle_frame")
+		$Engine.send_packet("uci")
+	else:
+		print(status.error)
 
 
-func _on_UDPClient_got_packet(pkt):
-	$Timer.stop()
-	print(pkt)
-	if pkt == "uciok":
-		$UDPClient.send_packet("quit")
-
-
-func _on_Timer_timeout():
-	print("Timed out! Check that UDP server is running")
-	queue_free()
-
-
-func _on_tree_exited():
-	if OS.kill(server_pid):
-		print("Failed to kill server process")
+func _on_Engine_done(ok, packet):
+	print(ok, "\t", packet)

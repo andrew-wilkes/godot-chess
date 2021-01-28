@@ -1,12 +1,13 @@
 extends Node
 
-class_name Engine
-
 # Provide functionality for interactions with a Chess Engine
 # Also, find the installed exe files rather than needing UI entry by user
 
 var iopiper # Path of UDP to CLI app bridge in the bin directory
 var engine # Path of installed Chess Engine in the engine directory
+var server_pid = 0
+
+signal done
 
 func _ready():
 	# Get the base path of the application files
@@ -33,5 +34,46 @@ func _ready():
 	if dir.open(engine) == OK:
 		dir.list_dir_begin(true)
 		engine += dir.get_next()
-	
-	# We will ignore the possibility of bad file paths here
+
+
+func start_udp_server():
+	var err = ""
+	# Check for existence of the exe files
+	var file = File.new()
+	if !file.file_exists(iopiper):
+		err = "Missing iopiper at: " + iopiper
+	elif !file.file_exists(engine):
+		err = "Missing engine at: " + engine
+	else:
+		server_pid = OS.execute(iopiper, [engine], false)
+		if server_pid < 400:
+			err = "Unable to start UDP server with error code: " + server_pid
+		else:
+			$UDPClient.set_server()
+	return { "started": err == "", "error": err }
+
+
+func stop_udp_server():
+	# Return 0 or an error code
+	if server_pid < 400:
+		return 0
+	return OS.kill(server_pid)
+
+
+func send_packet(pkt: String):
+	$UDPClient.send_packet(pkt)
+	$Timer.start()
+
+
+func _on_Timer_timeout():
+	stop_udp_server()
+	emit_signal("done", false, "")
+
+
+func _on_UDPClient_got_packet(pkt):
+	$Timer.stop()
+	emit_signal("done", true, pkt)
+
+
+func _on_Engine_tree_exited():
+	stop_udp_server()
