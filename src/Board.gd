@@ -10,6 +10,7 @@ export(Color) var grey # Square color
 export(Color) var mod_color # For highlighting squares
 
 const num_squares = 64
+enum { SIDE, UNDER }
 
 var grid : Array # Map of what pieces are placed on the board
 var r_count = 0 # Rook counter
@@ -24,6 +25,7 @@ func _ready():
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
+	#hide_labels()
 	# Set standard board layout using Forsyth Edwards encoded string
 	# https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 	setup_pieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
@@ -130,7 +132,27 @@ func draw_tiles():
 
 func add_square(s: ColorRect, x: int, y: int):
 	s.connect("gui_input", self, "square_event", [x, y])
+	if x == 0:
+		add_label(s, SIDE, String(8 - y))
+	if y == 7:
+		add_label(s, UNDER, char(97 + x))
 	$Grid.add_child(s)
+
+
+func add_label(node, pos, chr):
+	var l = Label.new()
+	l.add_to_group("labels")
+	l.text = chr
+	if pos == SIDE:
+		l.rect_position = Vector2(-square_width / 4.0, square_width / 2.3)
+	else:
+		l.rect_position = Vector2(square_width / 2.3, square_width * 1.1)
+	node.add_child(l)
+
+
+func hide_labels(show = false):
+	for label in get_tree().get_nodes_in_group("labels"):
+		label.visible = show
 
 
 func square_event(event: InputEvent, x: int, y: int):

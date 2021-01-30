@@ -2,13 +2,14 @@ extends Control
 
 var selected_piece
 var pawn_first_move2 # needed for en passant detection
-
+var board
 
 func _ready():
-	$Board.connect("clicked", self, "piece_clicked")
-	$Board.connect("unclicked", self, "piece_unclicked")
-	$Board.connect("moved", self, "mouse_moved")
-	$Board/Grid.connect("mouse_exited", self, "mouse_entered")
+	board = find_node("Board")
+	board.connect("clicked", self, "piece_clicked")
+	board.connect("unclicked", self, "piece_unclicked")
+	board.connect("moved", self, "mouse_moved")
+	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 
 
 # This is called after release of the mouse button and when the mouse
@@ -26,19 +27,19 @@ func piece_clicked(piece):
 
 func piece_unclicked(piece):
 	if piece != null:
-		var info = $Board.get_position_info(piece)
+		var info = board.get_position_info(piece)
 		print(info.ok)
 		# Try to drop the piece
 		# Also check for castling and passant
 		var ok_to_move = false
 		if info.ok:
 			if info.piece != null:
-				$Board.take_piece(info.piece)
+				board.take_piece(info.piece)
 				ok_to_move = true
 			else:
-				if info.passant and $Board.passant_pawn.pos.x == piece.new_pos.x:
+				if info.passant and board.passant_pawn.pos.x == piece.new_pos.x:
 					print("passant")
-					$Board.take_piece($Board.passant_pawn)
+					board.take_piece(board.passant_pawn)
 					ok_to_move = true
 				else:
 					ok_to_move = piece.key != "P" or piece.pos.x == piece.new_pos.x
@@ -48,29 +49,29 @@ func piece_unclicked(piece):
 					var rx
 					if piece.new_pos.x == 2:
 						rx = 3
-						rook = $Board.get_piece_in_grid(0, piece.new_pos.y)
+						rook = board.get_piece_in_grid(0, piece.new_pos.y)
 					else:
-						rook = $Board.get_piece_in_grid(7, piece.new_pos.y)
+						rook = board.get_piece_in_grid(7, piece.new_pos.y)
 						rx = 5
 					if rook != null and rook.key == "R" and rook.tagged and rook.side == piece.side:
-						ok_to_move = !$Board.is_checked(rx, rook.pos.y, rook.side)
+						ok_to_move = !board.is_checked(rx, rook.pos.y, rook.side)
 						if ok_to_move:
 							# Move rook
 							rook.new_pos = Vector2(rx, rook.pos.y)
-							$Board.move_piece(rook)
+							board.move_piece(rook)
 						else:
 							print("Checked")
 					else:
 						ok_to_move = false
 		if ok_to_move:
 			if piece.key == "K":
-				if $Board.is_king_checked(piece):
+				if board.is_king_checked(piece):
 					print("Cannot move into check position!")
 				else:
-					$Board.move_piece(piece)
+					board.move_piece(piece)
 			else:
-				$Board.move_piece(piece)
-				if $Board.is_king_checked(piece):
+				board.move_piece(piece)
+				if board.is_king_checked(piece):
 					print("Checked")
 		return_piece(piece)
 	else:
@@ -95,3 +96,7 @@ func return_piece(piece: Piece):
 		piece.obj.position = Vector2(0, 0)
 		piece.obj.z_index = 0
 		selected_piece = null
+
+
+func _on_Start_button_down():
+	pass # Replace with function body.
