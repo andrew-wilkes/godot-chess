@@ -31,6 +31,28 @@ func _ready():
 	setup_pieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	#test_square_is_white()
 	#test_highlight_square()
+	#print(position_to_move(Vector2(0, 0)))
+	#print(move_to_position("h1"))
+
+
+# convert grid position to move code e.g. 0,0 -> a8
+func position_to_move(pos: Vector2) -> String:
+	assert(pos.x >= 0)
+	assert(pos.y >= 0)
+	assert(pos.x < 8)
+	assert(pos.y < 8)
+	return "%s%d" % [char(97 + int(pos.x)), 8 - int(pos.y)]
+
+
+# convert move code to grid position e.g. h1 -> 7,7
+func move_to_position(move: String) -> Vector2:
+	assert(move.length() == 2)
+	var pos = Vector2(ord(move[0]) - 97, 8 - int(move[1]))
+	assert(pos.x >= 0)
+	assert(pos.y >= 0)
+	assert(pos.x < 8)
+	assert(pos.y < 8)
+	return pos
 
 
 func setup_pieces(fen: String):
