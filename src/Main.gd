@@ -3,6 +3,13 @@ extends Control
 var selected_piece
 var pawn_first_move2 # needed for en passant detection
 var board
+var engine
+var pid = 0
+var fen = ""
+
+enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN } # states
+var state = IDLE
+enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE } # events
 
 func _ready():
 	board = find_node("Board")
@@ -10,6 +17,96 @@ func _ready():
 	board.connect("unclicked", self, "piece_unclicked")
 	board.connect("moved", self, "mouse_moved")
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
+	engine = $Engine
+
+func handle_state(event, msg = ""):
+	match state:
+		IDLE:
+			match event:
+				CONNECT:
+					var status = engine.start_udp_server()
+					if status.started:
+						# Need some delay before connecting is possible
+						yield(get_tree().create_timer(0.5), "timeout")
+						engine.send_packet("uci")
+						state = CONNECTING
+					else:
+						alert(status.error)
+				NEW_GAME:
+					if engine.server_pid > 0:
+						engine.send_packet("ucinewgame")
+						engine.send_packet("isready")
+						alert("Please make your move")
+						state = STARTING
+					else:
+						handle_state(CONNECT)
+		CONNECTING:
+			match event:
+				DONE:
+					if msg == "uciok":
+						state = IDLE
+						handle_state(NEW_GAME)
+				ERROR:
+					alert("Unable to connect to Chess Engine!")
+					state = IDLE
+		STARTING:
+			match event:
+				DONE:
+					if msg == "readyok":
+						state = PLAYER_TURN
+				ERROR:
+					alert("Lost connection to Chess Engine!")
+					state = IDLE
+		PLAYER_TURN:
+			match event:
+				DONE:
+					print(msg)
+				MOVE:
+					# msg should contain the player move
+					if fen == "":
+						engine.send_packet("position startpos moves " + msg)
+						fen = msg
+					else:
+						engine.send_packet("position fen %s moves %s" % [fen, msg])
+						# Add move to fen
+						fen += " " + msg
+					engine.send_packet("go movetime 1000")
+					state = ENGINE_TURN
+		ENGINE_TURN:
+			match event:
+				DONE:
+					var move = get_best_move(msg)
+					if move != "":
+						move_engine_piece(move)
+						state = PLAYER_TURN
+					print(msg)
+
+
+func get_best_move(s: String):
+	var move = ""
+	# Make sure that whitespace contains spaces
+	var raw_tokens = s.replace("\t", " ").split(" ")
+	var tokens = []
+	for t in raw_tokens:
+		var tt = t.strip_edges()
+		if tt != "":
+			tokens.append(tt)
+	if tokens.size() > 1:
+		if tokens[0] == "bestmove":
+			move = tokens[1]
+	return move
+
+
+func move_engine_piece(move: String):
+	var pos1 = board.move_to_position(move.substr(0, 2))
+	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
+	p.new_pos = board.move_to_position(move.substr(2, 2))
+	board.move_piece(p)
+	fen += move
+
+
+func alert(txt, duration = 1.0):
+	$Alert.open(txt, duration)
 
 
 # This is called after release of the mouse button and when the mouse
@@ -58,24 +155,33 @@ func piece_unclicked(piece):
 						if ok_to_move:
 							# Move rook
 							rook.new_pos = Vector2(rx, rook.pos.y)
-							board.move_piece(rook)
+							move_piece(rook)
 						else:
-							print("Checked")
+							alert("Checked")
 					else:
 						ok_to_move = false
 		if ok_to_move:
 			if piece.key == "K":
 				if board.is_king_checked(piece):
-					print("Cannot move into check position!")
+					alert("Cannot move into check position!")
 				else:
-					board.move_piece(piece)
+					move_piece(piece)
 			else:
-				board.move_piece(piece)
+				move_piece(piece)
 				if board.is_king_checked(piece):
-					print("Checked")
+					alert("Checked")
 		return_piece(piece)
 	else:
-		breakpoint # Check for null situation
+		alert("null situation")
+
+
+func move_piece(piece: Piece):
+	var move = board.position_to_move(piece.pos) + board.position_to_move(piece.new_pos)
+	board.move_piece(piece)
+	if state == PLAYER_TURN and piece.side == "W":
+		handle_state(MOVE, move)
+	else:
+		fen += move
 
 """
 Castling rules
@@ -99,4 +205,11 @@ func return_piece(piece: Piece):
 
 
 func _on_Start_button_down():
-	pass # Replace with function body.
+	handle_state(NEW_GAME)
+
+
+func _on_Engine_done(ok, packet):
+	if ok:
+		handle_state(DONE, packet)
+	else:
+		handle_state(ERROR)
