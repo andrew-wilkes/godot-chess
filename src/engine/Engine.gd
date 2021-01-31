@@ -64,6 +64,7 @@ func stop_udp_server():
 
 
 func send_packet(pkt: String):
+	print("Sent packet: ", pkt)
 	$UDPClient.send_packet(pkt)
 	$Timer.start()
 

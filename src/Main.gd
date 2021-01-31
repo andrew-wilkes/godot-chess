@@ -65,11 +65,9 @@ func handle_state(event, msg = ""):
 					# msg should contain the player move
 					if fen == "":
 						engine.send_packet("position startpos moves " + msg)
-						fen = msg
 					else:
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
-						# Add move to fen
-						fen += " " + msg
+					add_move_to_fen(msg)
 					engine.send_packet("go movetime 1000")
 					state = ENGINE_TURN
 		ENGINE_TURN:
@@ -102,7 +100,14 @@ func move_engine_piece(move: String):
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
 	board.move_piece(p)
-	fen += move
+	add_move_to_fen(move)
+
+
+func add_move_to_fen(move):
+	if fen == "":
+		fen = move
+	else:
+		fen += " " + move
 
 
 func alert(txt, duration = 1.0):
