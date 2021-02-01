@@ -92,9 +92,8 @@ func setup_pieces(fen: String):
 
 
 func get_fen(next_move, num_half, num_whole):
-	var gi = 0
-	var fi = 0
-	var ns = 0
+	var gi = 0 # Grid index
+	var ns = 0 # Number of blank horizontal tile places counter
 	var castling = ""
 	var fen = ""
 	for y in 8:
@@ -106,12 +105,12 @@ func get_fen(next_move, num_half, num_whole):
 				if ns > 0:
 					fi += String(ns)
 					ns = 0
-			var key = p.key
-			if p.side == "W":
-				key = key.to_upper()
-			if p.tagged and "KQkq".find(key) > -1:
-				castling += key
-			fi += key
+				var key = p.key
+				if p.side == "W":
+					key = key.to_upper()
+				if p.tagged and "KQkq".find(key) > -1:
+					castling += key
+				fi += key
 		if y < 7:
 			fi += "/"
 	var pas = "-"
