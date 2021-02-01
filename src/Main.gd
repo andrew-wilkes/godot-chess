@@ -5,7 +5,9 @@ var pawn_first_move2 # needed for en passant detection
 var board
 var engine
 var pid = 0
-var fen = ""
+var started = false
+var num_half = 0
+var num_whole = 0
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN } # states
 var state = IDLE
@@ -33,6 +35,8 @@ func handle_state(event, msg = ""):
 					else:
 						alert(status.error)
 				NEW_GAME:
+					num_half = 0
+					num_whole = 0
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
@@ -63,11 +67,12 @@ func handle_state(event, msg = ""):
 					print(msg)
 				MOVE:
 					# msg should contain the player move
-					if fen == "":
+					if !started:
+						started = true
 						engine.send_packet("position startpos moves " + msg)
 					else:
+						var fen = board.get_fen("b", num_half, num_whole)
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
-					add_move_to_fen(msg)
 					engine.send_packet("go movetime 1000")
 					state = ENGINE_TURN
 		ENGINE_TURN:
@@ -76,6 +81,7 @@ func handle_state(event, msg = ""):
 					var move = get_best_move(msg)
 					if move != "":
 						move_engine_piece(move)
+						num_whole += 1
 						state = PLAYER_TURN
 					print(msg)
 
@@ -100,14 +106,6 @@ func move_engine_piece(move: String):
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
 	board.move_piece(p)
-	add_move_to_fen(move)
-
-
-func add_move_to_fen(move):
-	if fen == "":
-		fen = move
-	else:
-		fen += " " + move
 
 
 func alert(txt, duration = 1.0):
@@ -185,8 +183,7 @@ func move_piece(piece: Piece):
 	board.move_piece(piece)
 	if state == PLAYER_TURN and piece.side == "W":
 		handle_state(MOVE, move)
-	else:
-		fen += move
+
 
 """
 Castling rules

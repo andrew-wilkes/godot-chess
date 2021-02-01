@@ -12,3 +12,5 @@ func _ready():
 
 func _on_Engine_done(ok, packet):
 	print(ok, "\t", packet)
+	if packet == "uciok":
+		print("OK")

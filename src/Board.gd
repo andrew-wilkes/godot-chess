@@ -20,6 +20,7 @@ var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or piece ca
 var fullmoves = 0 # Incremented after Black's move
 var passant_pawn : Piece
 var kings = {}
+var fen = ""
 
 func _ready():
 	# grid will map the pieces in the game
@@ -28,7 +29,8 @@ func _ready():
 	#hide_labels()
 	# Set standard board layout using Forsyth Edwards encoded string
 	# https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-	setup_pieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+	setup_pieces(fen)
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -87,6 +89,42 @@ func setup_pieces(fen: String):
 	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_integer():
 		fullmoves = parts[5].to_int()
+
+
+func get_fen(next_move, num_half, num_whole):
+	var gi = 0
+	var fi = 0
+	var ns = 0
+	var castling = ""
+	var fen = ""
+	for y in 8:
+		for x in 8:
+			var p = grid[gi]
+			if p == null:
+				ns += 1
+			else:
+				if ns > 0:
+					fi += String(ns)
+					ns = 0
+			var key = p.key
+			if p.side == "W":
+				key = key.to_upper()
+			if p.tagged and "KQkq".find(key) > -1:
+				castling += key
+			fi += key
+		if y < 7:
+			fi += "/"
+	var pas = "-"
+	var pos
+	if passant_pawn != null:
+		pos = passant_pawn.pos
+		if passant_pawn.side == "B":
+			pos.y -= 1
+		else:
+			pos.y += 1
+		pas = position_to_move(pos)
+	fen += " %s %s %s %d %d" % [next_move, castling, pas, num_half, num_whole]
+	return fen
 
 
 func tag_piece(i: int):
