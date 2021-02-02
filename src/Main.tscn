@@ -5,40 +5,73 @@
 [ext_resource path="res://Alert.tscn" type="PackedScene" id=3]
 [ext_resource path="res://engine/Engine.tscn" type="PackedScene" id=4]
 
-[node name="Main" type="Control"]
+[node name="Main" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HBox" type="HBoxContainer" parent="."]
-margin_right = 63.0
-margin_bottom = 40.0
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 780.0
+margin_bottom = 780.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBox" type="VBoxContainer" parent="HBox"]
-margin_right = 115.0
-margin_bottom = 40.0
+margin_right = 157.0
+margin_bottom = 760.0
+custom_constants/separation = 20
 
 [node name="Start" type="Button" parent="HBox/VBox"]
-margin_right = 115.0
+margin_right = 157.0
 margin_bottom = 20.0
 text = "Start New Game"
+
+[node name="Ponder" type="HBoxContainer" parent="HBox/VBox"]
+margin_top = 40.0
+margin_right = 157.0
+margin_bottom = 54.0
+custom_constants/separation = 20
+
+[node name="Label" type="Label" parent="HBox/VBox/Ponder"]
+margin_right = 105.0
+margin_bottom = 14.0
+text = "Move to ponder:"
+
+[node name="Move" type="Label" parent="HBox/VBox/Ponder"]
+margin_left = 125.0
+margin_right = 157.0
+margin_bottom = 14.0
+text = "e6e5"
 
 [node name="Board" parent="HBox/VBox" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 24.0
-margin_right = 115.0
-margin_bottom = 24.0
+margin_top = 74.0
+margin_right = 157.0
+margin_bottom = 74.0
 
 [node name="Engine" parent="." instance=ExtResource( 4 )]
 
-[node name="Alert" parent="." instance=ExtResource( 3 )]
+[node name="c" type="CanvasLayer" parent="."]
+
+[node name="Alert" parent="c" instance=ExtResource( 3 )]
+visible = false
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 320.0
+margin_bottom = 220.0
+size_flags_horizontal = 5
+size_flags_vertical = 5
 [connection signal="button_down" from="HBox/VBox/Start" to="." method="_on_Start_button_down"]
 [connection signal="done" from="Engine" to="." method="_on_Engine_done"]

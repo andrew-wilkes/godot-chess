@@ -21,6 +21,8 @@ var fullmoves = 0 # Incremented after Black's move
 var passant_pawn : Piece
 var kings = {}
 var fen = ""
+var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+var cleared = true
 
 func _ready():
 	# grid will map the pieces in the game
@@ -28,9 +30,7 @@ func _ready():
 	draw_tiles()
 	#hide_labels()
 	# Set standard board layout using Forsyth Edwards encoded string
-	# https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-	fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-	setup_pieces(fen)
+	setup_pieces()
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -57,8 +57,8 @@ func move_to_position(move: String) -> Vector2:
 	return pos
 
 
-func setup_pieces(fen: String):
-	var parts = fen.split(" ")
+func setup_pieces(_fen = default_fen):
+	var parts = _fen.split(" ")
 	active_color = "W" if parts.size() < 2 else parts[1].to_upper()
 	var castling = "" if parts.size() < 3 else parts[2]
 	r_count = 0
@@ -91,28 +91,38 @@ func setup_pieces(fen: String):
 		fullmoves = parts[5].to_int()
 
 
-func get_fen(next_move, num_half, num_whole):
+func get_fen(next_move):
 	var gi = 0 # Grid index
 	var ns = 0 # Number of blank horizontal tile places counter
 	var castling = ""
-	var fen = ""
+	var _fen = ""
 	for y in 8:
 		for x in 8:
 			var p = grid[gi]
+			gi += 1
 			if p == null:
 				ns += 1
 			else:
 				if ns > 0:
-					fi += String(ns)
+					_fen += String(ns)
 					ns = 0
 				var key = p.key
-				if p.side == "W":
-					key = key.to_upper()
-				if p.tagged and "KQkq".find(key) > -1:
-					castling += key
-				fi += key
+				if p.side == "B":
+					key = key.to_lower()
+				_fen += key
+		if ns > 0:
+			_fen += String(ns)
+			ns = 0
 		if y < 7:
-			fi += "/"
+			_fen += "/"
+	if grid[0].tagged and grid[4].tagged:
+		castling += "q"
+	if grid[7].tagged and grid[4].tagged:
+		castling += "k"
+	if grid[56].tagged and grid[60].tagged:
+		castling += "Q"
+	if grid[63].tagged and grid[60].tagged:
+		castling += "K"
 	var pas = "-"
 	var pos
 	if passant_pawn != null:
@@ -122,8 +132,8 @@ func get_fen(next_move, num_half, num_whole):
 		else:
 			pos.y += 1
 		pas = position_to_move(pos)
-	fen += " %s %s %s %d %d" % [next_move, castling, pas, num_half, num_whole]
-	return fen
+	_fen += " %s %s %s %d %d" % [next_move, castling, pas, halfmoves, fullmoves]
+	return _fen
 
 
 func tag_piece(i: int):
@@ -162,7 +172,15 @@ func set_piece(key: String, i: int, castling: String):
 			kings[p.side] = p
 
 
+func clear_board():
+	for i in 64:
+		take_piece(grid[i])
+	cleared = true
+
+
 func take_piece(p: Piece):
+	if p == null:
+		return
 	print("Taken ", p.key)
 	p.obj.get_parent().remove_child(p.obj)
 	p.obj.queue_free()
@@ -246,6 +264,13 @@ func move_piece(p: Piece):
 	if p != passant_pawn:
 		passant_pawn = null
 	p.tagged = false # Prevent castling after move
+	if p.key == "p":
+		halfmoves = 0
+	else:
+		halfmoves += 1
+	if p.side == "B":
+		fullmoves += 1
+	cleared = false
 
 
 func is_king_checked(p: Piece):

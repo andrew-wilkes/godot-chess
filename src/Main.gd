@@ -6,8 +6,7 @@ var board
 var engine
 var pid = 0
 var started = false
-var num_half = 0
-var num_whole = 0
+var moves: PoolStringArray
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN } # states
 var state = IDLE
@@ -20,6 +19,7 @@ func _ready():
 	board.connect("moved", self, "mouse_moved")
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 	engine = $Engine
+	ponder()
 
 func handle_state(event, msg = ""):
 	match state:
@@ -35,8 +35,11 @@ func handle_state(event, msg = ""):
 					else:
 						alert(status.error)
 				NEW_GAME:
-					num_half = 0
-					num_whole = 0
+					board.halfmoves = 0
+					board.fullmoves = 0
+					if !board.cleared:
+						board.clear_board()
+						board.setup_pieces()
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
@@ -66,12 +69,14 @@ func handle_state(event, msg = ""):
 				DONE:
 					print(msg)
 				MOVE:
+					ponder()
 					# msg should contain the player move
 					if !started:
 						started = true
 						engine.send_packet("position startpos moves " + msg)
 					else:
-						var fen = board.get_fen("b", num_half, num_whole)
+						var fen = board.get_fen("b")
+						print(fen)
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
 					engine.send_packet("go movetime 1000")
 					state = ENGINE_TURN
@@ -81,7 +86,6 @@ func handle_state(event, msg = ""):
 					var move = get_best_move(msg)
 					if move != "":
 						move_engine_piece(move)
-						num_whole += 1
 						state = PLAYER_TURN
 					print(msg)
 
@@ -98,7 +102,18 @@ func get_best_move(s: String):
 	if tokens.size() > 1:
 		if tokens[0] == "bestmove":
 			move = tokens[1]
+	if tokens.size() > 3:
+		if tokens[2] == "ponder":
+			ponder(tokens[3])
 	return move
+
+
+func ponder(move = ""):
+	if move == "":
+		$HBox/VBox/Ponder.modulate.a = 0
+	else:
+		$HBox/VBox/Ponder.modulate.a = 1.0
+		$HBox/VBox/Ponder/Move.text = move
 
 
 func move_engine_piece(move: String):
@@ -109,7 +124,7 @@ func move_engine_piece(move: String):
 
 
 func alert(txt, duration = 1.0):
-	$Alert.open(txt, duration)
+	$c/Alert.open(txt, duration)
 
 
 # This is called after release of the mouse button and when the mouse
@@ -126,63 +141,68 @@ func piece_clicked(piece):
 
 
 func piece_unclicked(piece):
-	if piece != null:
-		var info = board.get_position_info(piece)
-		print(info.ok)
-		# Try to drop the piece
-		# Also check for castling and passant
-		var ok_to_move = false
-		if info.ok:
-			if info.piece != null:
-				board.take_piece(info.piece)
+	drop_piece(piece)
+
+
+func drop_piece(piece: Piece):
+	var info = board.get_position_info(piece)
+	print(info.ok)
+	# Try to drop the piece
+	# Also check for castling and passant
+	var ok_to_move = false
+	if info.ok:
+		if info.piece != null:
+			ok_to_move = true
+		else:
+			if info.passant and board.passant_pawn.pos.x == piece.new_pos.x:
+				print("passant")
+				board.take_piece(board.passant_pawn)
 				ok_to_move = true
 			else:
-				if info.passant and board.passant_pawn.pos.x == piece.new_pos.x:
-					print("passant")
-					board.take_piece(board.passant_pawn)
-					ok_to_move = true
+				ok_to_move = piece.key != "P" or piece.pos.x == piece.new_pos.x
+			if info.castling:
+				# Get rook
+				var rook
+				var rx
+				if piece.new_pos.x == 2:
+					rx = 3
+					rook = board.get_piece_in_grid(0, piece.new_pos.y)
 				else:
-					ok_to_move = piece.key != "P" or piece.pos.x == piece.new_pos.x
-				if info.castling:
-					# Get rook
-					var rook
-					var rx
-					if piece.new_pos.x == 2:
-						rx = 3
-						rook = board.get_piece_in_grid(0, piece.new_pos.y)
+					rook = board.get_piece_in_grid(7, piece.new_pos.y)
+					rx = 5
+				if rook != null and rook.key == "R" and rook.tagged and rook.side == piece.side:
+					ok_to_move = !board.is_checked(rx, rook.pos.y, rook.side)
+					if ok_to_move:
+						# Move rook
+						rook.new_pos = Vector2(rx, rook.pos.y)
+						move_piece(rook, false)
 					else:
-						rook = board.get_piece_in_grid(7, piece.new_pos.y)
-						rx = 5
-					if rook != null and rook.key == "R" and rook.tagged and rook.side == piece.side:
-						ok_to_move = !board.is_checked(rx, rook.pos.y, rook.side)
-						if ok_to_move:
-							# Move rook
-							rook.new_pos = Vector2(rx, rook.pos.y)
-							move_piece(rook)
-						else:
-							alert("Checked")
-					else:
-						ok_to_move = false
-		if ok_to_move:
-			if piece.key == "K":
-				if board.is_king_checked(piece):
-					alert("Cannot move into check position!")
+						alert("Checked")
 				else:
-					move_piece(piece)
+					ok_to_move = false
+	if ok_to_move:
+		if piece.key == "K":
+			if board.is_king_checked(piece):
+				alert("Cannot move into check position!")
 			else:
+				board.take_piece(info.piece)
 				move_piece(piece)
-				if board.is_king_checked(piece):
-					alert("Checked")
-		return_piece(piece)
-	else:
-		alert("null situation")
+		else:
+			board.take_piece(info.piece)
+			move_piece(piece)
+			if board.is_king_checked(piece):
+				alert("Checked")
+	return_piece(piece)
 
 
-func move_piece(piece: Piece):
-	var move = board.position_to_move(piece.pos) + board.position_to_move(piece.new_pos)
+func move_piece(piece: Piece, not_castling = true):
+	var pos = [piece.pos, piece.new_pos]
 	board.move_piece(piece)
-	if state == PLAYER_TURN and piece.side == "W":
-		handle_state(MOVE, move)
+	if state == PLAYER_TURN:
+		moves.append(board.position_to_move(pos[0]) + board.position_to_move(pos[1]))
+		if not_castling:
+			handle_state(MOVE, moves.join(" "))
+			moves = []
 
 
 """

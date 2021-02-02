@@ -32,6 +32,11 @@ Pieces="*res://Pieces.tscn"
 
 gdscript/warnings/return_value_discarded=false
 
+[display]
+
+window/size/width=800
+window/size/height=800
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

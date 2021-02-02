@@ -3,6 +3,7 @@
 [ext_resource path="res://Alert.gd" type="Script" id=1]
 
 [node name="Alert" type="PopupPanel"]
+visible = true
 margin_right = 299.0
 margin_bottom = 108.0
 script = ExtResource( 1 )
@@ -23,8 +24,7 @@ margin_left = 27.0
 margin_top = 43.0
 margin_right = 263.0
 margin_bottom = 57.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 1
 text = "sdfsfdsfddfgdgdgfdfgdfdfgdfgfdgfdgdfg"
 
 [node name="Timer" type="Timer" parent="."]
