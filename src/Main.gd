@@ -21,6 +21,7 @@ func _ready():
 	engine = $Engine
 	ponder()
 
+
 func handle_state(event, msg = ""):
 	match state:
 		IDLE:
@@ -120,7 +121,7 @@ func move_engine_piece(move: String):
 	var pos1 = board.move_to_position(move.substr(0, 2))
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
-	board.move_piece(p)
+	drop_piece(p)
 
 
 func alert(txt, duration = 1.0):
@@ -150,6 +151,7 @@ func drop_piece(piece: Piece):
 	# Try to drop the piece
 	# Also check for castling and passant
 	var ok_to_move = false
+	var rook = null
 	if info.ok:
 		if info.piece != null:
 			ok_to_move = true
@@ -162,7 +164,6 @@ func drop_piece(piece: Piece):
 				ok_to_move = piece.key != "P" or piece.pos.x == piece.new_pos.x
 			if info.castling:
 				# Get rook
-				var rook
 				var rx
 				if piece.new_pos.x == 2:
 					rx = 3
@@ -175,9 +176,8 @@ func drop_piece(piece: Piece):
 					if ok_to_move:
 						# Move rook
 						rook.new_pos = Vector2(rx, rook.pos.y)
-						move_piece(rook, false)
 					else:
-						alert("Checked")
+						alert("Check")
 				else:
 					ok_to_move = false
 	if ok_to_move:
@@ -185,13 +185,15 @@ func drop_piece(piece: Piece):
 			if board.is_king_checked(piece):
 				alert("Cannot move into check position!")
 			else:
+				if rook != null:
+					move_piece(rook, false)
 				board.take_piece(info.piece)
 				move_piece(piece)
 		else:
 			board.take_piece(info.piece)
 			move_piece(piece)
 			if board.is_king_checked(piece):
-				alert("Checked")
+				alert("Check")
 	return_piece(piece)
 
 

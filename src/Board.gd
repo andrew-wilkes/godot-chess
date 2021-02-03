@@ -115,13 +115,13 @@ func get_fen(next_move):
 			ns = 0
 		if y < 7:
 			_fen += "/"
-	if grid[0].tagged and grid[4].tagged:
+	if is_tagged(0) and is_tagged(4):
 		castling += "q"
-	if grid[7].tagged and grid[4].tagged:
+	if is_tagged(4) and is_tagged(7):
 		castling += "k"
-	if grid[56].tagged and grid[60].tagged:
+	if is_tagged(56) and is_tagged(60):
 		castling += "Q"
-	if grid[63].tagged and grid[60].tagged:
+	if is_tagged(60) and is_tagged(63):
 		castling += "K"
 	var pas = "-"
 	var pos
@@ -134,6 +134,10 @@ func get_fen(next_move):
 		pas = position_to_move(pos)
 	_fen += " %s %s %s %d %d" % [next_move, castling, pas, halfmoves, fullmoves]
 	return _fen
+
+
+func is_tagged(i):
+	return grid[i] != null and grid[i].tagged
 
 
 func tag_piece(i: int):
@@ -395,10 +399,16 @@ func square_is_white(n: int):
 func get_position_info(p: Piece, offset_divisor = square_width):
 	var castling = false
 	var passant = false
-	var offset = p.obj.position / offset_divisor
-	var x = int(round(offset.x))
-	var y = int(round(offset.y))
-	p.new_pos = Vector2(p.pos.x + x, p.pos.y + y)
+	var x: int
+	var y: int
+	if p.side == "B":
+		x = int(p.new_pos.x - p.pos.x)
+		y = int(p.new_pos.y - p.pos.y)
+	else:
+		var offset = p.obj.position / offset_divisor
+		x = int(round(offset.x))
+		y = int(round(offset.y))
+		p.new_pos = Vector2(p.pos.x + x, p.pos.y + y)
 	var ax = int(abs(x))
 	var ay = int(abs(y))
 	var p2 = get_piece_in_grid(p.new_pos.x, p.new_pos.y)
@@ -446,9 +456,9 @@ func get_position_info(p: Piece, offset_divisor = square_width):
 		var checking = true
 		while checking:
 			if ax > 0:
-				x -= sign(x) # Move back horizontally
+				x -= int(sign(x)) # Move back horizontally
 			if ay > 0:
-				y -= sign(y) # Move back vertically
+				y -= int(sign(y)) # Move back vertically
 			var p3 = get_piece_in_grid(p.pos.x + x, p.pos.y + y)
 			ok = p3 == null
 			ax -= 1
