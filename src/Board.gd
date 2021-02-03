@@ -30,7 +30,8 @@ func _ready():
 	draw_tiles()
 	#hide_labels()
 	# Set standard board layout using Forsyth Edwards encoded string
-	setup_pieces()
+	setup_pieces("r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21")
+	#setup_pieces()
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -281,13 +282,32 @@ func is_king_checked(p: Piece):
 	# We flip the side to be checked here depending on if the piece is a king or not
 	var side = p.side
 	if p.key == "K":
-		return is_checked(p.new_pos.x, p.new_pos.y, side)
+		return { "checked": is_checked(p.new_pos.x, p.new_pos.y, side) }
 	else:
 		if p.side == "B":
 			side = "W"
 		else:
 			side = "B"
-		return is_checked(kings[side].pos.x, kings[side].pos.y, side)
+		var pos = Vector2(kings[side].pos.x, kings[side].pos.y)
+		var mated = false
+		var checked = is_checked(pos.x, pos.y, side)
+		if checked:
+			# Scan for check mate
+			var offsets = [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]]
+			mated = true
+			for o in offsets:
+				if king_can_move_to(pos.x + o[0], pos.y + o[1], side):
+					mated = is_checked(pos.x + o[0], pos.y + o[1], side)
+				if !mated:
+					break
+		return { "checked": checked, "mated": mated, "side": side }
+
+
+func king_can_move_to(x, y, side):
+	if x < 0 or x > 7 or y < 0 or y > 7:
+		return false
+	var p = get_piece_in_grid(x, y)
+	return p == null or p.side != side
 
 
 # Check if position is under attack

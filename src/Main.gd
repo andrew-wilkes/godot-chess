@@ -5,10 +5,10 @@ var pawn_first_move2 # needed for en passant detection
 var board
 var engine
 var pid = 0
-var started = false
 var moves: PoolStringArray
+var fen = "r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21"
 
-enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN } # states
+enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
 enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE } # events
 
@@ -72,11 +72,10 @@ func handle_state(event, msg = ""):
 				MOVE:
 					ponder()
 					# msg should contain the player move
-					if !started:
-						started = true
+					if fen == "":
 						engine.send_packet("position startpos moves " + msg)
 					else:
-						var fen = board.get_fen("b")
+						fen = board.get_fen("b")
 						print(fen)
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
 					engine.send_packet("go movetime 1000")
@@ -89,6 +88,14 @@ func handle_state(event, msg = ""):
 						move_engine_piece(move)
 						state = PLAYER_TURN
 					print(msg)
+		PLAYER_WIN:
+			match event:
+				DONE:
+					print("Player won")
+		ENGINE_WIN:
+			match event:
+				DONE:
+					print("Engine won")
 
 
 func get_best_move(s: String):
@@ -182,7 +189,7 @@ func drop_piece(piece: Piece):
 					ok_to_move = false
 	if ok_to_move:
 		if piece.key == "K":
-			if board.is_king_checked(piece):
+			if board.is_king_checked(piece).checked:
 				alert("Cannot move into check position!")
 			else:
 				if rook != null:
@@ -192,8 +199,17 @@ func drop_piece(piece: Piece):
 		else:
 			board.take_piece(info.piece)
 			move_piece(piece)
-			if board.is_king_checked(piece):
-				alert("Check")
+			var status = board.is_king_checked(piece)
+			if status.mated:
+				alert("Check Mate!")
+				if status.side == "B":
+					state = PLAYER_WIN
+				else:
+					state = ENGINE_WIN
+				handle_state(DONE)
+			else:
+				if status.checked:
+					alert("Check")
 	return_piece(piece)
 
 
