@@ -42,3 +42,11 @@ The fields are:
 5. Halfmove clock: This is the number of halfmoves since the last pawn advance or capture.
 
 6. Fullmove number: The number of the current full move.
+
+
+
+## Castling rules
+* The king and the rook may not have moved from their starting squares if you want to castle.
+* All spaces between the king and the rook must be empty.
+* The king cannot be in check.
+* The squares that the king passes over must not be under attack, nor the square where it lands on

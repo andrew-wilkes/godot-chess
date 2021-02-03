@@ -1,12 +1,11 @@
 extends Control
 
 var selected_piece
-var pawn_first_move2 # needed for en passant detection
 var board
 var engine
 var pid = 0
 var moves: PoolStringArray
-var fen = "r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21"
+var fen = "test"
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -76,7 +75,6 @@ func handle_state(event, msg = ""):
 						engine.send_packet("position startpos moves " + msg)
 					else:
 						fen = board.get_fen("b")
-						print(fen)
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
 					engine.send_packet("go movetime 1000")
 					state = ENGINE_TURN
@@ -87,7 +85,9 @@ func handle_state(event, msg = ""):
 					if move != "":
 						move_engine_piece(move)
 						state = PLAYER_TURN
-					print(msg)
+					# Don't print the info spam
+					if !msg.begins_with("info"):
+						print(msg)
 		PLAYER_WIN:
 			match event:
 				DONE:
@@ -116,6 +116,8 @@ func get_best_move(s: String):
 	return move
 
 
+# The engine sends a suggested next move for the player tagged with "ponder"
+# So we display this move to the player in the UI or hide the UI elements
 func ponder(move = ""):
 	if move == "":
 		$HBox/VBox/Ponder.modulate.a = 0
@@ -128,7 +130,7 @@ func move_engine_piece(move: String):
 	var pos1 = board.move_to_position(move.substr(0, 2))
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
-	drop_piece(p)
+	try_to_make_a_move(p)
 
 
 func alert(txt, duration = 1.0):
@@ -149,10 +151,10 @@ func piece_clicked(piece):
 
 
 func piece_unclicked(piece):
-	drop_piece(piece)
+	try_to_make_a_move(piece)
 
 
-func drop_piece(piece: Piece):
+func try_to_make_a_move(piece: Piece):
 	var info = board.get_position_info(piece)
 	print(info.ok)
 	# Try to drop the piece
@@ -223,17 +225,9 @@ func move_piece(piece: Piece, not_castling = true):
 			moves = []
 
 
-"""
-Castling rules
-The king and the rook may not have moved from their starting squares if you want to castle.
-All spaces between the king and the rook must be empty.
-The king cannot be in check.
-The squares that the king passes over must not be under attack, nor the square where it lands on
-"""
-
 func mouse_moved(pos):
 	if selected_piece != null:
-		selected_piece.obj.position = pos - Vector2(32, 32)
+		selected_piece.obj.position = pos - Vector2(board.square_width, board.square_width) / 2.0
 
 
 func return_piece(piece: Piece):
