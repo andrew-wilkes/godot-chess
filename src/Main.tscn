@@ -28,12 +28,12 @@ __meta__ = {
 }
 
 [node name="VBox" type="VBoxContainer" parent="HBox"]
-margin_right = 245.0
+margin_right = 300.0
 margin_bottom = 760.0
 custom_constants/separation = 20
 
 [node name="HBox" type="HBoxContainer" parent="HBox/VBox"]
-margin_right = 245.0
+margin_right = 300.0
 margin_bottom = 20.0
 custom_constants/separation = 20
 
@@ -42,15 +42,9 @@ margin_right = 115.0
 margin_bottom = 20.0
 text = "Start New Game"
 
-[node name="Fen" type="Button" parent="HBox/VBox/HBox"]
-margin_left = 135.0
-margin_right = 245.0
-margin_bottom = 20.0
-text = "Print FEN String"
-
 [node name="Ponder" type="HBoxContainer" parent="HBox/VBox"]
 margin_top = 40.0
-margin_right = 245.0
+margin_right = 300.0
 margin_bottom = 54.0
 custom_constants/separation = 20
 
@@ -69,8 +63,82 @@ text = "e6e5"
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 74.0
-margin_right = 245.0
-margin_bottom = 74.0
+margin_right = 300.0
+margin_bottom = 374.0
+rect_min_size = Vector2( 300, 300 )
+
+[node name="Side" type="VBoxContainer" parent="HBox"]
+margin_left = 304.0
+margin_right = 428.0
+margin_bottom = 760.0
+
+[node name="Grid" type="GridContainer" parent="HBox/Side"]
+margin_right = 124.0
+margin_bottom = 62.0
+custom_constants/vseparation = 10
+custom_constants/hseparation = 20
+columns = 2
+
+[node name="Label" type="Label" parent="HBox/Side/Grid"]
+margin_right = 72.0
+margin_bottom = 14.0
+text = "Last move"
+
+[node name="LastMove" type="Label" parent="HBox/Side/Grid"]
+margin_left = 92.0
+margin_right = 92.0
+margin_bottom = 14.0
+
+[node name="Label3" type="Label" parent="HBox/Side/Grid"]
+margin_top = 24.0
+margin_right = 72.0
+margin_bottom = 38.0
+text = "Moves"
+
+[node name="Moves" type="Label" parent="HBox/Side/Grid"]
+margin_left = 92.0
+margin_top = 24.0
+margin_right = 92.0
+margin_bottom = 38.0
+
+[node name="Label5" type="Label" parent="HBox/Side/Grid"]
+margin_top = 48.0
+margin_right = 72.0
+margin_bottom = 62.0
+text = "Half moves"
+
+[node name="HalfMoves" type="Label" parent="HBox/Side/Grid"]
+margin_left = 92.0
+margin_top = 48.0
+margin_right = 92.0
+margin_bottom = 62.0
+
+[node name="WhitePieces" type="GridContainer" parent="HBox/Side"]
+margin_top = 66.0
+margin_right = 124.0
+margin_bottom = 385.0
+size_flags_vertical = 3
+columns = 4
+
+[node name="BlackPieces" type="GridContainer" parent="HBox/Side"]
+margin_top = 389.0
+margin_right = 124.0
+margin_bottom = 708.0
+size_flags_vertical = 3
+columns = 4
+
+[node name="CheckBox" type="CheckBox" parent="HBox/Side"]
+margin_top = 712.0
+margin_right = 124.0
+margin_bottom = 736.0
+pressed = true
+text = "Suggest moves"
+
+[node name="Fen" type="Button" parent="HBox/Side"]
+margin_top = 740.0
+margin_right = 124.0
+margin_bottom = 760.0
+text = "Print FEN String"
 
 [node name="Engine" parent="." instance=ExtResource( 4 )]
 
@@ -85,5 +153,8 @@ margin_bottom = 220.0
 size_flags_horizontal = 5
 size_flags_vertical = 5
 [connection signal="button_down" from="HBox/VBox/HBox/Start" to="." method="_on_Start_button_down"]
-[connection signal="button_down" from="HBox/VBox/HBox/Fen" to="." method="_on_Fen_button_down"]
+[connection signal="fullmove" from="HBox/VBox/Board" to="." method="_on_Board_fullmove"]
+[connection signal="halfmove" from="HBox/VBox/Board" to="." method="_on_Board_halfmove"]
+[connection signal="toggled" from="HBox/Side/CheckBox" to="." method="_on_CheckBox_toggled"]
+[connection signal="button_down" from="HBox/Side/Fen" to="." method="_on_Fen_button_down"]
 [connection signal="done" from="Engine" to="." method="_on_Engine_done"]

@@ -6,6 +6,7 @@ var engine
 var pid = 0
 var moves: PoolStringArray
 var fen = "test"
+var show_suggested_move = true
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -76,6 +77,7 @@ func handle_state(event, msg = ""):
 					else:
 						fen = board.get_fen("b")
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
+					show_last_move(msg)
 					engine.send_packet("go movetime 1000")
 					state = ENGINE_TURN
 		ENGINE_TURN:
@@ -84,6 +86,7 @@ func handle_state(event, msg = ""):
 					var move = get_best_move(msg)
 					if move != "":
 						move_engine_piece(move)
+						show_last_move(move)
 						state = PLAYER_TURN
 					# Don't print the info spam
 					if !msg.begins_with("info"):
@@ -96,6 +99,10 @@ func handle_state(event, msg = ""):
 			match event:
 				DONE:
 					print("Engine won")
+
+
+func show_last_move(move):
+	$HBox/Side/Grid/LastMove.text = move
 
 
 func get_best_move(s: String):
@@ -121,7 +128,7 @@ func get_best_move(s: String):
 func ponder(move = ""):
 	if move == "":
 		$HBox/VBox/Ponder.modulate.a = 0
-	else:
+	elif show_suggested_move:
 		$HBox/VBox/Ponder.modulate.a = 1.0
 		$HBox/VBox/Ponder/Move.text = move
 
@@ -256,3 +263,15 @@ func _on_Engine_done(ok, packet):
 
 func _on_Fen_button_down():
 	print(board.get_fen("w"))
+
+
+func _on_CheckBox_toggled(button_pressed):
+	show_suggested_move = button_pressed
+
+
+func _on_Board_fullmove(n):
+	$HBox/Side/Grid/Moves.text = String(n)
+
+
+func _on_Board_halfmove(n):
+	$HBox/Side/Grid/HalfMoves.text = String(n)

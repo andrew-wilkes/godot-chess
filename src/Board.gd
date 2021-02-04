@@ -3,6 +3,8 @@ extends Control
 signal clicked
 signal unclicked
 signal moved
+signal halfmove
+signal fullmove
 
 export var square_width = 64 # pixels (same as chess piece images)
 export(Color) var white # Square color
@@ -86,10 +88,10 @@ func setup_pieces(_fen = default_fen):
 					tag_piece(i + 24)
 	# Set halfmoves value
 	if parts.size() >= 5 and parts[4].is_valid_integer():
-		halfmoves = parts[4].to_int()
+		set_halfmoves(parts[4].to_int())
 	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_integer():
-		fullmoves = parts[5].to_int()
+		set_fullmoves(parts[5].to_int())
 
 
 func get_fen(next_move):
@@ -191,6 +193,17 @@ func take_piece(p: Piece):
 	p.obj.queue_free()
 	grid[p.pos.x + 8 * p.pos.y] = null
 	p.queue_free()
+	set_halfmoves(0)
+
+
+func set_halfmoves(n):
+	halfmoves = n
+	emit_signal("halfmove", n)
+
+
+func set_fullmoves(n):
+	fullmoves = n
+	emit_signal("fullmove", n)
 
 
 func draw_tiles():
@@ -272,9 +285,9 @@ func move_piece(p: Piece):
 	if p.key == "p":
 		halfmoves = 0
 	else:
-		halfmoves += 1
+		set_halfmoves(halfmoves + 1)
 	if p.side == "B":
-		fullmoves += 1
+		set_fullmoves(fullmoves + 1)
 	cleared = false
 
 
