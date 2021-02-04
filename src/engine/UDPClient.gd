@@ -8,6 +8,7 @@ var udp := PacketPeerUDP.new()
 func set_server(port = 7070):
 	udp.connect_to_host("127.0.0.1", port)
 
+	
 func send_packet(pkt: String):
 	udp.put_packet(pkt.to_utf8())
 

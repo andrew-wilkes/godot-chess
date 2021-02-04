@@ -216,6 +216,8 @@ func try_to_make_a_move(piece: Piece):
 						alert("Check")
 				else:
 					ok_to_move = false
+	if info.piece != null:
+		ok_to_move = ok_to_move and info.piece.key != "K"
 	if ok_to_move:
 		if piece.key == "K":
 			if board.is_king_checked(piece).checked:
@@ -300,10 +302,10 @@ func reset_board():
 	if !board.cleared:
 		board.clear_board()
 		board.setup_pieces()
-	for node in $VBox/WhitePieces.get_children():
-		node.queue_free()
-	for node in $VBox/BlackPieces.get_children():
-		node.queue_free()
+		for node in $VBox/WhitePieces.get_children():
+			node.queue_free()
+		for node in $VBox/BlackPieces.get_children():
+			node.queue_free()
 
 
 func _on_Reset_button_down():
