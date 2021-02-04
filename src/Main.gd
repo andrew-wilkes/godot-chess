@@ -124,7 +124,7 @@ func show_last_move(move):
 
 func get_best_move(s: String):
 	var move = ""
-	# Make sure that whitespace contains spaces
+	# Make sure that whitespace contains spaces since it may only have tabs for example
 	var raw_tokens = s.replace("\t", " ").split(" ")
 	var tokens = []
 	for t in raw_tokens:
@@ -132,10 +132,10 @@ func get_best_move(s: String):
 		if tt != "":
 			tokens.append(tt)
 	if tokens.size() > 1:
-		if tokens[0] == "bestmove":
+		if tokens[0] == "bestmove": # This is the engine's move
 			move = tokens[1]
 	if tokens.size() > 3:
-		if tokens[2] == "ponder":
+		if tokens[2] == "ponder": # This is the move suggested to the player by the engine following it's best move (so like the engine playing against itself)
 			ponder(tokens[3])
 	return move
 
@@ -164,7 +164,7 @@ func alert(txt, duration = 1.0):
 
 
 # This is called after release of the mouse button and when the mouse
-# crosses the Grid border so as to release any selected piece
+# has crossed the Grid border so as to release any selected piece
 func mouse_entered():
 	return_piece(selected_piece)
 
@@ -172,6 +172,7 @@ func mouse_entered():
 func piece_clicked(piece):
 	selected_piece = piece
 	# Need to ensure that piece displays above all others when moved
+	# The z_index gets reset when we settle the piece back into it's resting position
 	piece.obj.z_index = 1
 	print("Board clicked ", selected_piece)
 
@@ -181,7 +182,7 @@ func piece_unclicked(piece):
 
 
 func try_to_make_a_move(piece: Piece):
-	var info = board.get_position_info(piece, state != IDLE)
+	var info = board.get_position_info(piece, state != IDLE) # When Idle, we are not playing a game so the user may move the black pieces
 	print(info.ok)
 	# Try to drop the piece
 	# Also check for castling and passant
@@ -238,7 +239,7 @@ func try_to_make_a_move(piece: Piece):
 			else:
 				if status.checked:
 					alert("Check")
-	return_piece(piece)
+	return_piece(piece) # Settle the piece precisely into position and reset it's z_order
 
 
 func move_piece(piece: Piece, not_castling = true):
@@ -247,7 +248,7 @@ func move_piece(piece: Piece, not_castling = true):
 	if state == PLAYER_TURN:
 		moves.append(board.position_to_move(pos[0]) + board.position_to_move(pos[1]))
 		if not_castling:
-			handle_state(MOVE, moves.join(" "))
+			handle_state(MOVE, moves.join(" ")) # When castling there may be 2 moves to convey rook <> king
 			moves = []
 
 
@@ -256,9 +257,10 @@ func mouse_moved(pos):
 		selected_piece.obj.position = pos - Vector2(board.square_width, board.square_width) / 2.0
 
 
+# Return the piece to it's base position after being moved via mouse
+# Reset it's z_order and test for the situation of a pawn promotion
 func return_piece(piece: Piece):
 	if piece != null:
-		# Return the piece to it's base position after being moved via mouse
 		piece.obj.position = Vector2(0, 0)
 		piece.obj.z_index = 0
 		selected_piece = null
