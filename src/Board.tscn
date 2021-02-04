@@ -20,7 +20,6 @@ mod_color = Color( 0.407843, 0.752941, 0.752941, 1 )
 margin_left = 20.0
 margin_right = 750.0
 margin_bottom = 800.0
-mouse_default_cursor_shape = 3
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/vseparation = 0

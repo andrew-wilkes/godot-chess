@@ -256,11 +256,11 @@ func square_event(event: InputEvent, x: int, y: int):
 		print("Clicked at: ", [x, y])
 		var p = get_piece_in_grid(x, y)
 		print(p)
-		if event.pressed:
-			if p != null:
+		if p != null:
+			if event.pressed:
 				emit_signal("clicked", p)
-		else:
-			emit_signal("unclicked", p)
+			else:
+				emit_signal("unclicked", p)
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
 		emit_signal("moved", event.position)
@@ -443,6 +443,9 @@ func get_position_info(p: Piece, playing = true, offset_divisor = square_width):
 		x = int(round(offset.x))
 		y = int(round(offset.y))
 		p.new_pos = Vector2(p.pos.x + x, p.pos.y + y)
+	if p.new_pos.x < 0 or p.new_pos.y < 0 or p.new_pos.x > 7 or p.new_pos.y > 7:
+		# piece dropped outside of grid
+		return { "ok": false }
 	var ax = int(abs(x))
 	var ay = int(abs(y))
 	var p2 = get_piece_in_grid(p.new_pos.x, p.new_pos.y)
