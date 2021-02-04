@@ -29,9 +29,9 @@ func _ready():
 	grid.resize(num_squares)
 	draw_tiles()
 	#hide_labels()
-	# Set standard board layout using Forsyth Edwards encoded string
-	setup_pieces("r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21")
-	#setup_pieces()
+	# Set board layout using Forsyth Edwards encoded string
+	#setup_pieces("r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21")
+	setup_pieces()
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -416,12 +416,13 @@ func square_is_white(n: int):
 # Check if it is valid to move to the new position of a piece
 # Return true/false and null/piece that occupies the position plus
 # castling and passant flags to indicate to check for these situations
-func get_position_info(p: Piece, offset_divisor = square_width):
+func get_position_info(p: Piece, playing = true, offset_divisor = square_width):
 	var castling = false
 	var passant = false
 	var x: int
 	var y: int
-	if p.side == "B":
+	 # Set playing to false to allow manual movement of black pieces
+	if p.side == "B" and playing:
 		x = int(p.new_pos.x - p.pos.x)
 		y = int(p.new_pos.y - p.pos.y)
 	else:

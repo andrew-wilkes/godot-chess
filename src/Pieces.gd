@@ -14,6 +14,15 @@ func get_piece(key = "P", side = "W"):
 	return p
 
 
+func promote(p: Piece):
+	p.key = p.promote_to.to_upper()
+	var parent = p.obj.get_parent()
+	p.obj.queue_free() # Delete pawn
+	# Now add the new piece in place of the pawn
+	p.obj = get_piece(p.key, p.side)
+	parent.add_child(p.obj)
+
+
 # Edit this to start in the game or as a Tool script when the scene is loaded
 func _ready():
 #	setup()

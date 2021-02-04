@@ -28,18 +28,29 @@ __meta__ = {
 }
 
 [node name="VBox" type="VBoxContainer" parent="HBox"]
-margin_right = 157.0
+margin_right = 245.0
 margin_bottom = 760.0
 custom_constants/separation = 20
 
-[node name="Start" type="Button" parent="HBox/VBox"]
-margin_right = 157.0
+[node name="HBox" type="HBoxContainer" parent="HBox/VBox"]
+margin_right = 245.0
+margin_bottom = 20.0
+custom_constants/separation = 20
+
+[node name="Start" type="Button" parent="HBox/VBox/HBox"]
+margin_right = 115.0
 margin_bottom = 20.0
 text = "Start New Game"
 
+[node name="Fen" type="Button" parent="HBox/VBox/HBox"]
+margin_left = 135.0
+margin_right = 245.0
+margin_bottom = 20.0
+text = "Print FEN String"
+
 [node name="Ponder" type="HBoxContainer" parent="HBox/VBox"]
 margin_top = 40.0
-margin_right = 157.0
+margin_right = 245.0
 margin_bottom = 54.0
 custom_constants/separation = 20
 
@@ -58,7 +69,7 @@ text = "e6e5"
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 74.0
-margin_right = 157.0
+margin_right = 245.0
 margin_bottom = 74.0
 
 [node name="Engine" parent="." instance=ExtResource( 4 )]
@@ -73,5 +84,6 @@ margin_right = 320.0
 margin_bottom = 220.0
 size_flags_horizontal = 5
 size_flags_vertical = 5
-[connection signal="button_down" from="HBox/VBox/Start" to="." method="_on_Start_button_down"]
+[connection signal="button_down" from="HBox/VBox/HBox/Start" to="." method="_on_Start_button_down"]
+[connection signal="button_down" from="HBox/VBox/HBox/Fen" to="." method="_on_Fen_button_down"]
 [connection signal="done" from="Engine" to="." method="_on_Engine_done"]

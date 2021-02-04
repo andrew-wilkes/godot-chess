@@ -130,6 +130,8 @@ func move_engine_piece(move: String):
 	var pos1 = board.move_to_position(move.substr(0, 2))
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
+	if move.length() == 5:
+		p.promote_to = move[4]
 	try_to_make_a_move(p)
 
 
@@ -155,7 +157,7 @@ func piece_unclicked(piece):
 
 
 func try_to_make_a_move(piece: Piece):
-	var info = board.get_position_info(piece)
+	var info = board.get_position_info(piece, state != IDLE)
 	print(info.ok)
 	# Try to drop the piece
 	# Also check for castling and passant
@@ -236,6 +238,9 @@ func return_piece(piece: Piece):
 		piece.obj.position = Vector2(0, 0)
 		piece.obj.z_index = 0
 		selected_piece = null
+		if piece.key == "P":
+			if piece.side == "B" and piece.pos.y == 7 or piece.side == "W" and piece.pos.y == 0:
+				Pieces.promote(piece)
 
 
 func _on_Start_button_down():
@@ -247,3 +252,7 @@ func _on_Engine_done(ok, packet):
 		handle_state(DONE, packet)
 	else:
 		handle_state(ERROR)
+
+
+func _on_Fen_button_down():
+	print(board.get_fen("w"))
