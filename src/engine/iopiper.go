@@ -1,7 +1,7 @@
 package main
 
 // This program is spawned as a sub process from the Godot UDP interface script
-// It serves as pipe between Godot and a running CLI process
+// It serves as a pipe between Godot and a running CLI process
 // The CLI process is spawned from the path that is passed as a command line arg
 // But we should spawn it after receiving the first UDP packet so that we know the address
 // of the client to send any initial stdout text to.
@@ -34,9 +34,7 @@ func main() {
 	// Set up external process
 	proc := exec.Command(args[1])
 
-	// The process input is obtained
-	// in form of io.WriteCloser. The underlying
-	// implementation uses the os.Pipe
+	// The process input is obtained in the form of an io.WriteCloser. The underlying implementation uses the os.Pipe
 	stdin, _ := proc.StdinPipe()
 	defer stdin.Close()
 
@@ -44,7 +42,8 @@ func main() {
 	stdout, _ := proc.StdoutPipe()
 	defer stdout.Close()
 
-	// Run stdout scanner in a thread
+	// Run the stdout scanner in a thread
+	// It will write the stdout text via a pipe to our UDP client
 	go func() {
 		s := bufio.NewScanner(stdout)
 		for s.Scan() {
@@ -55,6 +54,7 @@ func main() {
 		}
 	}()
 
+	// Pipe text packets received from our UDP client to stdin
 	buffer := make([]byte, 1024)
 	for {
 		n, addr, err := pc.ReadFrom(buffer)
