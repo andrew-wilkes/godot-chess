@@ -18,8 +18,17 @@ func _ready():
 	board.connect("unclicked", self, "piece_unclicked")
 	board.connect("moved", self, "mouse_moved")
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
+	board.connect("taken", self, "stow_taken_piece")
 	engine = $Engine
 	ponder()
+	var c = ColorRect.new()
+	c.color = Color.green
+	c.rect_min_size = Vector2(64, 64)
+	"""
+	for n in 16:
+		$VBox/WhitePieces.add_child(c.duplicate())
+		$VBox/BlackPieces.add_child(c.duplicate())
+	"""
 
 
 func handle_state(event, msg = ""):
@@ -38,9 +47,7 @@ func handle_state(event, msg = ""):
 				NEW_GAME:
 					board.halfmoves = 0
 					board.fullmoves = 0
-					if !board.cleared:
-						board.clear_board()
-						board.setup_pieces()
+					reset_board()
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
@@ -101,8 +108,18 @@ func handle_state(event, msg = ""):
 					print("Engine won")
 
 
+func stow_taken_piece(p: Piece):
+	var tex = TextureRect.new()
+	tex.texture = p.obj.texture
+	if p.side == "B":
+		$VBox/BlackPieces.add_child(tex)
+	else:
+		$VBox/WhitePieces.add_child(tex)
+	p.queue_free()
+
+
 func show_last_move(move):
-	$HBox/Side/Grid/LastMove.text = move
+	$VBox/HBox/Grid/LastMove.text = move
 
 
 func get_best_move(s: String):
@@ -127,10 +144,10 @@ func get_best_move(s: String):
 # So we display this move to the player in the UI or hide the UI elements
 func ponder(move = ""):
 	if move == "":
-		$HBox/VBox/Ponder.modulate.a = 0
+		$VBox/HBox/VBox/Ponder.modulate.a = 0
 	elif show_suggested_move:
-		$HBox/VBox/Ponder.modulate.a = 1.0
-		$HBox/VBox/Ponder/Move.text = move
+		$VBox/HBox/VBox/Ponder.modulate.a = 1.0
+		$VBox/HBox/VBox/Ponder/Move.text = move
 
 
 func move_engine_piece(move: String):
@@ -270,8 +287,22 @@ func _on_CheckBox_toggled(button_pressed):
 
 
 func _on_Board_fullmove(n):
-	$HBox/Side/Grid/Moves.text = String(n)
+	$VBox/HBox/Grid/Moves.text = String(n)
 
 
 func _on_Board_halfmove(n):
-	$HBox/Side/Grid/HalfMoves.text = String(n)
+	$VBox/HBox/Grid/HalfMoves.text = String(n)
+
+
+func reset_board():
+	if !board.cleared:
+		board.clear_board()
+		board.setup_pieces()
+	for node in $VBox/WhitePieces.get_children():
+		node.queue_free()
+	for node in $VBox/BlackPieces.get_children():
+		node.queue_free()
+
+
+func _on_Reset_button_down():
+	reset_board()

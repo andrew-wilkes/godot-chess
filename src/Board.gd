@@ -5,6 +5,7 @@ signal unclicked
 signal moved
 signal halfmove
 signal fullmove
+signal taken
 
 export var square_width = 64 # pixels (same as chess piece images)
 export(Color) var white # Square color
@@ -181,19 +182,18 @@ func set_piece(key: String, i: int, castling: String):
 
 func clear_board():
 	for i in 64:
-		take_piece(grid[i])
+		take_piece(grid[i], false)
 	cleared = true
 
 
-func take_piece(p: Piece):
+func take_piece(p: Piece, emit = true):
 	if p == null:
 		return
-	print("Taken ", p.key)
 	p.obj.get_parent().remove_child(p.obj)
-	p.obj.queue_free()
 	grid[p.pos.x + 8 * p.pos.y] = null
-	p.queue_free()
 	set_halfmoves(0)
+	if emit:
+		emit_signal("taken", p)
 
 
 func set_halfmoves(n):
