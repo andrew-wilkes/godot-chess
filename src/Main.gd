@@ -24,11 +24,6 @@ func _ready():
 	var c = ColorRect.new()
 	c.color = Color.green
 	c.rect_min_size = Vector2(64, 64)
-	"""
-	for n in 16:
-		$VBox/WhitePieces.add_child(c.duplicate())
-		$VBox/BlackPieces.add_child(c.duplicate())
-	"""
 
 
 func handle_state(event, msg = ""):
@@ -45,10 +40,6 @@ func handle_state(event, msg = ""):
 					else:
 						alert(status.error)
 				NEW_GAME:
-					board.halfmoves = 0
-					board.fullmoves = 0
-					show_last_move()
-					ponder()
 					reset_board()
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
@@ -301,10 +292,18 @@ func _on_Board_fullmove(n):
 
 func _on_Board_halfmove(n):
 	$VBox/HBox/Grid/HalfMoves.text = String(n)
+	if n == 50:
+		alert("It's a draw!")
+		state = IDLE
 
 
 func reset_board():
 	if !board.cleared:
+		board.halfmoves = 0
+		board.fullmoves = 0
+		show_last_move()
+		ponder()
+		state = IDLE
 		board.clear_board()
 		board.setup_pieces()
 		for node in $VBox/WhitePieces.get_children():

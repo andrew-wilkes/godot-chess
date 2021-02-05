@@ -26,6 +26,7 @@ var kings = {}
 var fen = ""
 var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
 var cleared = true
+var highlighed_tiles = []
 
 func _ready():
 	# grid will map the pieces in the game
@@ -266,14 +267,19 @@ func square_event(event: InputEvent, x: int, y: int):
 		emit_signal("moved", event.position)
 
 
+func get_grid_index(x: int, y: int):
+	return x + 8 * y
+
+
 func get_piece_in_grid(x: int, y: int):
-	var p = grid[x + 8 * y]
+	var p = grid[get_grid_index(x, y)]
 	return p
 
 
 func move_piece(p: Piece):
-	grid[p.pos.x + 8 * p.pos.y] = null
-	grid[p.new_pos.x + 8 * p.new_pos.y] = p
+	highlighed_tiles = [get_grid_index(p.pos.x, p.pos.y), get_grid_index(p.new_pos.x, p.new_pos.y)]
+	grid[highlighed_tiles[0]] = null
+	grid[highlighed_tiles[1]] = p
 	p.pos = p.new_pos
 	# Re-parent piece on board
 	p.obj.get_parent().remove_child(p.obj)
@@ -288,6 +294,10 @@ func move_piece(p: Piece):
 		set_halfmoves(halfmoves + 1)
 	if p.side == "B":
 		set_fullmoves(fullmoves + 1)
+		$HighlightTimer.start()
+		highlight_square(highlighed_tiles[0])
+	else:
+		highlighed_tiles = []
 	cleared = false
 
 
@@ -504,3 +514,13 @@ func get_position_info(p: Piece, playing = true, offset_divisor = square_width):
 	if !ok and p == passant_pawn:
 		passant_pawn = null
 	return { "ok": ok, "piece": p2, "castling": castling, "passant": passant }
+
+
+func _on_HighlightTimer_timeout():
+	var tile = highlighed_tiles.pop_front()
+	highlight_square(tile, false)
+	if highlighed_tiles.size() > 0:
+		highlight_square(highlighed_tiles[0])
+		$HighlightTimer.start()
+	
+	
