@@ -47,6 +47,8 @@ func handle_state(event, msg = ""):
 				NEW_GAME:
 					board.halfmoves = 0
 					board.fullmoves = 0
+					show_last_move()
+					ponder()
 					reset_board()
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
@@ -102,10 +104,12 @@ func handle_state(event, msg = ""):
 			match event:
 				DONE:
 					print("Player won")
+					state = IDLE
 		ENGINE_WIN:
 			match event:
 				DONE:
 					print("Engine won")
+					state = IDLE
 
 
 func stow_taken_piece(p: Piece):
@@ -118,7 +122,7 @@ func stow_taken_piece(p: Piece):
 	p.queue_free()
 
 
-func show_last_move(move):
+func show_last_move(move = ""):
 	$VBox/HBox/Grid/LastMove.text = move
 
 
@@ -272,6 +276,7 @@ func return_piece(piece: Piece):
 
 
 func _on_Start_button_down():
+	state = IDLE
 	handle_state(NEW_GAME)
 
 
