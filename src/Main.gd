@@ -20,10 +20,7 @@ func _ready():
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 	board.connect("taken", self, "stow_taken_piece")
 	engine = $Engine
-	ponder()
-	var c = ColorRect.new()
-	c.color = Color.green
-	c.rect_min_size = Vector2(64, 64)
+	ponder() # Hide it
 
 
 func handle_state(event, msg = ""):
@@ -44,7 +41,6 @@ func handle_state(event, msg = ""):
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
-						alert("Please make your move")
 						state = STARTING
 					else:
 						handle_state(CONNECT)
@@ -61,6 +57,7 @@ func handle_state(event, msg = ""):
 			match event:
 				DONE:
 					if msg == "readyok":
+						alert("Please make your move")
 						state = PLAYER_TURN
 				ERROR:
 					alert("Lost connection to Chess Engine!")
@@ -78,7 +75,7 @@ func handle_state(event, msg = ""):
 						fen = board.get_fen("b")
 						engine.send_packet("position fen %s moves %s" % [fen, msg])
 					show_last_move(msg)
-					engine.send_packet("go movetime 1000")
+					engine.send_packet("go movetime 1000") # Let the engine evaluate moves for 1 second
 					state = ENGINE_TURN
 		ENGINE_TURN:
 			match event:
