@@ -5,7 +5,7 @@ var board
 var engine
 var pid = 0
 var moves: PoolStringArray
-var fen = "test"
+var fen = ""
 var show_suggested_move = true
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
@@ -37,7 +37,7 @@ func handle_state(event, msg = ""):
 					else:
 						alert(status.error)
 				NEW_GAME:
-					reset_board()
+					# Keep piece arrangement and move counts.
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
@@ -69,11 +69,9 @@ func handle_state(event, msg = ""):
 				MOVE:
 					ponder()
 					# msg should contain the player move
-					if fen == "":
-						engine.send_packet("position startpos moves " + msg)
-					else:
-						fen = board.get_fen("b")
-						engine.send_packet("position fen %s moves %s" % [fen, msg])
+					# engine.send_packet("position startpos moves " + msg)
+					fen = board.get_fen("b")
+					engine.send_packet("position fen %s moves %s" % [fen, msg])
 					show_last_move(msg)
 					engine.send_packet("go movetime 1000") # Let the engine evaluate moves for 1 second
 					state = ENGINE_TURN
@@ -296,13 +294,13 @@ func _on_Board_halfmove(n):
 
 func reset_board():
 	if !board.cleared:
+		state = IDLE
+		board.clear_board()
+		board.setup_pieces()
 		board.halfmoves = 0
 		board.fullmoves = 0
 		show_last_move()
 		ponder()
-		state = IDLE
-		board.clear_board()
-		board.setup_pieces()
 		for node in $VBox/WhitePieces.get_children():
 			node.queue_free()
 		for node in $VBox/BlackPieces.get_children():
