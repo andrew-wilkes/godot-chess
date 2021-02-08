@@ -7,6 +7,7 @@ var pid = 0
 var moves: PoolStringArray
 var fen = "test"
 var show_suggested_move = true
+var white_next = true
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -61,7 +62,10 @@ func handle_state(event, msg = ""):
 			match event:
 				DONE:
 					if msg == "readyok":
-						state = PLAYER_TURN
+						if white_next:
+							state = PLAYER_TURN
+						else:
+							prompt_engine()
 				ERROR:
 					alert("Lost connection to Chess Engine!")
 					state = IDLE
@@ -72,14 +76,8 @@ func handle_state(event, msg = ""):
 				MOVE:
 					ponder()
 					# msg should contain the player move
-					if fen == "":
-						engine.send_packet("position startpos moves " + msg)
-					else:
-						fen = board.get_fen("b")
-						engine.send_packet("position fen %s moves %s" % [fen, msg])
 					show_last_move(msg)
-					engine.send_packet("go movetime 1000")
-					state = ENGINE_TURN
+					prompt_engine(msg)
 		ENGINE_TURN:
 			match event:
 				DONE:
@@ -101,6 +99,16 @@ func handle_state(event, msg = ""):
 				DONE:
 					print("Engine won")
 					state = IDLE
+
+
+func prompt_engine(move = ""):
+	if fen == "":
+		engine.send_packet("position startpos moves " + move)
+	else:
+		fen = board.get_fen("b")
+		engine.send_packet("position fen %s moves %s" % [fen, move])
+	engine.send_packet("go movetime 1000")
+	state = ENGINE_TURN
 
 
 func stow_taken_piece(p: Piece):
@@ -314,3 +322,16 @@ func reset_board():
 
 func _on_Reset_button_down():
 	reset_board()
+
+
+func _on_Flip_button_down():
+	white_next = !white_next
+	$VBox/HBox/Menu/Next/Color.color = Color.white if white_next else Color.black
+
+
+func _on_Load_button_down():
+	pass # Replace with function body.
+
+
+func _on_Save_button_down():
+	pass # Replace with function body.
