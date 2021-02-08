@@ -40,6 +40,9 @@ func _ready():
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
 	#print(move_to_position("h1"))
+	highlighed_tiles = [0,2,4,6,8]
+	$HighlightTimer.start()
+	highlight_square(highlighed_tiles[0])
 
 
 # convert grid position to move code e.g. 0,0 -> a8
@@ -277,7 +280,8 @@ func get_piece_in_grid(x: int, y: int):
 
 
 func move_piece(p: Piece):
-	highlighed_tiles = [get_grid_index(p.pos.x, p.pos.y), get_grid_index(p.new_pos.x, p.new_pos.y)]
+	highlighed_tiles.append(get_grid_index(p.pos.x, p.pos.y))
+	highlighed_tiles.append(get_grid_index(p.new_pos.x, p.new_pos.y))
 	grid[highlighed_tiles[0]] = null
 	grid[highlighed_tiles[1]] = p
 	p.pos = p.new_pos

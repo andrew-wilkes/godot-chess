@@ -77,6 +77,7 @@ func handle_state(event, msg = ""):
 					ponder()
 					# msg should contain the player move
 					show_last_move(msg)
+					set_next_color(false)
 					prompt_engine(msg)
 		ENGINE_TURN:
 			match event:
@@ -85,6 +86,7 @@ func handle_state(event, msg = ""):
 					if move != "":
 						move_engine_piece(move)
 						show_last_move(move)
+						set_next_color()
 						state = PLAYER_TURN
 					# Don't print the info spam
 					if !msg.begins_with("info"):
@@ -325,7 +327,11 @@ func _on_Reset_button_down():
 
 
 func _on_Flip_button_down():
-	white_next = !white_next
+	set_next_color(!white_next)
+
+
+func set_next_color(is_white = true):
+	white_next = is_white
 	$VBox/HBox/Menu/Next/Color.color = Color.white if white_next else Color.black
 
 
