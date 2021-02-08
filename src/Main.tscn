@@ -10,6 +10,7 @@
 [node name="Main" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_min_size = Vector2( 600, 600 )
 custom_constants/margin_right = 20
 custom_constants/margin_top = 20
 custom_constants/margin_left = 20
@@ -207,6 +208,7 @@ margin_top = 23.0
 margin_right = 458.0
 margin_bottom = 448.0
 access = 2
+show_hidden_files = true
 current_dir = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src"
 current_path = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/"
 __meta__ = {

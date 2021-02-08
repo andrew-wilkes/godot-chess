@@ -194,7 +194,7 @@ func take_piece(p: Piece, emit = true):
 	if p == null:
 		return
 	p.obj.get_parent().remove_child(p.obj)
-	grid[p.pos.x + 8 * p.pos.y] = null
+	grid[get_grid_index(p.pos.x, p.pos.y)] = null
 	set_halfmoves(0)
 	if emit:
 		emit_signal("taken", p)
@@ -293,7 +293,7 @@ func move_piece(p: Piece):
 		passant_pawn = null
 	p.tagged = false # Prevent castling after move
 	if p.key == "p":
-		halfmoves = 0
+		set_halfmoves(0)
 	else:
 		set_halfmoves(halfmoves + 1)
 	if p.side == "B":

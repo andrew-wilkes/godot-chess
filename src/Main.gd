@@ -5,7 +5,7 @@ var board
 var engine
 var pid = 0
 var moves: PoolStringArray
-var fen = "test"
+var fen = ""
 var show_suggested_move = true
 var white_next = true
 var fd: FileDialog
@@ -22,7 +22,7 @@ func _ready():
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 	board.connect("taken", self, "stow_taken_piece")
 	engine = $Engine
-	ponder()
+	ponder() # Hide it
 	var c = ColorRect.new()
 	c.color = Color.green
 	c.rect_min_size = Vector2(64, 64)
@@ -45,7 +45,7 @@ func handle_state(event, msg = ""):
 					else:
 						alert(status.error)
 				NEW_GAME:
-					reset_board()
+					# Keep piece arrangement and move counts.
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
@@ -316,6 +316,9 @@ func _on_Board_halfmove(n):
 
 func reset_board():
 	if !board.cleared:
+		state = IDLE
+		board.clear_board()
+		board.setup_pieces()
 		board.halfmoves = 0
 		board.fullmoves = 0
 		show_last_move()
@@ -370,7 +373,7 @@ func fen_from_file(content: String):
 	fen = ""
 	for s in parts:
 		if "/" in s:
-			fen = s
+			fen = s.replace('"', '')
 			break
 	# Validate it
 	if is_valid_fen(fen):
