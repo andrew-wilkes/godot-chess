@@ -349,7 +349,8 @@ func _on_Load_button_down():
 
 
 func _on_Save_button_down():
-	pass # Replace with function body.
+	fd.mode = FileDialog.MODE_SAVE_FILE
+	fd.popup_centered()
 
 
 func _on_FileDialog_file_selected(path):
@@ -360,7 +361,7 @@ func _on_FileDialog_file_selected(path):
 		file.close()
 		fen_from_file(content)
 	else:
-		pass
+		save_file(board.get_fen("w" if white_next else "b"), path)
 
 
 func fen_from_file(content: String):
@@ -392,3 +393,10 @@ func is_valid_fen(_fen: String):
 		elif ch in "pPrRnNbBqQkK":
 			n += 1
 	return n == 64 and rows == 8
+
+
+func save_file(content, path):
+	var file = File.new()
+	file.open(path, File.WRITE)
+	file.store_string(content)
+	file.close()
