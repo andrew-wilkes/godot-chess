@@ -356,15 +356,37 @@ func _on_Save_button_down():
 	fd.popup_centered()
 
 
-func _on_FileDialog_file_selected(path):
+func _on_FileDialog_file_selected(path: String):
 	if fd.mode == FileDialog.MODE_OPEN_FILE:
 		var file = File.new()
 		file.open(path, File.READ)
 		var content = file.get_as_text()
 		file.close()
-		fen_from_file(content)
+		if path.get_extension().to_lower() == "pgn":
+			var pgn = pgn_from_file(content)
+			print(pgn)
+		else:
+			fen_from_file(content)
 	else:
 		save_file(board.get_fen("w" if white_next else "b"), path)
+
+
+func pgn_from_file(content: String) -> String:
+	var pgn: PoolStringArray
+	var lines = content.split("\n")
+	var started = false
+	for line in lines:
+		if !started:
+			if line.begins_with("1."):
+				started = true
+			else:
+				continue
+		if line.length() == 0:
+			break
+		else:
+			pgn.append(line.strip_edges())
+	var p = pgn.join(" ")
+	return p
 
 
 func fen_from_file(content: String):

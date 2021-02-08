@@ -15,4 +15,6 @@ https://stockfishchess.org/download/
 
 https://chess.stackexchange.com/questions/12580/working-with-uci-protocol-coding
 https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
-
+https://blog.chesshouse.com/how-to-read-and-write-algebraic-chess-notation/
+https://database.lichess.org/#puzzles
+https://database.nikonoel.fr/
