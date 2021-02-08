@@ -18,7 +18,6 @@ enum { SIDE, UNDER }
 var grid : Array # Map of what pieces are placed on the board
 var r_count = 0 # Rook counter
 var R_count = 0 # Rook counter
-var active_color = ""
 var halfmoves = 0 # Used with fifty-move rule. Reset after pawn move or piece capture
 var fullmoves = 0 # Incremented after Black's move
 var passant_pawn : Piece
@@ -40,9 +39,9 @@ func _ready():
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
 	#print(move_to_position("h1"))
-	highlighed_tiles = [0,2,4,6,8]
-	$HighlightTimer.start()
-	highlight_square(highlighed_tiles[0])
+	#highlighed_tiles = [0,2,4,6,8]
+	#$HighlightTimer.start()
+	#highlight_square(highlighed_tiles[0])
 
 
 # convert grid position to move code e.g. 0,0 -> a8
@@ -67,7 +66,7 @@ func move_to_position(move: String) -> Vector2:
 
 func setup_pieces(_fen = default_fen):
 	var parts = _fen.split(" ")
-	active_color = "W" if parts.size() < 2 else parts[1].to_upper()
+	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
 	r_count = 0
 	R_count = 0
@@ -97,6 +96,7 @@ func setup_pieces(_fen = default_fen):
 	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_integer():
 		set_fullmoves(parts[5].to_int())
+	return next_move_white
 
 
 func get_fen(next_move):

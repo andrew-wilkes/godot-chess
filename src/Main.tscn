@@ -22,24 +22,24 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="."]
 margin_left = 20.0
 margin_top = 20.0
-margin_right = 601.0
+margin_right = 580.0
 margin_bottom = 960.0
 custom_constants/separation = 20
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
-margin_right = 581.0
-margin_bottom = 88.0
+margin_right = 560.0
+margin_bottom = 84.0
 custom_constants/separation = 20
 
 [node name="VBox" type="VBoxContainer" parent="VBox/HBox"]
 margin_right = 157.0
-margin_bottom = 88.0
+margin_bottom = 84.0
 custom_constants/separation = 20
 
 [node name="Start" type="Button" parent="VBox/HBox/VBox"]
 margin_right = 157.0
 margin_bottom = 20.0
-text = "Start New Game"
+text = "PLAY"
 
 [node name="Ponder" type="HBoxContainer" parent="VBox/HBox/VBox"]
 margin_top = 40.0
@@ -60,13 +60,13 @@ text = "e6e5"
 
 [node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
 margin_left = 177.0
-margin_right = 287.0
-margin_bottom = 88.0
+margin_right = 266.0
+margin_bottom = 84.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
 [node name="Next" type="HBoxContainer" parent="VBox/HBox/Menu"]
-margin_right = 110.0
+margin_right = 89.0
 margin_bottom = 20.0
 
 [node name="Flip" type="Button" parent="VBox/HBox/Menu/Next"]
@@ -78,28 +78,28 @@ icon = SubResource( 1 )
 
 [node name="Color" type="ColorRect" parent="VBox/HBox/Menu/Next"]
 margin_left = 87.0
-margin_right = 110.0
+margin_right = 89.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="Load" type="Button" parent="VBox/HBox/Menu"]
 margin_top = 30.0
-margin_right = 110.0
+margin_right = 89.0
 margin_bottom = 50.0
 rect_pivot_offset = Vector2( -238.46, 107 )
 text = "Load"
 
 [node name="Save" type="Button" parent="VBox/HBox/Menu"]
 margin_top = 60.0
-margin_right = 110.0
+margin_right = 89.0
 margin_bottom = 80.0
 rect_pivot_offset = Vector2( -238.46, 107 )
 text = "Save"
 
 [node name="Options" type="VBoxContainer" parent="VBox/HBox"]
-margin_left = 307.0
-margin_right = 431.0
-margin_bottom = 88.0
+margin_left = 286.0
+margin_right = 410.0
+margin_bottom = 84.0
 custom_constants/separation = 10
 
 [node name="Fen" type="Button" parent="VBox/HBox/Options"]
@@ -121,9 +121,9 @@ margin_bottom = 84.0
 text = "Reset Board"
 
 [node name="Grid" type="GridContainer" parent="VBox/HBox"]
-margin_left = 451.0
-margin_right = 581.0
-margin_bottom = 88.0
+margin_left = 430.0
+margin_right = 560.0
+margin_bottom = 84.0
 custom_constants/vseparation = 10
 custom_constants/hseparation = 20
 columns = 2
@@ -166,30 +166,30 @@ margin_bottom = 62.0
 [node name="Board" parent="VBox" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 108.0
-margin_right = 581.0
-margin_bottom = 408.0
+margin_top = 104.0
+margin_right = 560.0
+margin_bottom = 404.0
 rect_min_size = Vector2( 300, 300 )
 custom_constants/margin_right = 20
 
 [node name="Spacer" type="Control" parent="VBox"]
-margin_top = 428.0
-margin_right = 581.0
-margin_bottom = 438.0
+margin_top = 424.0
+margin_right = 560.0
+margin_bottom = 434.0
 rect_min_size = Vector2( 0, 10 )
 
 [node name="BlackPieces" type="GridContainer" parent="VBox"]
-margin_top = 458.0
-margin_right = 581.0
-margin_bottom = 689.0
+margin_top = 454.0
+margin_right = 560.0
+margin_bottom = 687.0
 size_flags_vertical = 3
 custom_constants/vseparation = 5
 custom_constants/hseparation = 5
 columns = 8
 
 [node name="WhitePieces" type="GridContainer" parent="VBox"]
-margin_top = 709.0
-margin_right = 581.0
+margin_top = 707.0
+margin_right = 560.0
 margin_bottom = 940.0
 size_flags_vertical = 3
 custom_constants/vseparation = 5
@@ -199,6 +199,19 @@ columns = 8
 [node name="Engine" parent="." instance=ExtResource( 4 )]
 
 [node name="c" type="CanvasLayer" parent="."]
+
+[node name="FileDialog" type="FileDialog" parent="c"]
+visible = true
+margin_left = 21.0
+margin_top = 23.0
+margin_right = 458.0
+margin_bottom = 448.0
+access = 2
+current_dir = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src"
+current_path = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Alert" parent="c" instance=ExtResource( 3 )]
 visible = false
@@ -218,3 +231,4 @@ size_flags_vertical = 5
 [connection signal="fullmove" from="VBox/Board" to="." method="_on_Board_fullmove"]
 [connection signal="halfmove" from="VBox/Board" to="." method="_on_Board_halfmove"]
 [connection signal="done" from="Engine" to="." method="_on_Engine_done"]
+[connection signal="file_selected" from="c/FileDialog" to="." method="_on_FileDialog_file_selected"]

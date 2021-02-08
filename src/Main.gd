@@ -8,6 +8,7 @@ var moves: PoolStringArray
 var fen = "test"
 var show_suggested_move = true
 var white_next = true
+var fd: FileDialog
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -25,6 +26,9 @@ func _ready():
 	var c = ColorRect.new()
 	c.color = Color.green
 	c.rect_min_size = Vector2(64, 64)
+	fd = $c/FileDialog
+	#fen_from_file("0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1426,500,2,0,advantage endgame short,https://lichess.org/F8M8OS71#53")
+	#fen_from_file("r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16")
 
 
 func handle_state(event, msg = ""):
@@ -45,7 +49,6 @@ func handle_state(event, msg = ""):
 					if engine.server_pid > 0:
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
-						alert("Please make your move")
 						state = STARTING
 					else:
 						handle_state(CONNECT)
@@ -63,8 +66,10 @@ func handle_state(event, msg = ""):
 				DONE:
 					if msg == "readyok":
 						if white_next:
+							alert("White to begin")
 							state = PLAYER_TURN
 						else:
+							alert("Engine to begin")
 							prompt_engine()
 				ERROR:
 					alert("Lost connection to Chess Engine!")
@@ -96,11 +101,13 @@ func handle_state(event, msg = ""):
 				DONE:
 					print("Player won")
 					state = IDLE
+					set_next_color()
 		ENGINE_WIN:
 			match event:
 				DONE:
 					print("Engine won")
 					state = IDLE
+					set_next_color()
 
 
 func prompt_engine(move = ""):
@@ -313,6 +320,7 @@ func reset_board():
 		board.fullmoves = 0
 		show_last_move()
 		ponder()
+		set_next_color()
 		state = IDLE
 		board.clear_board()
 		board.setup_pieces()
@@ -336,8 +344,51 @@ func set_next_color(is_white = true):
 
 
 func _on_Load_button_down():
-	pass # Replace with function body.
+	fd.mode = FileDialog.MODE_OPEN_FILE
+	fd.popup_centered()
 
 
 func _on_Save_button_down():
 	pass # Replace with function body.
+
+
+func _on_FileDialog_file_selected(path):
+	if fd.mode == FileDialog.MODE_OPEN_FILE:
+		var file = File.new()
+		file.open(path, File.READ)
+		var content = file.get_as_text()
+		file.close()
+		fen_from_file(content)
+	else:
+		pass
+
+
+func fen_from_file(content: String):
+	var parts = content.split(",")
+	# Find the FEN string
+	fen = ""
+	for s in parts:
+		if "/" in s:
+			fen = s
+			break
+	# Validate it
+	if is_valid_fen(fen):
+		board.clear_board()
+		set_next_color(board.setup_pieces(fen))
+	else:
+		alert("Invalid FEN string")
+
+
+func is_valid_fen(_fen: String):
+	var n = 0
+	var rows = 1
+	for ch in _fen:
+		if ch == " ":
+			break
+		if ch == "/":
+			rows += 1
+		elif ch.is_valid_integer():
+			n += int(ch)
+		elif ch in "pPrRnNbBqQkK":
+			n += 1
+	return n == 64 and rows == 8
