@@ -43,7 +43,21 @@ func _ready():
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
 	print(pgn_to_long("a4", "W"))
+	print(pgn_to_long("h3", "W"))
 	print(pgn_to_long("axb3", "W"))
+	print(pgn_to_long("Nbxc3", "W"))
+	print(pgn_to_long("Nf3", "W"))
+	print(pgn_to_long("N1xc3", "W"))
+	print(pgn_to_long("O-O", "W"))
+	print(pgn_to_long("O-O-O", "W"))
+	print(pgn_to_long("O-O", "B"))
+	print(pgn_to_long("O-O-O", "B"))
+	print(pgn_to_long("a5", "B"))
+	print(pgn_to_long("h6", "B"))
+	print(pgn_to_long("axb6", "B"))
+	print(pgn_to_long("Nbxc6", "B"))
+	print(pgn_to_long("Nf6", "B"))
+	print(pgn_to_long("N8xc6", "B"))
 
 
 # convert grid position to move code e.g. 0,0 -> a8
@@ -66,7 +80,11 @@ func move_to_position(move: String) -> Vector2:
 	return pos
 
 
+# The following code requires that the piece layout is in sync with the moves
+# If the user moves a piece, then the pgn move list should be wiped
+# The idea is to play back the moves of a game and take over at any point
 func pgn_to_long(pgn: String, side: String):
+	print(pgn, " ", side)
 	var m = ""
 	var ch = pgn[0]
 	# Pawn moves ignoring =Q in dxc1=Q
@@ -81,22 +99,74 @@ func pgn_to_long(pgn: String, side: String):
 			y = int(pgn[1])
 		m[1] = String(8 - find_pawn_in_col(ch, y, side))
 		return m
-	if side == "B":
-		ch = ch.to_lower()
+	# Castling
+	if pgn.begins_with("O-O-O"):
+		if side == "B":
+			return "e8b8"
+		else:
+			return "e1b1"
+	if pgn.begins_with("O-O"):
+		if side == "B":
+			return "e8g8"
+		else:
+			return "e1g1"
+	if pgn[1] == "x":
+		m = "??" + pgn.substr(2, 2) #Nxf6 ??f6
+	elif pgn[2] == "x":
+		m = pgn.substr(1, 4) #Nexf6 e?f6
+		if m[0].is_valid_integer(): # B1xd4 ?1d4
+			m[1] = m[0]
+			m[0] = char(97 + find_piece_in_row(m[0], ch, side))
+		else:
+			m[1] = String(8 - find_piece_in_col(m[0], ch, side))
+	else:
+		# Here we have the least amount of move information e.g. #Nf6
+		var dest = pgn.substr(1, 2)
+		m = find_piece_in_grid(ch, side, move_to_position(dest)) + dest
+	return m
 
 
+func find_piece_in_row(n, key, side):
+	var y = 8 - int(n)
+	for x in 8:
+		var i = get_grid_index(x, y)
+		if grid[i] != null and grid[i].key == key and grid[i].side == side:
+			return x
+	return -1
+
+
+func find_piece_in_col(ch, key, side):
+	var x = ord(ch) - 97
+	for y in 8:
+		var i = get_grid_index(x, y)
+		if grid[i] != null and grid[i].key == key and grid[i].side == side:
+			return y
+	return -1
+
+
+func find_piece_in_grid(key, side, pos: Vector2):
+	for i in 64:
+		var p = grid[i]
+		if p != null and p.key == key and p.side == side:
+			# See if piece can move to destination
+			p.new_pos = pos
+			if get_position_info(p, true, true).ok:
+				return position_to_move(p.pos)
+
+
+# Return -1 on error
 func find_pawn_in_col(ch, y, side):
 	var x = ord(ch) - 97
 	var dy = 1 if side == "W" else -1
 	y = 8 - y + dy
 	var i = get_grid_index(x, y)
-	if grid[i] != null and grid[i].key == "P":
-		return y
+	if grid[i] != null:
+		return y if grid[i].key == "P" else -1
 	else: 
 		y += dy
 		i = get_grid_index(x, y)
-		if grid[i] != null and grid[i].key == "P":
-			return y
+		if grid[i] != null:
+			return y if grid[i].key == "P" else -1
 	return -1
 
 
@@ -479,13 +549,13 @@ func square_is_white(n: int):
 # Check if it is valid to move to the new position of a piece
 # Return true/false and null/piece that occupies the position plus
 # castling and passant flags to indicate to check for these situations
-func get_position_info(p: Piece, playing = true, offset_divisor = square_width):
+func get_position_info(p: Piece, playing = true, checking_new_pos = false, offset_divisor = square_width):
 	var castling = false
 	var passant = false
 	var x: int
 	var y: int
 	 # Set playing to false to allow manual movement of black pieces
-	if p.side == "B" and playing:
+	if p.side == "B" and playing or checking_new_pos:
 		x = int(p.new_pos.x - p.pos.x)
 		y = int(p.new_pos.y - p.pos.y)
 	else:
@@ -562,5 +632,3 @@ func _on_HighlightTimer_timeout():
 	if highlighed_tiles.size() > 0:
 		highlight_square(highlighed_tiles[0])
 		$HighlightTimer.start()
-	
-	
