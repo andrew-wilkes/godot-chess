@@ -9,6 +9,7 @@ var fen = ""
 var show_suggested_move = true
 var white_next = true
 var fd: FileDialog
+var pgn_moves = []
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -365,12 +366,14 @@ func _on_FileDialog_file_selected(path: String):
 		if path.get_extension().to_lower() == "pgn":
 			var pgn = pgn_from_file(content)
 			print(pgn)
+			get_pgn_moves(pgn)
 		else:
 			fen_from_file(content)
 	else:
 		save_file(board.get_fen("w" if white_next else "b"), path)
 
 
+# Extract the moves from the first game in a Portable Game Notation (PGN) text
 func pgn_from_file(content: String) -> String:
 	var pgn: PoolStringArray
 	var lines = content.split("\n")
@@ -385,8 +388,7 @@ func pgn_from_file(content: String) -> String:
 			break
 		else:
 			pgn.append(line.strip_edges())
-	var p = pgn.join(" ")
-	return p
+	return pgn.join(" ")
 
 
 func fen_from_file(content: String):
@@ -425,3 +427,11 @@ func save_file(content, path):
 	file.open(path, File.WRITE)
 	file.store_string(content)
 	file.close()
+
+
+func get_pgn_moves(txt: String):
+	var parts = txt.split(" ")
+	pgn_moves = []
+	for i in parts.size():
+		if i % 3 > 0:
+			pgn_moves.append(parts[i])

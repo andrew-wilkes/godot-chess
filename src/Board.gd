@@ -42,6 +42,8 @@ func _ready():
 	#highlighed_tiles = [0,2,4,6,8]
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
+	print(pgn_to_long("a4", "W"))
+	print(pgn_to_long("axb3", "W"))
 
 
 # convert grid position to move code e.g. 0,0 -> a8
@@ -62,6 +64,40 @@ func move_to_position(move: String) -> Vector2:
 	assert(pos.x < 8)
 	assert(pos.y < 8)
 	return pos
+
+
+func pgn_to_long(pgn: String, side: String):
+	var m = ""
+	var ch = pgn[0]
+	# Pawn moves ignoring =Q in dxc1=Q
+	if ord(ch) > 96: # a .. h
+		var y
+		if pgn[1] == "x":
+			m = pgn.substr(0, 4) #exf6 e?f6
+			y = int(pgn[3])
+		else:
+			m = pgn.substr(0, 2) #f4
+			m += m # fff4 f?f4
+			y = int(pgn[1])
+		m[1] = String(8 - find_pawn_in_col(ch, y, side))
+		return m
+	if side == "B":
+		ch = ch.to_lower()
+
+
+func find_pawn_in_col(ch, y, side):
+	var x = ord(ch) - 97
+	var dy = 1 if side == "W" else -1
+	y = 8 - y + dy
+	var i = get_grid_index(x, y)
+	if grid[i] != null and grid[i].key == "P":
+		return y
+	else: 
+		y += dy
+		i = get_grid_index(x, y)
+		if grid[i] != null and grid[i].key == "P":
+			return y
+	return -1
 
 
 func setup_pieces(_fen = default_fen):
