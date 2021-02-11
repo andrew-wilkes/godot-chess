@@ -10,6 +10,7 @@ var show_suggested_move = true
 var white_next = true
 var fd: FileDialog
 var pgn_moves = []
+var long_moves = []
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -23,6 +24,7 @@ func _ready():
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 	board.connect("taken", self, "stow_taken_piece")
 	engine = $Engine
+	show_transport_buttons(false)
 	ponder() # Hide it
 	var c = ColorRect.new()
 	c.color = Color.green
@@ -191,6 +193,7 @@ func piece_clicked(piece):
 
 
 func piece_unclicked(piece):
+	show_transport_buttons(false)
 	try_to_make_a_move(piece)
 
 
@@ -294,10 +297,6 @@ func _on_Engine_done(ok, packet):
 		handle_state(DONE, packet)
 	else:
 		handle_state(ERROR)
-
-
-func _on_Fen_button_down():
-	print(board.get_fen("w"))
 
 
 func _on_CheckBox_toggled(button_pressed):
@@ -432,6 +431,34 @@ func save_file(content, path):
 func get_pgn_moves(txt: String):
 	var parts = txt.split(" ")
 	pgn_moves = []
+	long_moves = []
 	for i in parts.size():
 		if i % 3 > 0:
 			pgn_moves.append(parts[i])
+			long_moves.append("")
+	update_count(0)
+	show_transport_buttons()
+
+
+func update_count(n: int):
+	$VBox/HBox/Options/TB/Count.text = "%d/%d" % [n, pgn_moves.size()]
+
+
+func show_transport_buttons(show = true):
+	$VBox/HBox/Options/TB.modulate.a = 1.0 if show else 0.0
+
+
+func _on_Begin_button_down():
+	pass # Replace with function body.
+
+
+func _on_Back_button_down():
+	pass # Replace with function body.
+
+
+func _on_Forward_button_down():
+	pass # Replace with function body.
+
+
+func _on_End_button_down():
+	pass # Replace with function body.

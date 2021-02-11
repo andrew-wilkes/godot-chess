@@ -42,7 +42,9 @@ func _ready():
 	#highlighed_tiles = [0,2,4,6,8]
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
-	# Test the pgn to long conversion
+
+
+func test_pgn_to_long_conversion():
 	print(pgn_to_long("a4", "W"))
 	print(pgn_to_long("h3", "W"))
 	print(pgn_to_long("axb3", "W"))
