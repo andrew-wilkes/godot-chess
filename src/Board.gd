@@ -410,12 +410,13 @@ func move_piece(p: Piece, engine_turn: bool):
 	if p != passant_pawn:
 		passant_pawn = null
 	p.tagged = false # Prevent castling after move
-	if p.key == "p":
+	if p.key == "P":
 		set_halfmoves(0)
 	else:
 		set_halfmoves(halfmoves + 1)
-	if engine_turn:
+	if p.side == "B":
 		set_fullmoves(fullmoves + 1)
+	if engine_turn:
 		$HighlightTimer.start()
 		highlight_square(highlighed_tiles[0])
 	else:
