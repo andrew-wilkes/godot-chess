@@ -1,5 +1,7 @@
 extends Node
 
+class_name Engine
+
 # Provide functionality for interactions with a Chess Engine
 # Also, find the installed exe files rather than needing UI entry by user
 

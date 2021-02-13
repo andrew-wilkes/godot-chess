@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://assets/start.png" type="Texture" id=5]
 [ext_resource path="res://assets/end.png" type="Texture" id=6]
 [ext_resource path="res://assets/play.png" type="Texture" id=7]
-[ext_resource path="res://assets/rewind.png" type="Texture" id=8]
 
 [sub_resource type="ImageTexture" id=1]
 
@@ -27,12 +26,12 @@ __meta__ = {
 [node name="VBox" type="VBoxContainer" parent="."]
 margin_left = 20.0
 margin_top = 20.0
-margin_right = 627.0
+margin_right = 599.0
 margin_bottom = 960.0
 custom_constants/separation = 20
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
-margin_right = 607.0
+margin_right = 579.0
 margin_bottom = 85.0
 custom_constants/separation = 20
 
@@ -103,13 +102,13 @@ text = "Save"
 
 [node name="Options" type="VBoxContainer" parent="VBox/HBox"]
 margin_left = 284.0
-margin_right = 457.0
+margin_right = 429.0
 margin_bottom = 85.0
 custom_constants/separation = 10
 
 [node name="TB" type="HBoxContainer" parent="VBox/HBox/Options"]
 modulate = Color( 0.337255, 0.415686, 0.823529, 1 )
-margin_right = 173.0
+margin_right = 145.0
 margin_bottom = 21.0
 custom_constants/separation = 10
 
@@ -118,47 +117,41 @@ margin_right = 22.0
 margin_bottom = 21.0
 texture_normal = ExtResource( 5 )
 
-[node name="Back" type="TextureButton" parent="VBox/HBox/Options/TB"]
+[node name="Forward" type="TextureButton" parent="VBox/HBox/Options/TB"]
 margin_left = 32.0
 margin_right = 50.0
-margin_bottom = 21.0
-texture_normal = ExtResource( 8 )
-
-[node name="Forward" type="TextureButton" parent="VBox/HBox/Options/TB"]
-margin_left = 60.0
-margin_right = 78.0
 margin_bottom = 21.0
 texture_normal = ExtResource( 7 )
 
 [node name="End" type="TextureButton" parent="VBox/HBox/Options/TB"]
-margin_left = 88.0
-margin_right = 110.0
+margin_left = 60.0
+margin_right = 82.0
 margin_bottom = 21.0
 texture_normal = ExtResource( 6 )
 
 [node name="Count" type="Label" parent="VBox/HBox/Options/TB"]
-margin_left = 120.0
+margin_left = 92.0
 margin_top = 3.0
-margin_right = 173.0
+margin_right = 145.0
 margin_bottom = 17.0
 text = "100/100"
 
 [node name="CheckBox" type="CheckBox" parent="VBox/HBox/Options"]
 margin_top = 31.0
-margin_right = 173.0
+margin_right = 145.0
 margin_bottom = 55.0
 pressed = true
 text = "Suggest moves"
 
 [node name="Reset" type="Button" parent="VBox/HBox/Options"]
 margin_top = 65.0
-margin_right = 173.0
+margin_right = 145.0
 margin_bottom = 85.0
 text = "Reset Board"
 
 [node name="Grid" type="GridContainer" parent="VBox/HBox"]
-margin_left = 477.0
-margin_right = 607.0
+margin_left = 449.0
+margin_right = 579.0
 margin_bottom = 85.0
 custom_constants/vseparation = 10
 custom_constants/hseparation = 20
@@ -203,20 +196,20 @@ margin_bottom = 62.0
 anchor_right = 0.0
 anchor_bottom = 0.0
 margin_top = 105.0
-margin_right = 607.0
+margin_right = 579.0
 margin_bottom = 405.0
 rect_min_size = Vector2( 300, 300 )
 custom_constants/margin_right = 20
 
 [node name="Spacer" type="Control" parent="VBox"]
 margin_top = 425.0
-margin_right = 607.0
+margin_right = 579.0
 margin_bottom = 435.0
 rect_min_size = Vector2( 0, 10 )
 
 [node name="BlackPieces" type="GridContainer" parent="VBox"]
 margin_top = 455.0
-margin_right = 607.0
+margin_right = 579.0
 margin_bottom = 687.0
 size_flags_vertical = 3
 custom_constants/vseparation = 5
@@ -225,7 +218,7 @@ columns = 8
 
 [node name="WhitePieces" type="GridContainer" parent="VBox"]
 margin_top = 707.0
-margin_right = 607.0
+margin_right = 579.0
 margin_bottom = 940.0
 size_flags_vertical = 3
 custom_constants/vseparation = 5
@@ -262,9 +255,9 @@ size_flags_vertical = 5
 [connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Save" to="." method="_on_Save_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Begin" to="." method="_on_Begin_button_down"]
-[connection signal="button_down" from="VBox/HBox/Options/TB/Back" to="." method="_on_Back_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Forward" to="." method="_on_Forward_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/End" to="." method="_on_End_button_down"]
+[connection signal="button_up" from="VBox/HBox/Options/TB/End" to="." method="_on_End_button_up"]
 [connection signal="toggled" from="VBox/HBox/Options/CheckBox" to="." method="_on_CheckBox_toggled"]
 [connection signal="button_down" from="VBox/HBox/Options/Reset" to="." method="_on_Reset_button_down"]
 [connection signal="fullmove" from="VBox/Board" to="." method="_on_Board_fullmove"]

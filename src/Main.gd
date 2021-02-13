@@ -1,16 +1,17 @@
 extends Control
 
 var selected_piece
-var board
-var engine
+var board : Board
+var engine : Node
 var pid = 0
-var moves: PoolStringArray
+var moves : PoolStringArray
 var fen = ""
 var show_suggested_move = true
 var white_next = true
 var fd: FileDialog
 var pgn_moves = []
-var long_moves = []
+var long_moves : PoolStringArray = []
+var move_index = 0
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -116,6 +117,7 @@ func handle_state(event, msg = ""):
 func prompt_engine(move = ""):
 	if fen == "":
 		engine.send_packet("position startpos moves " + move)
+		fen = "started"
 	else:
 		fen = board.get_fen("b")
 		engine.send_packet("position fen %s moves %s" % [fen, move])
@@ -194,11 +196,11 @@ func piece_clicked(piece):
 
 func piece_unclicked(piece):
 	show_transport_buttons(false)
-	try_to_make_a_move(piece)
+	try_to_make_a_move(piece, false)
 
 
-func try_to_make_a_move(piece: Piece):
-	var info = board.get_position_info(piece, state != IDLE) # When Idle, we are not playing a game so the user may move the black pieces
+func try_to_make_a_move(piece: Piece, non_player_move = true):
+	var info = board.get_position_info(piece, non_player_move) # When Idle, we are not playing a game so the user may move the black pieces
 	print(info.ok)
 	# Try to drop the piece
 	# Also check for castling and passant
@@ -262,7 +264,7 @@ func try_to_make_a_move(piece: Piece):
 
 func move_piece(piece: Piece, not_castling = true):
 	var pos = [piece.pos, piece.new_pos]
-	board.move_piece(piece)
+	board.move_piece(piece, state == ENGINE_TURN)
 	if state == PLAYER_TURN:
 		moves.append(board.position_to_move(pos[0]) + board.position_to_move(pos[1]))
 		if not_castling:
@@ -331,6 +333,8 @@ func reset_board():
 			node.queue_free()
 		for node in $VBox/BlackPieces.get_children():
 			node.queue_free()
+	move_index = 0
+	update_count(move_index)
 
 
 func _on_Reset_button_down():
@@ -363,9 +367,7 @@ func _on_FileDialog_file_selected(path: String):
 		var content = file.get_as_text()
 		file.close()
 		if path.get_extension().to_lower() == "pgn":
-			var pgn = pgn_from_file(content)
-			print(pgn)
-			get_pgn_moves(pgn)
+			set_pgn_moves(pgn_from_file(content))
 		else:
 			fen_from_file(content)
 	else:
@@ -374,7 +376,7 @@ func _on_FileDialog_file_selected(path: String):
 
 # Extract the moves from the first game in a Portable Game Notation (PGN) text
 func pgn_from_file(content: String) -> String:
-	var pgn: PoolStringArray
+	var pgn: PoolStringArray = []
 	var lines = content.split("\n")
 	var started = false
 	for line in lines:
@@ -428,16 +430,16 @@ func save_file(content, path):
 	file.close()
 
 
-func get_pgn_moves(txt: String):
-	var parts = txt.split(" ")
+func set_pgn_moves(_moves):
+	_moves = _moves.split(" ")
+	_moves.resize(_moves.size() - 1) # Remove the score
 	pgn_moves = []
 	long_moves = []
-	for i in parts.size():
+	for i in _moves.size():
 		if i % 3 > 0:
-			pgn_moves.append(parts[i])
-			long_moves.append("")
-	update_count(0)
+			pgn_moves.append(_moves[i])
 	show_transport_buttons()
+	reset_board()
 
 
 func update_count(n: int):
@@ -449,16 +451,33 @@ func show_transport_buttons(show = true):
 
 
 func _on_Begin_button_down():
-	pass # Replace with function body.
-
-
-func _on_Back_button_down():
-	pass # Replace with function body.
+	reset_board()
 
 
 func _on_Forward_button_down():
-	pass # Replace with function body.
+	step_forward()
 
+
+func step_forward():
+	if move_index >= pgn_moves.size():
+		return
+	if long_moves.size() <= move_index:
+		long_moves.append(board.pgn_to_long(pgn_moves[move_index], "W" if white_next else "B"))
+	move_engine_piece(long_moves[move_index])
+	show_last_move(long_moves[move_index])
+	move_index += 1
+	update_count(move_index)
+	if pgn_moves.size() > move_index:
+		white_next = !white_next
+
+
+var stepping = false
 
 func _on_End_button_down():
-	pass # Replace with function body.
+	stepping = true
+	while stepping and pgn_moves.size() > move_index:
+		step_forward()
+
+
+func _on_End_button_up():
+	stepping = false

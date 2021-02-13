@@ -1,5 +1,7 @@
 extends Control
 
+class_name Board
+
 signal clicked
 signal unclicked
 signal moved
@@ -42,16 +44,19 @@ func _ready():
 	#highlighed_tiles = [0,2,4,6,8]
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
+	#test_pgn_to_long_conversion()
 
 
 func test_pgn_to_long_conversion():
 	print(pgn_to_long("a4", "W"))
 	print(pgn_to_long("h3", "W"))
 	print(pgn_to_long("axb3", "W"))
+	print(pgn_to_long("Nbc3", "W"))
 	print(pgn_to_long("Nbxc3", "W"))
 	print(pgn_to_long("Nf3", "W"))
 	print(pgn_to_long("Nxf3", "W"))
 	print(pgn_to_long("N1xc3", "W"))
+	print(pgn_to_long("N1c3", "W"))
 	print(pgn_to_long("O-O", "W"))
 	print(pgn_to_long("O-O-O", "W"))
 	print(pgn_to_long("O-O", "B"))
@@ -59,10 +64,12 @@ func test_pgn_to_long_conversion():
 	print(pgn_to_long("a5", "B"))
 	print(pgn_to_long("h6", "B"))
 	print(pgn_to_long("axb6", "B"))
+	print(pgn_to_long("Nbc6", "B"))
 	print(pgn_to_long("Nbxc6", "B"))
 	print(pgn_to_long("Nf6", "B"))
 	print(pgn_to_long("Nxf6", "B"))
 	print(pgn_to_long("N8xc6", "B"))
+	print(pgn_to_long("N8c6", "B"))
 
 
 # convert grid position to move code e.g. 0,0 -> a8
@@ -115,19 +122,15 @@ func pgn_to_long(pgn: String, side: String):
 			return "e8g8"
 		else:
 			return "e1g1"
-	if pgn[1] == "x": #Nxf6 Nf6
-		pgn.erase(1, 1)
-	if pgn[2] == "x":
-		m = pgn.substr(1, 4) #Nexf6 e?f6
-		if m[0].is_valid_integer(): # B1xd4 ?1d4
-			m[1] = m[0]
-			m[0] = char(97 + find_piece_in_row(m[0], ch, side))
+	pgn = pgn.replace("x", "").substr(1).rstrip("+")
+	if pgn.length() > 2: #Nef6 e?f6
+		if pgn[0].is_valid_integer(): # B1d4 ?1d4
+			m = char(97 + find_piece_in_row(pgn[0], ch, side)) + pgn
 		else:
-			m[1] = String(8 - find_piece_in_col(m[0], ch, side))
+			m = pgn[0] + String(8 - find_piece_in_col(pgn[0], ch, side)) + pgn.substr(1)
 	else:
 		# Here we have the least amount of move information e.g. #Nf6
-		var dest = pgn.substr(1, 2)
-		m = find_piece_in_grid(ch, side, move_to_position(dest)) + dest
+		m = find_piece_in_grid(ch, side, move_to_position(pgn)) + pgn
 	return m
 
 
@@ -390,11 +393,15 @@ func get_piece_in_grid(x: int, y: int):
 	return p
 
 
-func move_piece(p: Piece):
-	highlighed_tiles.append(get_grid_index(p.pos.x, p.pos.y))
-	highlighed_tiles.append(get_grid_index(p.new_pos.x, p.new_pos.y))
-	grid[highlighed_tiles[0]] = null
-	grid[highlighed_tiles[1]] = p
+func move_piece(p: Piece, engine_turn: bool):
+	var pos = get_grid_index(p.pos.x, p.pos.y)
+	if engine_turn:
+		highlighed_tiles.append(pos)
+	grid[pos] = null
+	pos = get_grid_index(p.new_pos.x, p.new_pos.y)
+	if engine_turn:
+		highlighed_tiles.append(pos)
+	grid[pos] = p
 	p.pos = p.new_pos
 	# Re-parent piece on board
 	p.obj.get_parent().remove_child(p.obj)
@@ -407,7 +414,7 @@ func move_piece(p: Piece):
 		set_halfmoves(0)
 	else:
 		set_halfmoves(halfmoves + 1)
-	if p.side == "B":
+	if engine_turn:
 		set_fullmoves(fullmoves + 1)
 		$HighlightTimer.start()
 		highlight_square(highlighed_tiles[0])
@@ -554,16 +561,16 @@ func square_is_white(n: int):
 # Check if it is valid to move to the new position of a piece
 # Return true/false and null/piece that occupies the position plus
 # castling and passant flags to indicate to check for these situations
-func get_position_info(p: Piece, playing = true, checking_new_pos = false, offset_divisor = square_width):
+func get_position_info(p: Piece, non_player_move, offset_divisor = square_width):
 	var castling = false
 	var passant = false
 	var x: int
 	var y: int
-	 # Set playing to false to allow manual movement of black pieces
-	if p.side == "B" and playing or checking_new_pos:
+	if non_player_move:
 		x = int(p.new_pos.x - p.pos.x)
 		y = int(p.new_pos.y - p.pos.y)
 	else:
+		# p.new_pos needs to be set based on position of manually moved piece
 		var offset = p.obj.position / offset_divisor
 		x = int(round(offset.x))
 		y = int(round(offset.y))
@@ -633,7 +640,8 @@ func get_position_info(p: Piece, playing = true, checking_new_pos = false, offse
 
 func _on_HighlightTimer_timeout():
 	var tile = highlighed_tiles.pop_front()
-	highlight_square(tile, false)
+	if tile != null:
+		highlight_square(tile, false)
 	if highlighed_tiles.size() > 0:
 		highlight_square(highlighed_tiles[0])
 		$HighlightTimer.start()
