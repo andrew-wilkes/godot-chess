@@ -26,6 +26,7 @@ func _ready():
 	board.connect("taken", self, "stow_taken_piece")
 	engine = $Engine
 	show_transport_buttons(false)
+	show_last_move()
 	ponder() # Hide it
 	var c = ColorRect.new()
 	c.color = Color.green
@@ -86,7 +87,6 @@ func handle_state(event, msg = ""):
 					ponder()
 					# msg should contain the player move
 					show_last_move(msg)
-					set_next_color(false)
 					prompt_engine(msg)
 		ENGINE_TURN:
 			match event:
@@ -95,7 +95,6 @@ func handle_state(event, msg = ""):
 					if move != "":
 						move_engine_piece(move)
 						show_last_move(move)
-						set_next_color()
 						state = PLAYER_TURN
 					# Don't print the info spam
 					if !msg.begins_with("info"):
@@ -115,12 +114,8 @@ func handle_state(event, msg = ""):
 
 
 func prompt_engine(move = ""):
-	if fen == "":
-		engine.send_packet("position startpos moves " + move)
-		fen = "started"
-	else:
-		fen = board.get_fen("b")
-		engine.send_packet("position fen %s moves %s" % [fen, move])
+	fen = board.get_fen("b")
+	engine.send_packet("position fen %s moves %s" % [fen, move])
 	engine.send_packet("go movetime 1000")
 	state = ENGINE_TURN
 
@@ -263,6 +258,7 @@ func try_to_make_a_move(piece: Piece, non_player_move = true):
 
 
 func move_piece(piece: Piece, not_castling = true):
+	set_next_color(piece.side == "B")
 	var pos = [piece.pos, piece.new_pos]
 	board.move_piece(piece, state == ENGINE_TURN)
 	if state == PLAYER_TURN:
@@ -335,6 +331,7 @@ func reset_board():
 			node.queue_free()
 	move_index = 0
 	update_count(move_index)
+	set_next_color()
 
 
 func _on_Reset_button_down():
@@ -460,15 +457,14 @@ func _on_Forward_button_down():
 
 func step_forward():
 	if move_index >= pgn_moves.size():
+		set_next_color()
 		return
 	if long_moves.size() <= move_index:
-		long_moves.append(board.pgn_to_long(pgn_moves[move_index], "W" if white_next else "B"))
+		long_moves.append(board.pgn_to_long(pgn_moves[move_index], "W" if move_index % 2 == 0 else "B"))
 	move_engine_piece(long_moves[move_index])
 	show_last_move(long_moves[move_index])
 	move_index += 1
 	update_count(move_index)
-	if pgn_moves.size() > move_index:
-		white_next = !white_next
 
 
 var stepping = false
