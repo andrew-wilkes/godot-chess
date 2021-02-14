@@ -28,12 +28,7 @@ func _ready():
 	show_transport_buttons(false)
 	show_last_move()
 	ponder() # Hide it
-	var c = ColorRect.new()
-	c.color = Color.green
-	c.rect_min_size = Vector2(64, 64)
 	fd = $c/FileDialog
-	#fen_from_file("0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1426,500,2,0,advantage endgame short,https://lichess.org/F8M8OS71#53")
-	#fen_from_file("r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16")
 
 
 func handle_state(event, msg = ""):
