@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Board.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Main.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://assets/start.png" type="Texture" id=5]
 [ext_resource path="res://assets/end.png" type="Texture" id=6]
 [ext_resource path="res://assets/play.png" type="Texture" id=7]
+[ext_resource path="res://Promote.tscn" type="PackedScene" id=8]
 
 [sub_resource type="ImageTexture" id=1]
 
@@ -252,6 +253,9 @@ margin_right = 320.0
 margin_bottom = 220.0
 size_flags_horizontal = 5
 size_flags_vertical = 5
+
+[node name="Promote" parent="c" instance=ExtResource( 8 )]
+visible = false
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Next/Flip" to="." method="_on_Flip_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]

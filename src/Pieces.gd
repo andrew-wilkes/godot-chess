@@ -14,8 +14,8 @@ func get_piece(key = "P", side = "W"):
 	return p
 
 
-func promote(p: Piece):
-	p.key = p.promote_to.to_upper()
+func promote(p: Piece, promote_to = "q"):
+	p.key = promote_to.to_upper()
 	var parent = p.obj.get_parent()
 	p.obj.queue_free() # Delete pawn
 	# Now add the new piece in place of the pawn

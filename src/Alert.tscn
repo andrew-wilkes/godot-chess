@@ -3,7 +3,6 @@
 [ext_resource path="res://Alert.gd" type="Script" id=1]
 
 [node name="Alert" type="PopupPanel"]
-visible = true
 margin_right = 299.0
 margin_bottom = 108.0
 script = ExtResource( 1 )

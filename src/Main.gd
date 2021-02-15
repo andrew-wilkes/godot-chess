@@ -9,9 +9,11 @@ var fen = ""
 var show_suggested_move = true
 var white_next = true
 var fd: FileDialog
+var promote
 var pgn_moves = []
 var long_moves : PoolStringArray = []
 var move_index = 0
+var promote_to = ""
 
 enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
@@ -29,6 +31,8 @@ func _ready():
 	show_last_move()
 	ponder() # Hide it
 	fd = $c/FileDialog
+	promote = $c/Promote
+	promote.connect("promotion_picked", self, "promote_pawn")
 
 
 func handle_state(event, msg = ""):
@@ -161,8 +165,8 @@ func move_engine_piece(move: String):
 	var pos1 = board.move_to_position(move.substr(0, 2))
 	var p: Piece = board.get_piece_in_grid(pos1.x, pos1.y)
 	p.new_pos = board.move_to_position(move.substr(2, 2))
-	if move.length() == 5:
-		p.promote_to = move[4]
+	if move[move.length() - 1] in "rnbq":
+		promote_to = move[move.length() - 1]
 	try_to_make_a_move(p)
 
 
@@ -277,7 +281,16 @@ func return_piece(piece: Piece):
 		selected_piece = null
 		if piece.key == "P":
 			if piece.side == "B" and piece.pos.y == 7 or piece.side == "W" and piece.pos.y == 0:
-				Pieces.promote(piece)
+				if promote_to == "":
+					# Prompt player
+					promote.open(piece)
+				else:
+					Pieces.promote(piece, promote_to)
+			promote_to = ""
+
+
+func promote_pawn(p: Piece, pick: String):
+	Pieces.promote(p, pick)
 
 
 func _on_Start_button_down():

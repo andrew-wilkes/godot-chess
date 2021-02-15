@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Promote.gd" type="Script" id=1]
+
+[node name="Promote" type="PopupPanel"]
+visible = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -477.0
+margin_bottom = -758.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="M" type="MarginContainer" parent="."]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 159.0
+margin_bottom = 218.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="M"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 135.0
+margin_bottom = 194.0
+custom_constants/separation = 20
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="M/VBox"]
+margin_right = 115.0
+margin_bottom = 14.0
+text = "Promote pawn to?"
+
+[node name="q" type="Button" parent="M/VBox"]
+margin_top = 34.0
+margin_right = 115.0
+margin_bottom = 54.0
+text = "Queen"
+
+[node name="b" type="Button" parent="M/VBox"]
+margin_top = 74.0
+margin_right = 115.0
+margin_bottom = 94.0
+text = "Bishop"
+
+[node name="n" type="Button" parent="M/VBox"]
+margin_top = 114.0
+margin_right = 115.0
+margin_bottom = 134.0
+text = "Knight"
+
+[node name="r" type="Button" parent="M/VBox"]
+margin_top = 154.0
+margin_right = 115.0
+margin_bottom = 174.0
+text = "Rook"
