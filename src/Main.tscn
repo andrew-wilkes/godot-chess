@@ -246,7 +246,6 @@ __meta__ = {
 }
 
 [node name="Alert" parent="c" instance=ExtResource( 3 )]
-visible = false
 margin_left = 20.0
 margin_top = 20.0
 margin_right = 320.0

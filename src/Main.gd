@@ -1,38 +1,37 @@
 extends Control
 
-var selected_piece
-var board : Board
-var engine : Node
+onready var engine = $Engine
+onready var fd = $c/FileDialog
+onready var promote = $c/Promote
+onready var board = $VBox/Board
+
 var pid = 0
-var moves : PoolStringArray
+var moves : PoolStringArray = []
+var long_moves : PoolStringArray = []
+var selected_piece : Piece
 var fen = ""
 var show_suggested_move = true
 var white_next = true
-var fd: FileDialog
-var promote
 var pgn_moves = []
-var long_moves : PoolStringArray = []
 var move_index = 0
 var promote_to = ""
-
-enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN } # states
 var state = IDLE
-enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE } # events
+
+# states
+enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN }
+# events
+enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE }
 
 func _ready():
-	board = find_node("Board")
 	board.connect("clicked", self, "piece_clicked")
 	board.connect("unclicked", self, "piece_unclicked")
 	board.connect("moved", self, "mouse_moved")
 	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
 	board.connect("taken", self, "stow_taken_piece")
-	engine = $Engine
+	promote.connect("promotion_picked", self, "promote_pawn")
 	show_transport_buttons(false)
 	show_last_move()
 	ponder() # Hide it
-	fd = $c/FileDialog
-	promote = $c/Promote
-	promote.connect("promotion_picked", self, "promote_pawn")
 
 
 func handle_state(event, msg = ""):
@@ -135,7 +134,8 @@ func show_last_move(move = ""):
 
 func get_best_move(s: String):
 	var move = ""
-	# Make sure that whitespace contains spaces since it may only have tabs for example
+	# Make sure that whitespace contains spaces
+	# since it may only have tabs for example
 	var raw_tokens = s.replace("\t", " ").split(" ")
 	var tokens = []
 	for t in raw_tokens:
@@ -146,7 +146,9 @@ func get_best_move(s: String):
 		if tokens[0] == "bestmove": # This is the engine's move
 			move = tokens[1]
 	if tokens.size() > 3:
-		if tokens[2] == "ponder": # This is the move suggested to the player by the engine following it's best move (so like the engine playing against itself)
+		if tokens[2] == "ponder":
+			# This is the move suggested to the player by the engine following
+			# it's best move (so like the engine playing against itself)
 			ponder(tokens[3])
 	return move
 
@@ -183,7 +185,8 @@ func mouse_entered():
 func piece_clicked(piece):
 	selected_piece = piece
 	# Need to ensure that piece displays above all others when moved
-	# The z_index gets reset when we settle the piece back into it's resting position
+	# The z_index gets reset when we settle the piece back into
+	# it's resting position
 	piece.obj.z_index = 1
 	print("Board clicked ", selected_piece)
 
@@ -194,7 +197,8 @@ func piece_unclicked(piece):
 
 
 func try_to_make_a_move(piece: Piece, non_player_move = true):
-	var info = board.get_position_info(piece, non_player_move) # When Idle, we are not playing a game so the user may move the black pieces
+	var info = board.get_position_info(piece, non_player_move)
+	# When Idle, we are not playing a game so the user may move the black pieces
 	print(info.ok)
 	# Try to drop the piece
 	# Also check for castling and passant
@@ -253,7 +257,8 @@ func try_to_make_a_move(piece: Piece, non_player_move = true):
 			else:
 				if status.checked:
 					alert("Check")
-	return_piece(piece) # Settle the piece precisely into position and reset it's z_order
+	# Settle the piece precisely into position and reset it's z_order
+	return_piece(piece)
 
 
 func move_piece(piece: Piece, not_castling = true):
@@ -263,7 +268,8 @@ func move_piece(piece: Piece, not_castling = true):
 	if state == PLAYER_TURN:
 		moves.append(board.position_to_move(pos[0]) + board.position_to_move(pos[1]))
 		if not_castling:
-			handle_state(MOVE, moves.join(" ")) # When castling there may be 2 moves to convey rook <> king
+			# When castling there may be 2 moves to convey rook <> king
+			handle_state(MOVE, moves.join(" ")) 
 			moves = []
 
 
