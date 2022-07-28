@@ -1,0 +1,4 @@
+github.com/shadowapex/godot-go v0.0.0-20180324012857-1746202a2001 h1:9Q74Kz2r1cxvNqcCR+7baY7So5FUuit+5MQIZB7B6n8=
+github.com/shadowapex/godot-go v0.0.0-20180324012857-1746202a2001/go.mod h1:gUqlmncRgZMy/EyxPlYWTTF93WmmfC0Phd3CM80Iojs=
+github.com/vitaminwater/cgo.wchar v0.0.0-20160320123332-5dd6f4be3f2a h1:ob45GSHxZJ5H2Sf8WzcJWqNmqiBLr2QIHmun1its9d4=
+github.com/vitaminwater/cgo.wchar v0.0.0-20160320123332-5dd6f4be3f2a/go.mod h1:2DpU0Ek6K9QFbDyQwPa3PAOPSfdp38Pk+MXM6y/sDR0=
