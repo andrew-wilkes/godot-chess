@@ -15,11 +15,13 @@ func _ready():
 	# Get the base path of the application files
 	var cmd = "pwd"
 	var ext = ""
+	var params = []
 	if OS.get_name() == "Windows":
-		cmd = "cd"
+		cmd = "cmd.exe"
 		ext = ".exe"
+		params = ["/c", "cd"]
 	var output = []
-	var _exit_code = OS.execute(cmd, [], true, output)
+	var _exit_code = OS.execute(cmd, params, true, output)
 	var path = output[0].strip_edges() # Remove cstring null termination char
 	# Allow for running in dev mode, so back peddle from src folder
 	var src_pos = path.find("src")

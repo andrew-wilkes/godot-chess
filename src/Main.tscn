@@ -239,8 +239,6 @@ margin_right = 458.0
 margin_bottom = 448.0
 access = 2
 show_hidden_files = true
-current_dir = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src"
-current_path = "/home/andrew/dev/godot/git/andrew-wilkes/godot-chess/src/"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -255,6 +253,7 @@ size_flags_vertical = 5
 
 [node name="Promote" parent="c" instance=ExtResource( 8 )]
 visible = false
+
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Next/Flip" to="." method="_on_Flip_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]
