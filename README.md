@@ -57,6 +57,9 @@ The godot source code is in: `src`
 
 On the command line type: **make** to build the go applications into the `bin` directory.
 
+Or, if your computer doesn't have the *make* utility installed, type:
+**go build -o bin/ src/engine/iopiper.go**
+
 In the Godot Editor: export for the PC/Linux/Mac.
 
 Download a Chess Engine such as: [Stock Fish](https://stockfishchess.org/download/) to the `engine` directory.
