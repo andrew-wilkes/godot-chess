@@ -1,35 +1,29 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://c8usdvp4rr7d2"]
 
-[ext_resource path="res://Board.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://Board.gd" id="1"]
 
 [node name="Board" type="MarginContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 1
-custom_constants/margin_right = 50
-custom_constants/margin_left = 20
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-white = Color( 0.827451, 0.827451, 0.827451, 1 )
-grey = Color( 0.443137, 0.443137, 0.443137, 1 )
-mod_color = Color( 0.176471, 0.611765, 0.870588, 1 )
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 50
+script = ExtResource("1")
+square_width = 70
+white = Color(0.827451, 0.827451, 0.827451, 1)
+grey = Color(0.443137, 0.443137, 0.443137, 1)
+mod_color = Color(0.176471, 0.611765, 0.870588, 1)
 
 [node name="Grid" type="GridContainer" parent="."]
-margin_left = 20.0
-margin_right = 550.0
-margin_bottom = 980.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/vseparation = 0
-custom_constants/hseparation = 0
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
 columns = 8
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HighlightTimer" type="Timer" parent="."]
 wait_time = 0.3
 one_shot = true
+
 [connection signal="timeout" from="HighlightTimer" to="." method="_on_HighlightTimer_timeout"]

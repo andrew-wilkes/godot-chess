@@ -9,10 +9,10 @@ signal halfmove
 signal fullmove
 signal taken
 
-export var square_width = 64 # pixels (same as chess piece images)
-export(Color) var white # Square color
-export(Color) var grey # Square color
-export(Color) var mod_color # For highlighting squares
+@export var square_width = 64 # pixels (same as chess piece images)
+@export var white: Color # Square color
+@export var grey: Color # Square color
+@export var mod_color: Color # For highlighting squares
 
 const num_squares = 64
 enum { SIDE, UNDER }
@@ -46,6 +46,8 @@ func _ready():
 	#highlight_square(highlighed_tiles[0])
 	#test_pgn_to_long_conversion()
 
+#func _gui_input(event):
+#	print("Main receive Event : ", event)
 
 func test_pgn_to_long_conversion():
 	print(pgn_to_long("a4", "W"))
@@ -84,7 +86,7 @@ func position_to_move(pos: Vector2) -> String:
 # convert move code to grid position e.g. h1 -> 7,7
 func move_to_position(move: String) -> Vector2:
 	assert(move.length() == 2)
-	var pos = Vector2(ord(move[0]) - 97, 8 - int(move[1]))
+	var pos = Vector2(move.unicode_at(0) - 97, 8 - int(move[1]))
 	assert(pos.x >= 0)
 	assert(pos.y >= 0)
 	assert(pos.x < 8)
@@ -100,7 +102,7 @@ func pgn_to_long(pgn: String, side: String):
 	var m = ""
 	var ch = pgn[0]
 	# Pawn moves ignoring =Q in dxc1=Q
-	if ord(ch) > 96: # a .. h
+	if ch.unicode_at(0) > 96: # a .. h
 		var y
 		if pgn[1] == "x":
 			m = pgn.substr(0, 4) #exf6 e?f6
@@ -124,7 +126,7 @@ func pgn_to_long(pgn: String, side: String):
 			return "e1g1"
 	pgn = pgn.replace("x", "").substr(1).rstrip("+")
 	if pgn.length() > 2: #Nef6 e?f6
-		if pgn[0].is_valid_integer(): # B1d4 ?1d4
+		if pgn[0].is_valid_int(): # B1d4 ?1d4
 			m = char(97 + find_piece_in_row(pgn[0], ch, side)) + pgn
 		else:
 			m = pgn[0] + String(8 - find_piece_in_col(pgn[0], ch, side)) + pgn.substr(1)
@@ -144,7 +146,7 @@ func find_piece_in_row(n, key, side):
 
 
 func find_piece_in_col(ch, key, side):
-	var x = ord(ch) - 97
+	var x = ch.unicode_at(0) - 97
 	for y in 8:
 		var i = get_grid_index(x, y)
 		if grid[i] != null and grid[i].key == key and grid[i].side == side:
@@ -164,7 +166,7 @@ func find_piece_in_grid(key, side, pos: Vector2):
 
 # Return -1 on error
 func find_pawn_in_col(ch, y, side):
-	var x = ord(ch) - 97
+	var x = ch.unicode_at(0) - 97
 	var dy = 1 if side == "W" else -1
 	y = 8 - y + dy
 	var i = get_grid_index(x, y)
@@ -196,7 +198,7 @@ func setup_pieces(_fen = default_fen):
 				i += 1 
 	# Tag pawn for en passant
 	if parts.size() >= 4 and parts[3].length() == 2:
-		i = parts[3][0].to_ascii()[0] - 96 # ASCII 'a' = 97
+		i = parts[3][0].to_ascii_buffer()[0] - 96 # ASCII 'a' = 97
 		if i >= 0 and i < 8:
 			# Only valid rank is 3 or 6
 			match parts[3][1]:
@@ -205,10 +207,10 @@ func setup_pieces(_fen = default_fen):
 				"6":
 					tag_piece(i + 24)
 	# Set halfmoves value
-	if parts.size() >= 5 and parts[4].is_valid_integer():
+	if parts.size() >= 5 and parts[4].is_valid_int():
 		set_halfmoves(parts[4].to_int())
 	# Set fullmoves value
-	if parts.size() >= 6 and parts[5].is_valid_integer():
+	if parts.size() >= 6 and parts[5].is_valid_int():
 		set_fullmoves(parts[5].to_int())
 	return next_move_white
 
@@ -226,14 +228,14 @@ func get_fen(next_move):
 				ns += 1
 			else:
 				if ns > 0:
-					_fen += String(ns)
+					_fen += str(ns)
 					ns = 0
 				var key = p.key
 				if p.side == "B":
 					key = key.to_lower()
 				_fen += key
 		if ns > 0:
-			_fen += String(ns)
+			_fen += str(ns)
 			ns = 0
 		if y < 7:
 			_fen += "/"
@@ -327,8 +329,8 @@ func set_fullmoves(n):
 func draw_tiles():
 	var white_square = ColorRect.new()
 	white_square.color = white
-	white_square.mouse_filter = Control.MOUSE_FILTER_PASS
-	white_square.rect_min_size = Vector2(square_width, square_width)
+	white_square.mouse_filter = Control.MOUSE_FILTER_STOP
+	white_square.custom_minimum_size = Vector2(square_width, square_width)
 	var grey_square = white_square.duplicate()
 	grey_square.color = grey
 	# Add squares to grid
@@ -344,9 +346,9 @@ func draw_tiles():
 
 
 func add_square(s: ColorRect, x: int, y: int):
-	s.connect("gui_input", self, "square_event", [x, y])
+	s.connect("gui_input", Callable(self, "square_event").bind(x, y))
 	if x == 0:
-		add_label(s, SIDE, String(8 - y))
+		add_label(s, SIDE, str(8 - y))
 	if y == 7:
 		add_label(s, UNDER, char(97 + x))
 	$Grid.add_child(s)
@@ -357,9 +359,9 @@ func add_label(node, pos, chr):
 	l.add_to_group("labels")
 	l.text = chr
 	if pos == SIDE:
-		l.rect_position = Vector2(-square_width / 4.0, square_width / 2.3)
+		l.position = Vector2(-square_width / 4.0, square_width / 2.3)
 	else:
-		l.rect_position = Vector2(square_width / 2.3, square_width * 1.1)
+		l.position = Vector2(square_width / 2.3, square_width * 1.1)
 	node.add_child(l)
 
 
@@ -369,8 +371,9 @@ func hide_labels(show = false):
 
 
 func square_event(event: InputEvent, x: int, y: int):
+	#print("event type : ", event.get_class())
 	if event is InputEventMouseButton:
-		get_tree().set_input_as_handled()
+		get_viewport().set_input_as_handled()
 		print("Clicked at: ", [x, y])
 		var p = get_piece_in_grid(x, y)
 		print(p)
@@ -378,6 +381,7 @@ func square_event(event: InputEvent, x: int, y: int):
 			if event.pressed:
 				emit_signal("clicked", p)
 			else:
+				print("unclick event : ", p)
 				emit_signal("unclicked", p)
 	# Mouse position is relative to the square
 	if event is InputEventMouseMotion:
@@ -529,7 +533,7 @@ func can_attack(x, y, side, key):
 func test_highlight_square():
 	for n in num_squares:
 		highlight_square(n)
-		yield(get_tree().create_timer(0.1), "timeout")
+		await get_tree().create_timer(0.1).timeout
 		highlight_square(n, false)
 
 

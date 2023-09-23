@@ -1,13 +1,13 @@
 extends Control
 
-onready var engine = $Engine
-onready var fd = $c/FileDialog
-onready var promote = $c/Promote
-onready var board = $VBox/Board
+@onready var engine = $Engine
+@onready var fd = $c/FileDialog
+@onready var promote = $c/Promote
+@onready var board = $VBox/Board
 
 var pid = 0
-var moves : PoolStringArray = []
-var long_moves : PoolStringArray = []
+var moves : PackedStringArray = []
+var long_moves : PackedStringArray = []
 var selected_piece : Piece
 var fen = ""
 var show_suggested_move = true
@@ -23,12 +23,12 @@ enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_
 enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE }
 
 func _ready():
-	board.connect("clicked", self, "piece_clicked")
-	board.connect("unclicked", self, "piece_unclicked")
-	board.connect("moved", self, "mouse_moved")
-	board.get_node("Grid").connect("mouse_exited", self, "mouse_entered")
-	board.connect("taken", self, "stow_taken_piece")
-	promote.connect("promotion_picked", self, "promote_pawn")
+	board.connect("clicked", Callable(self, "piece_clicked"))
+	board.connect("unclicked", Callable(self, "piece_unclicked"))
+	board.connect("moved", Callable(self, "mouse_moved"))
+	connect("mouse_entered", Callable(self, "mouse_entered"))
+	board.connect("taken", Callable(self, "stow_taken_piece"))
+	promote.connect("promotion_picked", Callable(self, "promote_pawn"))
 	show_transport_buttons(false)
 	show_last_move()
 	ponder() # Hide it
@@ -42,7 +42,7 @@ func handle_state(event, msg = ""):
 					var status = engine.start_udp_server()
 					if status.started:
 						# Need some delay before connecting is possible
-						yield(get_tree().create_timer(0.5), "timeout")
+						await get_tree().create_timer(0.5).timeout
 						engine.send_packet("uci")
 						state = CONNECTING
 					else:
@@ -199,7 +199,7 @@ func piece_unclicked(piece):
 func try_to_make_a_move(piece: Piece, non_player_move = true):
 	var info = board.get_position_info(piece, non_player_move)
 	# When Idle, we are not playing a game so the user may move the black pieces
-	print(info.ok)
+	print("try_to_make_a_move : ", info.ok)
 	# Try to drop the piece
 	# Also check for castling and passant
 	var ok_to_move = false
@@ -269,7 +269,7 @@ func move_piece(piece: Piece, not_castling = true):
 		moves.append(board.position_to_move(pos[0]) + board.position_to_move(pos[1]))
 		if not_castling:
 			# When castling there may be 2 moves to convey rook <> king
-			handle_state(MOVE, moves.join(" ")) 
+			handle_state(MOVE, " ".join(moves)) 
 			moves = []
 
 
@@ -316,11 +316,11 @@ func _on_CheckBox_toggled(button_pressed):
 
 
 func _on_Board_fullmove(n):
-	$VBox/HBox/Grid/Moves.text = String(n)
+	$VBox/HBox/Grid/Moves.text = str(n)
 
 
 func _on_Board_halfmove(n):
-	$VBox/HBox/Grid/HalfMoves.text = String(n)
+	$VBox/HBox/Grid/HalfMoves.text = str(n)
 	if n == 50:
 		alert("It's a draw!")
 		state = IDLE
@@ -358,23 +358,23 @@ func _on_Flip_button_down():
 
 func set_next_color(is_white = true):
 	white_next = is_white
-	$VBox/HBox/Menu/Next/Color.color = Color.white if white_next else Color.black
+	$VBox/HBox/Menu/Next/Color.color = Color.WHITE if white_next else Color.BLACK
 
 
 func _on_Load_button_down():
-	fd.mode = FileDialog.MODE_OPEN_FILE
+	fd.mode = FileDialog.FILE_MODE_OPEN_FILE
 	fd.popup_centered()
 
 
 func _on_Save_button_down():
-	fd.mode = FileDialog.MODE_SAVE_FILE
+	fd.mode = FileDialog.FILE_MODE_SAVE_FILE
 	fd.popup_centered()
 
 
 func _on_FileDialog_file_selected(path: String):
-	if fd.mode == FileDialog.MODE_OPEN_FILE:
-		var file = File.new()
-		file.open(path, File.READ)
+	if fd.mode == FileDialog.FILE_MODE_OPEN_FILE:
+		var file = FileAccess.open(path, FileAccess.READ)
+		#file.open(path, File.READ)
 		var content = file.get_as_text()
 		file.close()
 		if path.get_extension().to_lower() == "pgn":
@@ -387,7 +387,7 @@ func _on_FileDialog_file_selected(path: String):
 
 # Extract the moves from the first game in a Portable Game Notation (PGN) text
 func pgn_from_file(content: String) -> String:
-	var pgn: PoolStringArray = []
+	var pgn: PackedStringArray = []
 	var lines = content.split("\n")
 	var started = false
 	for line in lines:
@@ -400,7 +400,7 @@ func pgn_from_file(content: String) -> String:
 			break
 		else:
 			pgn.append(line.strip_edges())
-	return pgn.join(" ")
+	return " ".join(pgn)
 
 
 func fen_from_file(content: String):
@@ -427,7 +427,7 @@ func is_valid_fen(_fen: String):
 			break
 		if ch == "/":
 			rows += 1
-		elif ch.is_valid_integer():
+		elif ch.is_valid_int():
 			n += int(ch)
 		elif ch in "pPrRnNbBqQkK":
 			n += 1
@@ -435,8 +435,8 @@ func is_valid_fen(_fen: String):
 
 
 func save_file(content, path):
-	var file = File.new()
-	file.open(path, File.WRITE)
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	#file.open(path, File.WRITE)
 	file.store_string(content)
 	file.close()
 
@@ -491,3 +491,10 @@ func _on_End_button_down():
 
 func _on_End_button_up():
 	stepping = false
+
+
+func _on_engine_done(ok, packet):
+	if ok:
+		handle_state(DONE, packet)
+	else:
+		handle_state(ERROR)

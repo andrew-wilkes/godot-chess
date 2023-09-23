@@ -4,7 +4,7 @@ func _ready():
 	var status = $Engine.start_udp_server()
 	if status.started:
 		print("PID of server: %d" % $Engine.server_pid)
-		yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
 		$Engine.send_packet("uci")
 	else:
 		print(status.error)

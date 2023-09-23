@@ -10,7 +10,7 @@ func set_server(port = 7070):
 
 	
 func send_packet(pkt: String):
-	udp.put_packet(pkt.to_utf8())
+	udp.put_packet(pkt.to_utf8_buffer())
 
 
 func _process(_delta):

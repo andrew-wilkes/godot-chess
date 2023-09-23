@@ -1,18 +1,18 @@
 [gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Pieces.gd" type="Script" id=1]
-[ext_resource path="res://pieces/blackKnight.png" type="Texture" id=2]
-[ext_resource path="res://pieces/blackQueen.png" type="Texture" id=3]
-[ext_resource path="res://pieces/whiteKnight.png" type="Texture" id=4]
-[ext_resource path="res://pieces/whitePawn.png" type="Texture" id=5]
-[ext_resource path="res://pieces/blackBishop.png" type="Texture" id=6]
-[ext_resource path="res://pieces/whiteQueen.png" type="Texture" id=7]
-[ext_resource path="res://pieces/blackPawn.png" type="Texture" id=8]
-[ext_resource path="res://pieces/blackRook.png" type="Texture" id=9]
-[ext_resource path="res://pieces/blackKing.png" type="Texture" id=10]
-[ext_resource path="res://pieces/whiteBishop.png" type="Texture" id=11]
-[ext_resource path="res://pieces/whiteRook.png" type="Texture" id=12]
-[ext_resource path="res://pieces/whiteKing.png" type="Texture" id=13]
+[ext_resource path="res://pieces/blackKnight.png" type="Texture2D" id=2]
+[ext_resource path="res://pieces/blackQueen.png" type="Texture2D" id=3]
+[ext_resource path="res://pieces/whiteKnight.png" type="Texture2D" id=4]
+[ext_resource path="res://pieces/whitePawn.png" type="Texture2D" id=5]
+[ext_resource path="res://pieces/blackBishop.png" type="Texture2D" id=6]
+[ext_resource path="res://pieces/whiteQueen.png" type="Texture2D" id=7]
+[ext_resource path="res://pieces/blackPawn.png" type="Texture2D" id=8]
+[ext_resource path="res://pieces/blackRook.png" type="Texture2D" id=9]
+[ext_resource path="res://pieces/blackKing.png" type="Texture2D" id=10]
+[ext_resource path="res://pieces/whiteBishop.png" type="Texture2D" id=11]
+[ext_resource path="res://pieces/whiteRook.png" type="Texture2D" id=12]
+[ext_resource path="res://pieces/whiteKing.png" type="Texture2D" id=13]
 
 [node name="Pieces" type="GridContainer"]
 anchor_right = 1.0
@@ -25,61 +25,61 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="blackBishop" type="Sprite" parent="."]
+[node name="blackBishop" type="Sprite2D" parent="."]
 texture = ExtResource( 6 )
 centered = false
 
-[node name="blackKing" type="Sprite" parent="."]
+[node name="blackKing" type="Sprite2D" parent="."]
 position = Vector2( 64, 0 )
 texture = ExtResource( 10 )
 centered = false
 
-[node name="blackKnight" type="Sprite" parent="."]
+[node name="blackKnight" type="Sprite2D" parent="."]
 position = Vector2( 128, 0 )
 texture = ExtResource( 2 )
 centered = false
 
-[node name="blackPawn" type="Sprite" parent="."]
+[node name="blackPawn" type="Sprite2D" parent="."]
 position = Vector2( 192, 0 )
 texture = ExtResource( 8 )
 centered = false
 
-[node name="blackQueen" type="Sprite" parent="."]
+[node name="blackQueen" type="Sprite2D" parent="."]
 position = Vector2( 256, 0 )
 texture = ExtResource( 3 )
 centered = false
 
-[node name="blackRook" type="Sprite" parent="."]
+[node name="blackRook" type="Sprite2D" parent="."]
 position = Vector2( 320, 0 )
 texture = ExtResource( 9 )
 centered = false
 
-[node name="whiteBishop" type="Sprite" parent="."]
+[node name="whiteBishop" type="Sprite2D" parent="."]
 position = Vector2( 384, 0 )
 texture = ExtResource( 11 )
 centered = false
 
-[node name="whiteKing" type="Sprite" parent="."]
+[node name="whiteKing" type="Sprite2D" parent="."]
 position = Vector2( 448, 0 )
 texture = ExtResource( 13 )
 centered = false
 
-[node name="whiteKnight" type="Sprite" parent="."]
+[node name="whiteKnight" type="Sprite2D" parent="."]
 position = Vector2( 512, 0 )
 texture = ExtResource( 4 )
 centered = false
 
-[node name="whitePawn" type="Sprite" parent="."]
+[node name="whitePawn" type="Sprite2D" parent="."]
 position = Vector2( 576, 0 )
 texture = ExtResource( 5 )
 centered = false
 
-[node name="whiteQueen" type="Sprite" parent="."]
+[node name="whiteQueen" type="Sprite2D" parent="."]
 position = Vector2( 640, 0 )
 texture = ExtResource( 7 )
 centered = false
 
-[node name="whiteRook" type="Sprite" parent="."]
+[node name="whiteRook" type="Sprite2D" parent="."]
 position = Vector2( 704, 0 )
 texture = ExtResource( 12 )
 centered = false
