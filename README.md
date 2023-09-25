@@ -1,4 +1,4 @@
-# Godot Chess
+# Godot Chess - for Godot v3.x
 
 This project implements a PC chess board GUI compatible with UCI protocol to interface with chess engines.
 
