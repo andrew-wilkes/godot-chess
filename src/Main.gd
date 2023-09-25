@@ -457,8 +457,8 @@ func update_count(n: int):
 	$VBox/HBox/Options/TB/Count.text = "%d/%d" % [n, pgn_moves.size()]
 
 
-func show_transport_buttons(show = true):
-	$VBox/HBox/Options/TB.modulate.a = 1.0 if show else 0.0
+func show_transport_buttons(show_buttons = true):
+	$VBox/HBox/Options/TB.modulate.a = 1.0 if show_buttons else 0.0
 
 
 func _on_Begin_button_down():

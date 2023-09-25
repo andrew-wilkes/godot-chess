@@ -273,7 +273,7 @@ func set_piece(key: String, i: int, castling: String):
 	var p = Piece.new()
 	p.key = key.to_upper()
 	p.side = "W" if "a" > key else "B"
-# warning-ignore:integer_division
+	@warning_ignore("integer_division")
 	p.pos = Vector2(i % 8, i / 8)
 	p.obj = Pieces.get_piece(p.key, p.side)
 	grid[i] = p
@@ -365,9 +365,9 @@ func add_label(node, pos, chr):
 	node.add_child(l)
 
 
-func hide_labels(show = false):
+func hide_labels(show_labels = false):
 	for label in get_tree().get_nodes_in_group("labels"):
-		label.visible = show
+		label.visible = show_labels
 
 
 func square_event(event: InputEvent, x: int, y: int):
@@ -559,7 +559,7 @@ func test_square_is_white():
 
 
 func square_is_white(n: int):
-# warning-ignore:integer_division
+	@warning_ignore("integer_division")
 	return 0 == ((n / 8) + n) % 2
 
 
