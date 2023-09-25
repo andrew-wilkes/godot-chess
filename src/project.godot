@@ -6,34 +6,13 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "Control",
-"class": "Board",
-"language": "GDScript",
-"path": "res://Board.gd"
-}, {
-"base": "Node",
-"class": "Engine",
-"language": "GDScript",
-"path": "res://engine/Engine.gd"
-}, {
-"base": "Node",
-"class": "Piece",
-"language": "GDScript",
-"path": "res://piece.gd"
-} ]
-_global_script_class_icons={
-"Board": "",
-"Engine": "",
-"Piece": ""
-}
+config_version=5
 
 [application]
 
 config/name="Chess"
 run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.1")
 config/icon="res://icon.png"
 
 [autoload]
@@ -46,9 +25,9 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/width=640
-window/size/height=980
+window/size/viewport_width=640
+window/size/viewport_height=980
 
 [rendering]
 
-environment/default_environment="res://default_env.tres"
+environment/defaults/default_environment="res://default_env.tres"

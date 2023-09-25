@@ -33,10 +33,10 @@ func _ready():
 # It's useful when you change the child node type or the images to save time
 func setup():
 	# First create a sorted list of the chess piece images
-	var dir = Directory.new()
-	if dir.open("res://pieces") == OK:
+	var dir = DirAccess.open("res://pieces")
+	if dir != null:
 		var files = []
-		dir.list_dir_begin()
+		dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.get_extension() == "png":

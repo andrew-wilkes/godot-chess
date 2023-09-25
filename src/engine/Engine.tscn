@@ -1,16 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://dl4s6x8gtvxk8"]
 
-[ext_resource path="res://engine/Engine.gd" type="Script" id=1]
-[ext_resource path="res://engine/UDPClient.tscn" type="PackedScene" id=2]
+[ext_resource type="Script" path="res://engine/Engine.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://1ggxtsr4hbwc" path="res://engine/UDPClient.tscn" id="2"]
 
 [node name="Engine" type="Node"]
-script = ExtResource( 1 )
+script = ExtResource("1")
 
-[node name="UDPClient" parent="." instance=ExtResource( 2 )]
+[node name="UDPClient" parent="." instance=ExtResource("2")]
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 5.0
 one_shot = true
+
 [connection signal="tree_exited" from="." to="." method="_on_Engine_tree_exited"]
 [connection signal="got_packet" from="UDPClient" to="." method="_on_UDPClient_got_packet"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

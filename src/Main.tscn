@@ -1,257 +1,179 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=10 format=3 uid="uid://cgcfx3twc5adf"]
 
-[ext_resource path="res://Board.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Main.gd" type="Script" id=2]
-[ext_resource path="res://Alert.tscn" type="PackedScene" id=3]
-[ext_resource path="res://engine/Engine.tscn" type="PackedScene" id=4]
-[ext_resource path="res://assets/start.png" type="Texture" id=5]
-[ext_resource path="res://assets/end.png" type="Texture" id=6]
-[ext_resource path="res://assets/play.png" type="Texture" id=7]
-[ext_resource path="res://Promote.tscn" type="PackedScene" id=8]
+[ext_resource type="PackedScene" uid="uid://c8usdvp4rr7d2" path="res://Board.tscn" id="1"]
+[ext_resource type="Script" path="res://Main.gd" id="2"]
+[ext_resource type="PackedScene" path="res://Alert.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://dl4s6x8gtvxk8" path="res://engine/Engine.tscn" id="4"]
+[ext_resource type="Texture2D" uid="uid://byu46yrpllged" path="res://assets/start.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://cwborbub37eyr" path="res://assets/end.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://t2ddb83ng7u7" path="res://assets/play.png" id="7"]
+[ext_resource type="PackedScene" path="res://Promote.tscn" id="8"]
 
-[sub_resource type="ImageTexture" id=1]
+[sub_resource type="ImageTexture" id="1"]
 
 [node name="Main" type="MarginContainer"]
+custom_minimum_size = Vector2(600, 600)
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 600, 600 )
-custom_constants/margin_right = 20
-custom_constants/margin_top = 20
-custom_constants/margin_left = 20
-custom_constants/margin_bottom = 20
-script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+script = ExtResource("2")
 
 [node name="VBox" type="VBoxContainer" parent="."]
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 620.0
-margin_bottom = 960.0
-custom_constants/separation = 20
+layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
-margin_right = 600.0
-margin_bottom = 85.0
-custom_constants/separation = 20
+layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="VBox" type="VBoxContainer" parent="VBox/HBox"]
-margin_right = 157.0
-margin_bottom = 85.0
-custom_constants/separation = 20
+layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Start" type="Button" parent="VBox/HBox/VBox"]
-margin_right = 157.0
-margin_bottom = 20.0
+layout_mode = 2
 text = "PLAY"
 
 [node name="Ponder" type="HBoxContainer" parent="VBox/HBox/VBox"]
-margin_top = 40.0
-margin_right = 157.0
-margin_bottom = 54.0
-custom_constants/separation = 20
+layout_mode = 2
+theme_override_constants/separation = 20
 
 [node name="Label" type="Label" parent="VBox/HBox/VBox/Ponder"]
-margin_right = 105.0
-margin_bottom = 14.0
+layout_mode = 2
 text = "Move to ponder:"
 
 [node name="Move" type="Label" parent="VBox/HBox/VBox/Ponder"]
-margin_left = 125.0
-margin_right = 157.0
-margin_bottom = 14.0
+layout_mode = 2
 text = "e6e5"
 
 [node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
-margin_left = 177.0
-margin_right = 283.0
-margin_bottom = 85.0
+layout_mode = 2
 size_flags_horizontal = 3
-custom_constants/separation = 10
+theme_override_constants/separation = 10
 
 [node name="Next" type="HBoxContainer" parent="VBox/HBox/Menu"]
-margin_right = 106.0
-margin_bottom = 20.0
+layout_mode = 2
 
 [node name="Flip" type="Button" parent="VBox/HBox/Menu/Next"]
-margin_right = 83.0
-margin_bottom = 20.0
-rect_pivot_offset = Vector2( -238.46, 107 )
+layout_mode = 2
 text = "Next Move"
-icon = SubResource( 1 )
+icon = SubResource("1")
 
 [node name="Color" type="ColorRect" parent="VBox/HBox/Menu/Next"]
-margin_left = 87.0
-margin_right = 106.0
-margin_bottom = 20.0
+layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Load" type="Button" parent="VBox/HBox/Menu"]
-margin_top = 30.0
-margin_right = 106.0
-margin_bottom = 50.0
-rect_pivot_offset = Vector2( -238.46, 107 )
+layout_mode = 2
 text = "Load"
 
 [node name="Save" type="Button" parent="VBox/HBox/Menu"]
-margin_top = 60.0
-margin_right = 106.0
-margin_bottom = 80.0
-rect_pivot_offset = Vector2( -238.46, 107 )
+layout_mode = 2
 text = "Save"
 
 [node name="Options" type="VBoxContainer" parent="VBox/HBox"]
-margin_left = 303.0
-margin_right = 450.0
-margin_bottom = 85.0
-custom_constants/separation = 10
+layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="TB" type="HBoxContainer" parent="VBox/HBox/Options"]
-modulate = Color( 0.337255, 0.415686, 0.823529, 1 )
-margin_right = 147.0
-margin_bottom = 21.0
-custom_constants/separation = 10
+modulate = Color(0.337255, 0.415686, 0.823529, 1)
+layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Begin" type="TextureButton" parent="VBox/HBox/Options/TB"]
-margin_right = 22.0
-margin_bottom = 21.0
-texture_normal = ExtResource( 5 )
+layout_mode = 2
+texture_normal = ExtResource("5")
 
 [node name="Forward" type="TextureButton" parent="VBox/HBox/Options/TB"]
-margin_left = 32.0
-margin_right = 50.0
-margin_bottom = 21.0
-texture_normal = ExtResource( 7 )
+layout_mode = 2
+texture_normal = ExtResource("7")
 
 [node name="End" type="TextureButton" parent="VBox/HBox/Options/TB"]
-margin_left = 60.0
-margin_right = 82.0
-margin_bottom = 21.0
-texture_normal = ExtResource( 6 )
+layout_mode = 2
+texture_normal = ExtResource("6")
 
 [node name="Count" type="Label" parent="VBox/HBox/Options/TB"]
-margin_left = 92.0
-margin_top = 3.0
-margin_right = 147.0
-margin_bottom = 17.0
-rect_min_size = Vector2( 55, 0 )
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
 text = "000/000"
 
 [node name="CheckBox" type="CheckBox" parent="VBox/HBox/Options"]
-margin_top = 31.0
-margin_right = 147.0
-margin_bottom = 55.0
-pressed = true
+layout_mode = 2
 text = "Suggest moves"
 
 [node name="Reset" type="Button" parent="VBox/HBox/Options"]
-margin_top = 65.0
-margin_right = 147.0
-margin_bottom = 85.0
+layout_mode = 2
 text = "Reset Board"
 
 [node name="Grid" type="GridContainer" parent="VBox/HBox"]
-margin_left = 470.0
-margin_right = 600.0
-margin_bottom = 85.0
-custom_constants/vseparation = 10
-custom_constants/hseparation = 20
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
 columns = 2
 
 [node name="Label" type="Label" parent="VBox/HBox/Grid"]
-margin_right = 72.0
-margin_bottom = 14.0
+layout_mode = 2
 text = "Last move"
 
 [node name="LastMove" type="Label" parent="VBox/HBox/Grid"]
-margin_left = 92.0
-margin_right = 130.0
-margin_bottom = 14.0
-rect_min_size = Vector2( 38, 0 )
+custom_minimum_size = Vector2(38, 0)
+layout_mode = 2
 text = "c2c4"
 
 [node name="Label3" type="Label" parent="VBox/HBox/Grid"]
-margin_top = 24.0
-margin_right = 72.0
-margin_bottom = 38.0
+layout_mode = 2
 text = "Moves"
 
 [node name="Moves" type="Label" parent="VBox/HBox/Grid"]
-margin_left = 92.0
-margin_top = 24.0
-margin_right = 130.0
-margin_bottom = 38.0
+layout_mode = 2
 
 [node name="Label5" type="Label" parent="VBox/HBox/Grid"]
-margin_top = 48.0
-margin_right = 72.0
-margin_bottom = 62.0
+layout_mode = 2
 text = "Half moves"
 
 [node name="HalfMoves" type="Label" parent="VBox/HBox/Grid"]
-margin_left = 92.0
-margin_top = 48.0
-margin_right = 130.0
-margin_bottom = 62.0
+layout_mode = 2
 
-[node name="Board" parent="VBox" instance=ExtResource( 1 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_top = 105.0
-margin_right = 600.0
-margin_bottom = 405.0
-rect_min_size = Vector2( 300, 300 )
-custom_constants/margin_right = 20
+[node name="Board" parent="VBox" instance=ExtResource("1")]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/margin_right = 20
 
 [node name="Spacer" type="Control" parent="VBox"]
-margin_top = 425.0
-margin_right = 600.0
-margin_bottom = 435.0
-rect_min_size = Vector2( 0, 10 )
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
 
 [node name="BlackPieces" type="GridContainer" parent="VBox"]
-margin_top = 455.0
-margin_right = 600.0
-margin_bottom = 687.0
+layout_mode = 2
 size_flags_vertical = 3
-custom_constants/vseparation = 5
-custom_constants/hseparation = 5
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
 columns = 8
 
 [node name="WhitePieces" type="GridContainer" parent="VBox"]
-margin_top = 707.0
-margin_right = 600.0
-margin_bottom = 940.0
+layout_mode = 2
 size_flags_vertical = 3
-custom_constants/vseparation = 5
-custom_constants/hseparation = 5
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
 columns = 8
 
-[node name="Engine" parent="." instance=ExtResource( 4 )]
+[node name="Engine" parent="." instance=ExtResource("4")]
 
 [node name="c" type="CanvasLayer" parent="."]
 
 [node name="FileDialog" type="FileDialog" parent="c"]
-margin_left = 21.0
-margin_top = 23.0
-margin_right = 458.0
-margin_bottom = 448.0
 access = 2
 show_hidden_files = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="Alert" parent="c" instance=ExtResource( 3 )]
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 320.0
-margin_bottom = 220.0
-size_flags_horizontal = 5
-size_flags_vertical = 5
+[node name="Alert" parent="c" instance=ExtResource("3")]
 
-[node name="Promote" parent="c" instance=ExtResource( 8 )]
+[node name="Promote" parent="c" instance=ExtResource("8")]
 visible = false
 
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
@@ -266,5 +188,5 @@ visible = false
 [connection signal="button_down" from="VBox/HBox/Options/Reset" to="." method="_on_Reset_button_down"]
 [connection signal="fullmove" from="VBox/Board" to="." method="_on_Board_fullmove"]
 [connection signal="halfmove" from="VBox/Board" to="." method="_on_Board_halfmove"]
-[connection signal="done" from="Engine" to="." method="_on_Engine_done"]
+[connection signal="done" from="Engine" to="." method="_on_engine_done"]
 [connection signal="file_selected" from="c/FileDialog" to="." method="_on_FileDialog_file_selected"]
