@@ -45,7 +45,7 @@ The game consists of three programs:
 
 ## Building
 Requirements are:
-* Godot Engine 3.x
+* Godot Engine 4 (see the other branch for a Godot 3 version of the code)
 * Go
 
 Directories to be created (not under source control):
