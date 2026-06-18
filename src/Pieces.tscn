@@ -1,85 +1,83 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene format=3 uid="uid://d1d334c26d3vl"]
 
-[ext_resource path="res://Pieces.gd" type="Script" id=1]
-[ext_resource path="res://pieces/blackKnight.png" type="Texture2D" id=2]
-[ext_resource path="res://pieces/blackQueen.png" type="Texture2D" id=3]
-[ext_resource path="res://pieces/whiteKnight.png" type="Texture2D" id=4]
-[ext_resource path="res://pieces/whitePawn.png" type="Texture2D" id=5]
-[ext_resource path="res://pieces/blackBishop.png" type="Texture2D" id=6]
-[ext_resource path="res://pieces/whiteQueen.png" type="Texture2D" id=7]
-[ext_resource path="res://pieces/blackPawn.png" type="Texture2D" id=8]
-[ext_resource path="res://pieces/blackRook.png" type="Texture2D" id=9]
-[ext_resource path="res://pieces/blackKing.png" type="Texture2D" id=10]
-[ext_resource path="res://pieces/whiteBishop.png" type="Texture2D" id=11]
-[ext_resource path="res://pieces/whiteRook.png" type="Texture2D" id=12]
-[ext_resource path="res://pieces/whiteKing.png" type="Texture2D" id=13]
+[ext_resource type="Script" uid="uid://codv2qyhabaih" path="res://Pieces.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://diy7k5hjhdhyp" path="res://pieces/blackKnight.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://d2xcmjsdn2u7y" path="res://pieces/blackQueen.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://fsx4oqrx13vo" path="res://pieces/whiteKnight.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://cuh165aekwck8" path="res://pieces/whitePawn.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://ccj8kv2m3guxd" path="res://pieces/blackBishop.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://ca2ovftiysad7" path="res://pieces/whiteQueen.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://b3t3m2vx7ydbw" path="res://pieces/blackPawn.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://dp1cgkbhyauev" path="res://pieces/blackRook.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://cgljujg82ygg1" path="res://pieces/blackKing.png" id="10"]
+[ext_resource type="Texture2D" uid="uid://betnnrgvy72yg" path="res://pieces/whiteBishop.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://gs8ld3xdgm3n" path="res://pieces/whiteRook.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://ckdvd73ijxwhf" path="res://pieces/whiteKing.png" id="13"]
 
-[node name="Pieces" type="GridContainer"]
+[node name="Pieces" type="GridContainer" unique_id=1161903911]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 6
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
-[node name="blackBishop" type="Sprite2D" parent="."]
-texture = ExtResource( 6 )
+[node name="blackBishop" type="Sprite2D" parent="." unique_id=993122017]
+texture = ExtResource("6")
 centered = false
 
-[node name="blackKing" type="Sprite2D" parent="."]
-position = Vector2( 64, 0 )
-texture = ExtResource( 10 )
+[node name="blackKing" type="Sprite2D" parent="." unique_id=961620413]
+position = Vector2(64, 0)
+texture = ExtResource("10")
 centered = false
 
-[node name="blackKnight" type="Sprite2D" parent="."]
-position = Vector2( 128, 0 )
-texture = ExtResource( 2 )
+[node name="blackKnight" type="Sprite2D" parent="." unique_id=732653764]
+position = Vector2(128, 0)
+texture = ExtResource("2")
 centered = false
 
-[node name="blackPawn" type="Sprite2D" parent="."]
-position = Vector2( 192, 0 )
-texture = ExtResource( 8 )
+[node name="blackPawn" type="Sprite2D" parent="." unique_id=1706117161]
+position = Vector2(192, 0)
+texture = ExtResource("8")
 centered = false
 
-[node name="blackQueen" type="Sprite2D" parent="."]
-position = Vector2( 256, 0 )
-texture = ExtResource( 3 )
+[node name="blackQueen" type="Sprite2D" parent="." unique_id=1604978108]
+position = Vector2(256, 0)
+texture = ExtResource("3")
 centered = false
 
-[node name="blackRook" type="Sprite2D" parent="."]
-position = Vector2( 320, 0 )
-texture = ExtResource( 9 )
+[node name="blackRook" type="Sprite2D" parent="." unique_id=123813836]
+position = Vector2(320, 0)
+texture = ExtResource("9")
 centered = false
 
-[node name="whiteBishop" type="Sprite2D" parent="."]
-position = Vector2( 384, 0 )
-texture = ExtResource( 11 )
+[node name="whiteBishop" type="Sprite2D" parent="." unique_id=635026254]
+position = Vector2(384, 0)
+texture = ExtResource("11")
 centered = false
 
-[node name="whiteKing" type="Sprite2D" parent="."]
-position = Vector2( 448, 0 )
-texture = ExtResource( 13 )
+[node name="whiteKing" type="Sprite2D" parent="." unique_id=2142059689]
+position = Vector2(448, 0)
+texture = ExtResource("13")
 centered = false
 
-[node name="whiteKnight" type="Sprite2D" parent="."]
-position = Vector2( 512, 0 )
-texture = ExtResource( 4 )
+[node name="whiteKnight" type="Sprite2D" parent="." unique_id=296787721]
+position = Vector2(512, 0)
+texture = ExtResource("4")
 centered = false
 
-[node name="whitePawn" type="Sprite2D" parent="."]
-position = Vector2( 576, 0 )
-texture = ExtResource( 5 )
+[node name="whitePawn" type="Sprite2D" parent="." unique_id=834465611]
+position = Vector2(576, 0)
+texture = ExtResource("5")
 centered = false
 
-[node name="whiteQueen" type="Sprite2D" parent="."]
-position = Vector2( 640, 0 )
-texture = ExtResource( 7 )
+[node name="whiteQueen" type="Sprite2D" parent="." unique_id=1198311949]
+position = Vector2(640, 0)
+texture = ExtResource("7")
 centered = false
 
-[node name="whiteRook" type="Sprite2D" parent="."]
-position = Vector2( 704, 0 )
-texture = ExtResource( 12 )
+[node name="whiteRook" type="Sprite2D" parent="." unique_id=1473647295]
+position = Vector2(704, 0)
+texture = ExtResource("12")
 centered = false

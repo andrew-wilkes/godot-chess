@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://1ggxtsr4hbwc"]
+[gd_scene format=3 uid="uid://1ggxtsr4hbwc"]
 
-[ext_resource type="Script" path="res://engine/UDPClient.gd" id="1"]
+[ext_resource type="Script" uid="uid://bc1r2ttib8d2a" path="res://engine/UDPClient.gd" id="1"]
 
-[node name="UDPClient" type="Node"]
+[node name="UDPClient" type="Node" unique_id=1596100238]
 script = ExtResource("1")
