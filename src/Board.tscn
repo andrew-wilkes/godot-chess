@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8usdvp4rr7d2"]
+[gd_scene format=3 uid="uid://c8usdvp4rr7d2"]
 
-[ext_resource type="Script" path="res://Board.gd" id="1"]
+[ext_resource type="Script" uid="uid://hbylgu1p5mn2" path="res://Board.gd" id="1"]
 
-[node name="Board" type="MarginContainer"]
+[node name="Board" type="MarginContainer" unique_id=577728127]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,7 +14,7 @@ white = Color(0.827451, 0.827451, 0.827451, 1)
 grey = Color(0.443137, 0.443137, 0.443137, 1)
 mod_color = Color(0.176471, 0.611765, 0.870588, 1)
 
-[node name="Grid" type="GridContainer" parent="."]
+[node name="Grid" type="GridContainer" parent="." unique_id=1092644313]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -22,7 +22,7 @@ theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 8
 
-[node name="HighlightTimer" type="Timer" parent="."]
+[node name="HighlightTimer" type="Timer" parent="." unique_id=1450633393]
 wait_time = 0.3
 one_shot = true
 

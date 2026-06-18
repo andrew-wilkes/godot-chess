@@ -1,17 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://cgcfx3twc5adf"]
+[gd_scene format=3 uid="uid://cgcfx3twc5adf"]
 
 [ext_resource type="PackedScene" uid="uid://c8usdvp4rr7d2" path="res://Board.tscn" id="1"]
-[ext_resource type="Script" path="res://Main.gd" id="2"]
-[ext_resource type="PackedScene" path="res://Alert.tscn" id="3"]
+[ext_resource type="Script" uid="uid://d2dkx2b6f2ory" path="res://Main.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://cbau4tmmguq7v" path="res://Alert.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://dl4s6x8gtvxk8" path="res://engine/Engine.tscn" id="4"]
 [ext_resource type="Texture2D" uid="uid://byu46yrpllged" path="res://assets/start.png" id="5"]
 [ext_resource type="Texture2D" uid="uid://cwborbub37eyr" path="res://assets/end.png" id="6"]
 [ext_resource type="Texture2D" uid="uid://t2ddb83ng7u7" path="res://assets/play.png" id="7"]
-[ext_resource type="PackedScene" path="res://Promote.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://bdhocrqwtjdsh" path="res://Promote.tscn" id="8"]
 
 [sub_resource type="ImageTexture" id="1"]
 
-[node name="Main" type="MarginContainer"]
+[node name="Main" type="MarginContainer" unique_id=970163044]
 custom_minimum_size = Vector2(600, 600)
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,158 +22,158 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 script = ExtResource("2")
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="." unique_id=2076328103]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="HBox" type="HBoxContainer" parent="VBox"]
+[node name="HBox" type="HBoxContainer" parent="VBox" unique_id=2025845095]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="VBox" type="VBoxContainer" parent="VBox/HBox"]
+[node name="VBox" type="VBoxContainer" parent="VBox/HBox" unique_id=1388138132]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Start" type="Button" parent="VBox/HBox/VBox"]
+[node name="Start" type="Button" parent="VBox/HBox/VBox" unique_id=2080148682]
 layout_mode = 2
 text = "PLAY"
 
-[node name="Ponder" type="HBoxContainer" parent="VBox/HBox/VBox"]
+[node name="Ponder" type="HBoxContainer" parent="VBox/HBox/VBox" unique_id=685967927]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBox/HBox/VBox/Ponder"]
+[node name="Label" type="Label" parent="VBox/HBox/VBox/Ponder" unique_id=1164843777]
 layout_mode = 2
 text = "Move to ponder:"
 
-[node name="Move" type="Label" parent="VBox/HBox/VBox/Ponder"]
+[node name="Move" type="Label" parent="VBox/HBox/VBox/Ponder" unique_id=1474304617]
 layout_mode = 2
 text = "e6e5"
 
-[node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
+[node name="Menu" type="VBoxContainer" parent="VBox/HBox" unique_id=2021150622]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="Next" type="HBoxContainer" parent="VBox/HBox/Menu"]
+[node name="Next" type="HBoxContainer" parent="VBox/HBox/Menu" unique_id=1473265553]
 layout_mode = 2
 
-[node name="Flip" type="Button" parent="VBox/HBox/Menu/Next"]
+[node name="Flip" type="Button" parent="VBox/HBox/Menu/Next" unique_id=917684525]
 layout_mode = 2
 text = "Next Move"
 icon = SubResource("1")
 
-[node name="Color" type="ColorRect" parent="VBox/HBox/Menu/Next"]
+[node name="Color" type="ColorRect" parent="VBox/HBox/Menu/Next" unique_id=1921135890]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Load" type="Button" parent="VBox/HBox/Menu"]
+[node name="Load" type="Button" parent="VBox/HBox/Menu" unique_id=529205531]
 layout_mode = 2
 text = "Load"
 
-[node name="Save" type="Button" parent="VBox/HBox/Menu"]
+[node name="Save" type="Button" parent="VBox/HBox/Menu" unique_id=325795956]
 layout_mode = 2
 text = "Save"
 
-[node name="Options" type="VBoxContainer" parent="VBox/HBox"]
+[node name="Options" type="VBoxContainer" parent="VBox/HBox" unique_id=542349960]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TB" type="HBoxContainer" parent="VBox/HBox/Options"]
+[node name="TB" type="HBoxContainer" parent="VBox/HBox/Options" unique_id=1915091039]
 modulate = Color(0.337255, 0.415686, 0.823529, 1)
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Begin" type="TextureButton" parent="VBox/HBox/Options/TB"]
+[node name="Begin" type="TextureButton" parent="VBox/HBox/Options/TB" unique_id=232142662]
 layout_mode = 2
 texture_normal = ExtResource("5")
 
-[node name="Forward" type="TextureButton" parent="VBox/HBox/Options/TB"]
+[node name="Forward" type="TextureButton" parent="VBox/HBox/Options/TB" unique_id=2016207656]
 layout_mode = 2
 texture_normal = ExtResource("7")
 
-[node name="End" type="TextureButton" parent="VBox/HBox/Options/TB"]
+[node name="End" type="TextureButton" parent="VBox/HBox/Options/TB" unique_id=2110988424]
 layout_mode = 2
 texture_normal = ExtResource("6")
 
-[node name="Count" type="Label" parent="VBox/HBox/Options/TB"]
+[node name="Count" type="Label" parent="VBox/HBox/Options/TB" unique_id=1546665218]
 custom_minimum_size = Vector2(55, 0)
 layout_mode = 2
 text = "000/000"
 
-[node name="CheckBox" type="CheckBox" parent="VBox/HBox/Options"]
+[node name="CheckBox" type="CheckBox" parent="VBox/HBox/Options" unique_id=1248064177]
 layout_mode = 2
 text = "Suggest moves"
 
-[node name="Reset" type="Button" parent="VBox/HBox/Options"]
+[node name="Reset" type="Button" parent="VBox/HBox/Options" unique_id=806018824]
 layout_mode = 2
 text = "Reset Board"
 
-[node name="Grid" type="GridContainer" parent="VBox/HBox"]
+[node name="Grid" type="GridContainer" parent="VBox/HBox" unique_id=904478114]
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_constants/v_separation = 10
 columns = 2
 
-[node name="Label" type="Label" parent="VBox/HBox/Grid"]
+[node name="Label" type="Label" parent="VBox/HBox/Grid" unique_id=903841737]
 layout_mode = 2
 text = "Last move"
 
-[node name="LastMove" type="Label" parent="VBox/HBox/Grid"]
+[node name="LastMove" type="Label" parent="VBox/HBox/Grid" unique_id=933074455]
 custom_minimum_size = Vector2(38, 0)
 layout_mode = 2
 text = "c2c4"
 
-[node name="Label3" type="Label" parent="VBox/HBox/Grid"]
+[node name="Label3" type="Label" parent="VBox/HBox/Grid" unique_id=959583114]
 layout_mode = 2
 text = "Moves"
 
-[node name="Moves" type="Label" parent="VBox/HBox/Grid"]
+[node name="Moves" type="Label" parent="VBox/HBox/Grid" unique_id=1107578499]
 layout_mode = 2
 
-[node name="Label5" type="Label" parent="VBox/HBox/Grid"]
+[node name="Label5" type="Label" parent="VBox/HBox/Grid" unique_id=1888982779]
 layout_mode = 2
 text = "Half moves"
 
-[node name="HalfMoves" type="Label" parent="VBox/HBox/Grid"]
+[node name="HalfMoves" type="Label" parent="VBox/HBox/Grid" unique_id=103261434]
 layout_mode = 2
 
-[node name="Board" parent="VBox" instance=ExtResource("1")]
+[node name="Board" parent="VBox" unique_id=1652951610 instance=ExtResource("1")]
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/margin_right = 20
 
-[node name="Spacer" type="Control" parent="VBox"]
+[node name="Spacer" type="Control" parent="VBox" unique_id=67882523]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="BlackPieces" type="GridContainer" parent="VBox"]
+[node name="BlackPieces" type="GridContainer" parent="VBox" unique_id=1768132616]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
 columns = 8
 
-[node name="WhitePieces" type="GridContainer" parent="VBox"]
+[node name="WhitePieces" type="GridContainer" parent="VBox" unique_id=1930049916]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
 columns = 8
 
-[node name="Engine" parent="." instance=ExtResource("4")]
+[node name="Engine" parent="." unique_id=625586706 instance=ExtResource("4")]
 
-[node name="c" type="CanvasLayer" parent="."]
+[node name="c" type="CanvasLayer" parent="." unique_id=1802289650]
 
-[node name="FileDialog" type="FileDialog" parent="c"]
+[node name="FileDialog" type="FileDialog" parent="c" unique_id=1085259092]
 access = 2
 show_hidden_files = true
 
-[node name="Alert" parent="c" instance=ExtResource("3")]
+[node name="Alert" parent="c" unique_id=1979866367 instance=ExtResource("3")]
 
-[node name="Promote" parent="c" instance=ExtResource("8")]
+[node name="Promote" parent="c" unique_id=283909583 instance=ExtResource("8")]
 visible = false
 
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]

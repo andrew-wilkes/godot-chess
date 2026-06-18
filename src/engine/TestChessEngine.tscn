@@ -1,15 +1,15 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene format=3 uid="uid://xu2ja414sn8u"]
 
-[ext_resource path="res://engine/TestChessEngine.gd" type="Script" id=1]
-[ext_resource path="res://engine/Engine.tscn" type="PackedScene" id=2]
+[ext_resource type="Script" uid="uid://bgpoelfchhdwh" path="res://engine/TestChessEngine.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://dl4s6x8gtvxk8" path="res://engine/Engine.tscn" id="2"]
 
-[node name="TestChessEngine" type="Control"]
+[node name="TestChessEngine" type="Control" unique_id=1167680899]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
-[node name="Engine" parent="." instance=ExtResource( 2 )]
+[node name="Engine" parent="." unique_id=1331154656 instance=ExtResource("2")]
+
 [connection signal="done" from="Engine" to="." method="_on_Engine_done"]
